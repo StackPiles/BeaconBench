@@ -77,6 +77,15 @@ class Contracts(unittest.TestCase):
         checks.check_no_private_content('examples/model.example.json', '${BEACON_MODEL_API_KEY}')
         checks.check_no_private_content('docs/example.md', 'http://127.0.0.1:8000/v1')
 
+    def test_local_denylist_ignores_case_and_spacing_without_echoing_name(self):
+        term = 'Confidential Cobalt Sample'
+        for value in [term, 'confidential cobalt sample', 'CONFIDENTIAL\nCOBALT\tSAMPLE']:
+            with self.assertRaisesRegex(ValueError, 'local denylist') as error:
+                checks.check_no_private_content('docs/example.md', value, [term])
+            self.assertNotIn(term, str(error.exception))
+            self.assertNotIn(value, str(error.exception))
+        checks.check_no_private_content('docs/example.md', 'A public example', [term])
+
     def test_nonfinite_usage_cannot_hide_in_json_numbers(self):
         for value in ['NaN', 'Infinity', '-Infinity', '1e999']:
             with self.assertRaises(ValueError):

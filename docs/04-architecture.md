@@ -6,7 +6,9 @@ BeaconBenchは実行管理・条件固定・計測・保存・レポートを共
 
 ```mermaid
 flowchart TB
-  CLI[予定CLI / ローカル進捗表示] --> Coordinator[実行管理と所有権]
+  UI[予定Web画面 / CLI] --> Coordinator[実行管理と所有権]
+  UI --> Config[モデル・設定レジストリ]
+  Config --> Coordinator
   Coordinator --> Registry[固定セット・資産・言語pack]
   Coordinator --> Instrument[要求・イベント・測定記録]
   Coordinator --> Adapter[各ベンチマークadapter]
@@ -26,6 +28,7 @@ flowchart TB
 | `catalog/` | 候補、出典、能力タグ、採用条件 |
 | `suites/` | Quick / Detailed / 互換セットの版付きmanifest |
 | `protocols/` | 共通サンプリング、実エンジン上限、終了規則、cache方針 |
+| `ui/prototype/` | 通信・実行を伴わない画面試作。正式UIの設計確認用 |
 | `schemas/` | case・run・測定・判定・翻訳のJSON契約 |
 | `src/beaconbench/`（予定） | 実行管理、model transport、記録、再開、統計、レポート |
 | `adapters/`（予定） | 上流のtask / environment / grader接続 |
@@ -60,6 +63,8 @@ adapterはすべてのモデル呼び出しを計測付きtransportへ通す。�
 capability negotiationでは、streaming、usage、reasoning、tool calls、seed、sampling、template、context/output上限を確認する。未知のオプションを黙って捨てない。非対応なら `unsupported`、有効設定を確認できなければ `unverified` として、その状態を比較表に表示する。
 
 backend固有の設定を小さいbridgeへ置く。vLLM、llama.cpp等で共通の意味を持たない設定はそのまま個別値として保存する。思考の `xhigh` 等のラベルが他モデルで同じ計算量を表すと仮定しない。
+
+モデル接続、エンジン起動設定、生成設定を分けて名前付きの版として登録する。画面で選択した組み合わせを共通のresolverへ渡し、CLIと同じ実要求・fingerprintを作る。画面だけが別の既定値を持たない。詳細は [画面と設定切替](10-interface-and-configuration.md) を参照する。
 
 ## 状態遷移
 

@@ -47,7 +47,7 @@ def public_files(root: Path) -> list[Path]:
         names = result.stdout.decode('utf-8').split('\0')
         paths = sorted({root / name for name in names if name})
     else:
-        directories = ['docs', 'catalog', 'suites', 'protocols', 'schemas', 'examples', 'tools', 'tests']
+        directories = ['docs', 'catalog', 'suites', 'protocols', 'schemas', 'examples', 'tools', 'tests', 'ui']
         paths = [x for name in directories for x in (root / name).rglob('*') if x.is_file()]
         paths += [root / name for name in ['README.md', 'AGENTS.md', 'NOTICE.md', 'LICENSE', '.gitignore', '.gitattributes', 'pyproject.toml', 'uv.lock'] if (root / name).is_file()]
         paths = sorted(set(paths))
@@ -57,12 +57,26 @@ def public_files(root: Path) -> list[Path]:
     return paths
 
 
-def check_no_private_content(path: str, content: str) -> None:
+def private_terms(root: Path) -> tuple[str, ...]:
+    """Read an optional ignored denylist without including its values in output."""
+    path = root / '.beaconbench/private-terms.txt'
+    if not path.exists():
+        return ()
+    return tuple(line.strip() for line in path.read_text(encoding='utf-8').splitlines()
+                 if line.strip() and not line.lstrip().startswith('#'))
+
+
+def check_no_private_content(path: str, content: str, denied_terms=()) -> None:
     parts = Path(path).parts
     require(not any(x in {'runs', 'weights', 'datasets', 'local', '.venv', '.git'} for x in parts), 'Private artifact path in publication')
     require(not (Path(path).name.startswith('.env') and Path(path).name != '.env.example'), 'Environment file in publication')
     for label, pattern in PRIVATE_PATTERNS.items():
         require(pattern.search(content) is None, path + ': ' + label)
+    normalized = re.sub(r'\s+', '', content).casefold()
+    for term in denied_terms:
+        normalized_term = re.sub(r'\s+', '', term).casefold()
+        require(not normalized_term or normalized_term not in normalized,
+                path + ': private name from local denylist')
 
 
 def validate_blueprints(catalog, quick, detailed, protocol) -> None:
@@ -123,10 +137,11 @@ def local_links(root: Path, path: Path, text: str) -> int:
 
 def main() -> None:
     paths = public_files(ROOT)
+    denied_terms = private_terms(ROOT)
     json_count = link_count = 0
     for path in paths:
         raw = path.read_text(encoding='utf-8')
-        check_no_private_content(path.relative_to(ROOT).as_posix(), raw)
+        check_no_private_content(path.relative_to(ROOT).as_posix(), raw, denied_terms)
         if path.suffix == '.json':
             read_json(path)
             json_count += 1

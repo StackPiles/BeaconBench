@@ -2,7 +2,7 @@
 
 ## 現在の成果
 
-M0は公開リポジトリ、設計文書、draft catalog / suite / protocol、JSON schema案、架空の契約例、設計整合性checker。実モデル生成、第三者資産取得、日本語翻訳、grader実装、実測結果は含まない。
+M0は公開リポジトリ、設計文書、draft catalog / suite / protocol、JSON schema案、架空の契約例、設計整合性checker、操作できる静的な画面試作。実モデル生成、第三者資産取得、日本語翻訳、grader実装、実測結果は含まない。
 
 チェック結果は静的な設計契約の確認であり、ベンチマークが動いた証拠ではない。
 
@@ -10,12 +10,12 @@ M0は公開リポジトリ、設計文書、draft catalog / suite / protocol、J
 
 | 段階 | 成果物 | 受入条件 |
 |---|---|---|
-| M0 設計基盤 | 本リポジトリと文書・schema・draft | リンク、ID、配分、null制限、公開範囲、契約例の静的検証が通る |
-| M1 記録と接続 | model transport、SSE、usage、event store、plan/status | fake endpointで複数chunk、遅延usage、思考込み、tool、切断を正しく記録 |
+| M0 設計基盤 | 本リポジトリと文書・schema・draft・UI試作 | 静的検証に加え、選択・設定差分・計画表示・架空結果の区別を確認 |
+| M1 設定・記録と接続 | 設定レジストリ、共通resolver、model transport、SSE、usage、event store、plan/status API | 偽endpointで計測と切断を確認。UIとCLIが同じ条件を解決し、設定変更が既存runを変えない |
 | M2 既存コード評価 | LCB / SciCode-Verified / Frontierの汎用adapter、互換14問 | 参照解・誤答・数値許容誤差・除外テスト・空提出、2環境、ARM64採点を確認 |
 | M3 日本語基盤とBabel | language pack、4系列adapter、helper contract | 上流日本語資産のSHA、顧客役、変換器、模擬サービス、metric mappingが固定できる |
 | M4 営業 | SalesLLM日本語、CRMの営業系 | 日本語の顧客役・購買意向判定の較正と、CRMの状態resetが確認できる |
-| M5 セット固定と比較 | Quick / Detailedのfrozen manifest、統計・全文レポート | 全ケースの受入、Quick⊂Detailed、最初の試行再利用、分母・区間・時間が正しい |
+| M5 セット固定と比較 | frozen manifest、統計・全文レポート、実データに接続した比較画面 | 全ケースの受入、条件の差、分母・区間・時間を確認。回答と根拠へ辿れ、手動更新・途中経過・不明値も正しい |
 | M6 拡張 | SWE-bench Pro、画像・動画、TERMS等 | 別trackの資産・実行環境・公式条件が揃い、既存系列と分離できる |
 
 M4とM6の候補をM5の100枠へ含めるには、その枠も受入完了が必要。先に小さい集合を固定する場合は、別のsuite IDと実際の件数でリリースする。未完成の枠を成功・失敗・0点へ換算しない。
@@ -25,7 +25,7 @@ M4とM6の候補をM5の100枠へ含めるには、その枠も受入完了が�
 ## 実装の最初の単位
 
 1. ファイル原本・completion marker・event記録と、計画・状態確認。
-2. 偽のOpenAI互換endpointを使う計測・再開テスト。
+2. モデル・設定レジストリとresolverを作り、偽endpointで画面・CLIの条件一致と計測・再開を検証。
 3. 既存14問の採点規則を個別環境から分離し、互換adapterとして移す。
 4. BabelArenaの上流日本語で少数の接続確認。
 5. 独自翻訳・営業の顧客役と採点器を検証する。
@@ -47,6 +47,8 @@ M4とM6の候補をM5の100枠へ含めるには、その枠も受入完了が�
 | 資源 | 失敗後も所有leaseを解放し、必要な常用復帰を実応答で確認 |
 | 公開 | credential・個別host・private入力を含むexportを拒否し、raw原本を保つ |
 | 表示 | 回答全文と根拠へ辿れ、生成文をscriptとして実行しない |
+| 設定切替 | 同一のresolved条件をUIとCLIで得る。編集は新しい版とし、未知のbackend設定を黙って捨てない |
+| 比較行列 | モデル数×設定数×ケース数×試行数を表示。選んだ差分を結果の条件差として残す |
 
 ## 実測開始前に決める事項
 

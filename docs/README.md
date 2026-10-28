@@ -1,4 +1,4 @@
-# BeaconBench 詳細設計 v0.1
+# BeaconBench 詳細設計 v0.2
 
 作成日：2026-10-28。状態：設計案。現在の成果は公開リポジトリと設計契約であり、評価器・翻訳・問題選定の完成を表さない。
 
@@ -15,9 +15,12 @@
 | [07 実行](07-execution.md) | 計算ホスト、コード実行の分離、リソース所有、復帰 |
 | [08 再現性](08-reproducibility.md) | 保存形式、同一性、再利用、再採点、公開用出力 |
 | [09 実装計画](09-implementation-plan.md) | 段階ごとの成果物・受入条件・着手順序 |
+| [10 画面と設定](10-interface-and-configuration.md) | モデル・プリセット・比較行列、進捗と結果の画面、設定の版管理 |
 | [判断記録](decisions.md) | 合意と提案の区別、根拠、未決事項 |
 
 関連する機械可読設計： [catalog](../catalog/benchmarks.json)、[Quick](../suites/quick.v0.draft.json)、[Detailed](../suites/detailed.v0.draft.json)、[protocol](../protocols/common-ja.v0.draft.json)、[schemas](../schemas/README.md)。
+
+[操作できる画面試作](../ui/prototype/index.html)と[確認手順](../ui/prototype/README.md)も用意した。画面内の結果は架空の例であり、ベンチマークやモデル起動は行わない。
 
 ## 全体の流れ
 
