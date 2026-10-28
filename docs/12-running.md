@@ -93,4 +93,6 @@ controlは `[{expected_passed: true, payload: {case_id, answer, grader}}, ...]`�
 
 `.beaconbench/` にregistry、immutable plans、ケース資産、受入証拠、runs、回答再利用索引を保存する。秘密はenv参照のみで、実要求の認証headerは保存しない。原回答・SSE・usage・採点結果にはSHAを持たせ、変更を検出したら再生成で隠さず停止する。
 
+計画作成時に実行コードも `runtime-sources/` へ保存する。workerはそのSHAを照合した `runtime-cache/` のコードで起動するため、アプリを更新しても同じplanの再開は当時の処理を使う。原本・cacheの不一致は自動修復や新しいコードへの差し替えで隠さない。新しい基盤で測りたい場合は新しいplanを作る。
+
 server / workerが落ちても既存原本は残る。停止したworkerのleaseは所有状態を検証して回収し、生きている実行の予約は奪わない。追加の監視マシンへ推論・生成コード・重い採点を移さない。常用モデルの起動・停止・キャッシュ操作は現時点では行わない。

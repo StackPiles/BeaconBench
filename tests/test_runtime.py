@@ -15,12 +15,12 @@ import httpx
 
 from beaconbench.assets import install_diagnostic, install_pack, load_pack
 from beaconbench.config import DEFAULT_PRESET, DEFAULT_RUN_SETTINGS, validate_model, validate_settings
-from beaconbench.runner import Worker
+from beaconbench.runner import Worker, launch, stop
 from beaconbench.qualification import qualify_executor
 from beaconbench.server import LocalServer
 from beaconbench.store import Store
 from beaconbench.transport import TransportFailure, chat
-from beaconbench.util import BenchError, atomic_json, read_json, trial_seed, write_once
+from beaconbench.util import BenchError, atomic_json, process_alive, read_json, trial_seed, write_once
 
 
 class FixtureHandler(BaseHTTPRequestHandler):
@@ -286,6 +286,37 @@ class Runtime(unittest.TestCase):
         self.store.reserve(first, plan)
         self.assertEqual(len(list((self.store.root / 'leases/recovered').glob('*.json'))), 1)
         self.store.release(first, plan)
+
+    def test_separate_worker_uses_frozen_source_and_resumes_a_cut_stream(self):
+        self.endpoint.mode = 'truncated'
+        plan = self.plan()
+        identity = launch(self.store, plan_id=plan['plan_id'])
+
+        def finished():
+            deadline = time.monotonic() + 12
+            while time.monotonic() < deadline:
+                state = self.store.status(identity)
+                worker_path = self.store.run_path(identity) / 'worker.json'
+                exited = worker_path.exists() and not process_alive(read_json(worker_path).get('pid', 0))
+                if state['phase'] not in {'queued', 'preflight', 'generating', 'scoring'} and exited:
+                    return state
+                time.sleep(.025)
+            stop(self.store, identity)
+            self.fail('fixture worker did not finish')
+
+        self.assertEqual(finished()['phase'], 'infrastructure_error')
+        worker = read_json(self.store.run_path(identity) / 'worker.json')
+        expected = self.store.root / 'runtime-cache' / plan['runtime_revision'] / 'beaconbench'
+        self.assertEqual(Path(worker['runtime_location']), expected)
+        original = next(self.store.run_path(identity).rglob('response.sse')).read_bytes()
+        self.endpoint.mode = 'complete'
+        # The parent application is not the code source used by the child.
+        from unittest.mock import patch
+        with patch('beaconbench.store.runtime_revision', return_value='updated-parent-runtime'):
+            launch(self.store, resume_id=identity)
+            self.assertEqual(finished()['phase'], 'completed')
+        self.assertEqual(len(self.endpoint.requests), 2)
+        self.assertTrue(any(path.read_bytes() == original for path in self.store.run_path(identity).rglob('response.sse')))
 
 
 if __name__ == '__main__':

@@ -7,6 +7,7 @@ import json
 import os
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -219,7 +220,9 @@ class Worker:
         return result, marker
 
     async def run(self):
-        atomic_json(self.root / 'worker.json', {'pid': os.getpid(), 'started_at': utc()})
+        atomic_json(self.root / 'worker.json', {'pid': os.getpid(), 'started_at': utc(),
+                                               'runtime_location': str(Path(__file__).parent),
+                                               'runtime_revision': self.plan['runtime_revision']})
         try:
             self.status('preflight', message='モデル接続と固定資産を確認しています。', completed=0, scored=0, reused=0)
             if runtime_revision() != self.plan['runtime_revision']:
@@ -301,15 +304,30 @@ def launch(store: Store, plan_id: str | None = None, resume_id: str | None = Non
                 current = read_json(folder / 'status.json')
                 atomic_json(folder / 'status.json', {**current, 'phase': 'infrastructure_error', 'message': '計算先が使用中のため開始しませんでした。'})
             raise
+        process = None
         try:
             (folder / 'stop.json').unlink(missing_ok=True)
+            from .frozen_runtime import materialize_runtime
+            runtime = materialize_runtime(store.root, plan['runtime_revision'])
+            environment = {**os.environ, 'PYTHONPATH': str(runtime)}
+            current = read_json(folder / 'status.json')
+            atomic_json(folder / 'status.json', {**current, 'phase': 'queued', 'updated_at': utc(), 'message': '固定した実行基盤で開始しています。'})
             flags = subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
             with (folder / 'worker.log').open('ab') as log:
                 process = subprocess.Popen([sys.executable, '-m', 'beaconbench', '--data-dir', str(store.root), 'worker', identity],
-                                           stdin=subprocess.DEVNULL, stdout=log, stderr=log, creationflags=flags)
-            atomic_json(folder / 'worker.json', {'pid': process.pid, 'launched_at': utc()})
+                                           stdin=subprocess.DEVNULL, stdout=log, stderr=log, creationflags=flags, env=environment)
+            atomic_json(folder / 'worker.json', {'pid': process.pid, 'launched_at': utc(),
+                                               'runtime_location': str(runtime / 'beaconbench'), 'runtime_revision': plan['runtime_revision']})
+            # Reap only this owned child without blocking the API or retaining
+            # an unbounded list of process objects across completed runs.
+            threading.Thread(target=process.wait, daemon=True).start()
             return identity
         except BaseException:
+            if process is not None and process.poll() is None:
+                process.terminate()
+                process.wait()
+            current = read_json(folder / 'status.json')
+            atomic_json(folder / 'status.json', {**current, 'phase': 'infrastructure_error', 'message': '実行基盤の起動に失敗しました。保存記録を確認してください。'})
             store.release(identity, plan)
             raise
 
