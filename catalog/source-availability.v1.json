@@ -1,0 +1,55 @@
+{
+  "schema_version": "0.4.0",
+  "checked_at": "2026-10-28T15:27:37.567782+09:00",
+  "babel": {
+    "repository": "Qwen/BabelArena",
+    "revision": "e8f095bcd3c1a0e01cfa7d7fad526bf448e09823",
+    "url": "https://huggingface.co/datasets/Qwen/BabelArena",
+    "public": true,
+    "access_approval_required": false,
+    "acquired_scope": "Japanese, English and upstream-default/shared assets",
+    "verified_files": 4871,
+    "verified_bytes": 1653226974,
+    "selected_case_assets_found": 38,
+    "acquisition_receipt_sha256": "f51d7d1a69fe36b226873f093cd70c444de88c38123d49353c791f959357d0cb",
+    "case_check_sha256": "728735d88e67344d3872f50ce44f3607fc294b848eae5c234541ac48e80e095f",
+    "downloaded_code_executed": false,
+    "native_acceptance_complete": false
+  },
+  "crm": {
+    "official_access_document": "https://github.com/SalesforceAIResearch/CRMArena",
+    "data_repository": "Salesforce/CRMArenaPro",
+    "data_revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+    "schema_files_acquired": [
+      "b2b_schema.json",
+      "b2c_schema.json"
+    ],
+    "route": "official research shared B2B org, read-only",
+    "authentication_verified": true,
+    "api_version": "64.0",
+    "query_objects_verified": [
+      "Lead",
+      "Opportunity",
+      "Quote",
+      "Task",
+      "EmailMessage",
+      "Knowledge__kav"
+    ],
+    "data_mutations_performed": false,
+    "dedicated_org_created": false,
+    "selected_tasks_read_only": true,
+    "selected_task_count": 8,
+    "new_account_required_for_selected_tasks": false,
+    "native_acceptance_complete": false
+  },
+  "execution_ready": false,
+  "benchmark_runs_started": 0,
+  "case_ids_changed": false,
+  "trial_settings_changed": false,
+  "remaining": [
+    "code/data compatibility",
+    "Japanese content and helper review",
+    "native controls",
+    "CRM environment state and reference-date consistency"
+  ]
+}

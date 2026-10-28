@@ -23,14 +23,15 @@
       "title": "meeting_notes",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -48,14 +49,15 @@
       "title": "project_progress_report",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -73,14 +75,15 @@
       "title": "inventory_check",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -98,14 +101,15 @@
       "title": "ticket_kb_suggestion",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -123,14 +127,15 @@
       "title": "complaint_investigation",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -148,14 +153,15 @@
       "title": "order_profit_analysis",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -173,14 +179,15 @@
       "title": "email_reply_draft",
       "difficulty": "unclassified",
       "quick": true,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -198,14 +205,15 @@
       "title": "customer_followup",
       "difficulty": "unclassified",
       "quick": true,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -223,14 +231,15 @@
       "title": "cross_service_meeting",
       "difficulty": "unclassified",
       "quick": true,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -248,14 +257,15 @@
       "title": "vendor_procurement",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "task_data_missing",
-        "japanese_sidecar_missing",
+        "task_data_review",
+        "japanese_sidecar_review",
         "text_and_web_dependency_review",
         "native_controls",
-        "sandbox_reset"
+        "sandbox_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -276,9 +286,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "shopping_database_missing",
+        "shopping_database_review",
         "tokenizer_lock",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -300,9 +311,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "shopping_database_missing",
+        "shopping_database_review",
         "tokenizer_lock",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -324,9 +336,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "shopping_database_missing",
+        "shopping_database_review",
         "tokenizer_lock",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -348,9 +361,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "shopping_database_missing",
+        "shopping_database_review",
         "tokenizer_lock",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -372,9 +386,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "shopping_database_missing",
+        "shopping_database_review",
         "tokenizer_lock",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -396,9 +411,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "shopping_database_missing",
+        "shopping_database_review",
         "tokenizer_lock",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -420,9 +436,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "travel_database_missing",
+        "travel_database_review",
         "converter_calibration",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -444,9 +461,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "travel_database_missing",
+        "travel_database_review",
         "converter_calibration",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -468,9 +486,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "travel_database_missing",
+        "travel_database_review",
         "converter_calibration",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -492,9 +511,10 @@
       "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "travel_database_missing",
+        "travel_database_review",
         "converter_calibration",
-        "native_controls"
+        "native_controls",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -513,13 +533,14 @@
       "title": "規則とツールの対話 / airline",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -537,13 +558,14 @@
       "title": "規則とツールの対話 / banking_knowledge",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -561,13 +583,14 @@
       "title": "規則とツールの対話 / banking_knowledge",
       "difficulty": "unclassified",
       "quick": true,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -585,13 +608,14 @@
       "title": "規則とツールの対話 / banking_knowledge",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -609,13 +633,14 @@
       "title": "規則とツールの対話 / retail",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -633,13 +658,14 @@
       "title": "規則とツールの対話 / retail",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -657,13 +683,14 @@
       "title": "規則とツールの対話 / retail",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -681,13 +708,14 @@
       "title": "規則とツールの対話 / retail",
       "difficulty": "unclassified",
       "quick": true,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -705,13 +733,14 @@
       "title": "規則とツールの対話 / telecom",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -729,13 +758,14 @@
       "title": "規則とツールの対話 / telecom",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "helper_lock",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -753,13 +783,14 @@
       "title": "複合業務 / cross",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -777,13 +808,14 @@
       "title": "複合業務 / cross",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -801,13 +833,14 @@
       "title": "複合業務 / cross",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -825,13 +858,14 @@
       "title": "複合業務 / cross",
       "difficulty": "unclassified",
       "quick": true,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -849,13 +883,14 @@
       "title": "複合業務 / delivery",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -873,13 +908,14 @@
       "title": "複合業務 / delivery",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -897,13 +933,14 @@
       "title": "複合業務 / instore",
       "difficulty": "unclassified",
       "quick": true,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -921,13 +958,14 @@
       "title": "複合業務 / ota",
       "difficulty": "unclassified",
       "quick": false,
-      "language_status": "upstream_ja_assets_pending",
+      "language_status": "upstream_ja_present",
       "execution_ready": false,
       "readiness_gates": [
-        "japanese_domain_data_missing",
+        "japanese_domain_data_review",
         "customer_judge_calibration",
         "native_controls",
-        "environment_reset"
+        "environment_reset",
+        "code_data_compatibility_review"
       ],
       "source": {
         "repository": "QwenLM/BabelArena",
@@ -948,8 +986,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -960,7 +998,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "f9aa4aa85ebc9bc58290a10d64c3d07d3a48f705a4b19a053e0e5d0bfbc66fe0"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {
@@ -974,8 +1012,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -986,7 +1024,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "69eb3a934abfcb458f82c04cd54e9f0bfe70be111a001221bbf08b286ef02e05"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {
@@ -1000,8 +1038,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -1012,7 +1050,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "38d48a55e9b305d5dc3ea8666165ef03b061ae189203e348911334b61d694c3f"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {
@@ -1026,8 +1064,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -1038,7 +1076,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "5edc13484b213462e0c3aa500d122cbf2b5dc079b8f6894a3a8e5e1832a5833f"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {
@@ -1052,8 +1090,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -1064,7 +1102,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "ac880eb3a23e3cb3dd6f085a810f75bac3016f956f32ee81ed0dc428058ba42a"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {
@@ -1078,8 +1116,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -1090,7 +1128,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "3d3a374ca9985d8add473315269296ff1831b3a3d4dbb0ab3f76848126b52208"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {
@@ -1104,8 +1142,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -1116,7 +1154,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "b89c495366da532034250c823c5231624a675836cd651b2313c0b2f974b10a2f"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {
@@ -1130,8 +1168,8 @@
       "language_status": "translation_required",
       "execution_ready": false,
       "readiness_gates": [
-        "dedicated_test_org_missing",
-        "org_initial_state_reset",
+        "shared_readonly_org_state_review",
+        "org_state_fingerprint_before_after",
         "japanese_requests_and_documents_review",
         "native_metric_controls",
         "asset_terms_review"
@@ -1142,7 +1180,7 @@
         "path": "tasks_b2b.json",
         "record_sha256": "b61b816f338b63943897944d7e9a3bbb18ad5418f48d6c1f861d8877733a8b84"
       },
-      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. Selected tasks use read-only queries; official shared research B2B org access was verified after selection, with state and date checks still required.",
       "selection_basis": "source metadata; no target-model results"
     },
     {

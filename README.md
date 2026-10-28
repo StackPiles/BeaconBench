@@ -8,7 +8,7 @@ BeaconBench（ビーコンベンチ）は、自律エージェントや業務シ
 
 **実モデルへ接続するCLI / Web画面、評価実行、保存・再開、結果表示を実装しています。** OpenAI互換Chat APIへ接続し、思考と最終回答、実要求、SSE、usage、時間、採点証拠を保存します。実行は画面かCLIから明示的に開始します。
 
-現在実データで動かせる評価は、接続診断と、固定済みLCB採点器を接続したコード生成です。**Quick20 / Detailed100の候補IDを選定し、native接続、営業の日本語対話・採点、科学・最適化の採点接続を追加しました。** 追加部分はfixtureで確認した段階です。Babelのデータ、CRM専用環境、日本語の内容・helper検証などが不足しているため、20/100の正式セットは実行不可のままです。[選定理由と準備状態](docs/13-selection-and-adapters.md)を参照してください。
+現在実データで動かせる評価は、接続診断と、固定済みLCB採点器を接続したコード生成です。**Quick20 / Detailed100の候補IDを選定し、native接続、営業の日本語対話・採点、科学・最適化の採点接続を追加しました。** 追加部分はfixtureで確認した段階です。Babelの日本語・共通データは取得し、CRMは公式研究用共有環境での読み取り接続を確認しました。日本語の内容・helper・各native環境の受入が残るため、20/100の正式セットは実行不可のままです。[取得状況](docs/15-data-and-crm-access.md)と[選定理由・準備状態](docs/13-selection-and-adapters.md)を参照してください。
 
 ```sh
 uv sync --locked
@@ -73,6 +73,7 @@ Quickの20ケースをDetailedに含めます。セットは問題ID・配分・
 - [実装済み機能と実行手順](docs/12-running.md)
 - [Quick20 / Detailed100の選定と準備状態](docs/13-selection-and-adapters.md)
 - [native接続と日本語の測定器](docs/14-native-instruments.md)
+- [BabelデータとCRM環境の取得状況](docs/15-data-and-crm-access.md)
 
 機械可読の[候補一覧](catalog/benchmarks.json)、[セット案](suites/quick.v0.draft.json)、[比較プロトコル案](protocols/common-ja.v0.draft.json)、[データ契約](schemas/README.md)も保存しています。
 

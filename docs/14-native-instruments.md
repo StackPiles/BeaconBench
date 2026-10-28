@@ -22,7 +22,7 @@ controllerがnative環境のコマンドを起動し、最初に1行のJSONを�
 4. nativeは結果とstdout/stderr、軌跡・成果物を転送する。分割転送後のバイト数とSHAを照合し、欠落があれば完成扱いにしない。
 5. 結果のケースID・単一試行・必須項目を照合する。複数結果から最新・最高得点を選ばない。
 
-モデルのAPIキーはcontroller内に留め、nativeのloopback APIには一時的なproxy tokenだけを渡す。Orgなど専用環境の認証が必要なときは、実際の値を保存せず、operatorの環境変数名を `credential_refs` で明示する。推論APIのキーを兼用する参照は拒否する。公開README等に載った共有Org認証は使用しない。
+モデルのAPIキーはcontroller内に留め、nativeのloopback APIには一時的なproxy tokenだけを渡す。Orgなど環境の認証が必要なときは、実際の値を保存せず、operatorの環境変数名を `credential_refs` で明示する。推論APIのキーを兼用する参照は拒否する。CRMは公式が研究用として明示した共有Orgの利用範囲を確認し、その認証値を公開物へコピーしない。
 
 `lock_files`を空にできない。native側のsource/data/configとcontroller側の接続設定をそれぞれ固定する。`grader.native_executor_fingerprint`を生成executorに結び付け、同じ構成の正答・誤答controlを通す。別の構成の受入を流用しない。
 
@@ -74,4 +74,4 @@ command採点器の `executor-qualify` は従来の正解/誤答boolに加え、
 
 `beaconbench.frontier_executor --config ...` は分離されたnative judge環境の内部で使う。接続はloopback限定で、全テスト件数と問題固有の採点コードSHAが必要。nativeの各testのscoreRatioと、固定したjudge_engineの100倍平均を照合する。source、native制限、正当な全テストを保つ。judge自体の起動・cleanup・compile errorを含むcontrolは別途必要であり、このclientが特権コンテナを自動起動することはない。
 
-CRMは専用評価Orgの取得と初期状態reset、SWEはamd64 executorと清浄イメージでのpatch再採点が揃うまで準備待ち。どちらも得点記録を読むnormalizerだけで専用agent・実行環境まで実装済みとは扱わない。
+CRMは公式研究用共有B2B Orgへの読み取り接続を確認した。選定8問のために専用Orgを必須とはしない。共有データの状態・時点、日本語入力、evaluator、読み取り専用の経路を受入する必要がある。SWEはamd64 executorと清浄イメージでのpatch再採点が必要。どちらも得点記録を読むnormalizerだけで専用agent・実行環境まで実装済みとは扱わない。[取得確認の詳細](15-data-and-crm-access.md)を参照。

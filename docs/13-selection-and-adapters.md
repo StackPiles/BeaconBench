@@ -1,6 +1,6 @@
 # 13 Quick20 / Detailed100の選定と実装状態
 
-2026-10-28。**元の問題IDを100件選定し、そのうち20件をQuickとした。候補版であり、実行可能な正式セットではない。** 日本語内容・依存環境・測定器の受入が済んでから別のfrozen版を発行する。
+2026-10-28。**元の問題IDを100件選定し、そのうち20件をQuickとした。候補版であり、実行可能な正式セットではない。** 日本語内容・依存環境・測定器の受入が済んでから別のfrozen版を発行する。Babelの公式データ取得と、CRMの公式研究用共有環境の接続を後に確認したため、以下の取得状況を更新した。[取得確認の詳細](15-data-and-crm-access.md)を参照。
 
 元データの全文、参照解、顧客の内部設定は配布しない。[100件の選定一覧](../catalog/selection.v1.candidate.json)に元ID・出典revision・選定理由・未完了条件を保存し、[Quick](../suites/quick.v1.candidate.json)と[Detailed](../suites/detailed.v1.candidate.json)はそのIDを参照する。試行回数・試行seed・モデル設定はセットへ埋め込まない。
 
@@ -8,15 +8,15 @@
 
 | 系列 | Quick / Detailed | 選定理由と注意点 |
 |---|---:|---|
-| Babel τ³ | 2 / 10 | retail 4、banking_knowledge 3、telecom 2、airline 1。規則・検索・ツールの異なる業務を含め、公式standardのIDを固定SHA順で抽出。本文はデータ取得後に点検する |
-| Babel DeepPlanning | 2 / 10 | 購買の公式L1/L2/L3から各2件、旅行4件。旅行は元データの旅行日数で層化。日本語queryは確認できたが、DB・ツール資産は不足 |
+| Babel τ³ | 2 / 10 | retail 4、banking_knowledge 3、telecom 2、airline 1。規則・検索・ツールの異なる業務を含め、公式standardのIDを固定SHA順で抽出。取得した日本語本文とtoolの整合を点検する |
+| Babel DeepPlanning | 2 / 10 | 購買の公式L1/L2/L3から各2件、旅行4件。旅行は元データの旅行日数で層化。日本語queryとDBは取得済み。tool・変換器・graderとの整合は受入待ち |
 | Babel VitaBench | 2 / 8 | cross 4、delivery 2、instore 1、ota 1。複合業務を厚くしつつ、単一領域も残す。standardのIDを固定SHA順で選ぶ |
-| Babel ClawEval | 3 / 10 | メール、予定調整、追客、議事録、在庫、調達、苦情、サポート、利益分析、進捗報告。名称と公開subsetを根拠にした候補。実Web・画像・依存graderの要否は本文入手後に確認する |
+| Babel ClawEval | 3 / 10 | メール、予定調整、追客、議事録、在庫、調達、苦情、サポート、利益分析、進捗報告。名称と公開subsetを根拠にした候補。取得した本文で実Web・画像・依存graderの要否を確認する |
 | LiveCodeBench | 4 / 18 | AtCoder日本語原文へ対応するeasy 4、medium 7、hard 7。QuickはB/D/D/F。現在の接続試験4問は除外。取得済みJSONL範囲が母集団で、公開release全体の無作為標本とは呼ばない |
 | SciCode-Verified | 2 / 10 | 主問題5/8/9/13/16/18/23/24/45/76の第1小問。10種類の主問題clusterを保ち、前段の生成コードが必要な小問を単独で出さない。線形代数・情報・幾何・物理数値計算を含む |
 | Frontier Algorithmic | 1 / 6 | 0/5/6/7/59/205。packing、path、map、circuit、permutation、sequenceの構成・最適化を含める。得点は各問題のnative式のまま保存する |
 | SalesLLM日本語派生 | 2 / 12 | easy/medium/hard/very_hard各3件。基になるシナリオUUIDも12件すべて異なる。Quickはmedium/hardを1件ずつ。英語scriptを日本語化し、顧客役・購買意向・品質の検証を別途行う |
-| CRMArena-Pro営業系 | 2 / 8 | lead_qualification、quote_approval、wrong_stage_rectification、sales_cycle_understanding各2件。Quickは見込み客評価と見積承認。専用の評価Orgが必要 |
+| CRMArena-Pro営業系 | 2 / 8 | lead_qualification、quote_approval、wrong_stage_rectification、sales_cycle_understanding各2件。Quickは見込み客評価と見積承認の判定。公式共有B2B Orgで読み取り接続を確認済み |
 | SWE-bench Pro V2 | 0 / 8 | Python 3、Go 3、Web系2の異なる8リポジトリ。各repo内のIDを固定SHA順で選ぶ。修正量・対象モデルの成績・gold patchは選定に使わない |
 | **計** | **20 / 100** | **同じ問題・条件で比較し、QuickはDetailedの部分集合** |
 
@@ -43,11 +43,11 @@ SalesLLMの英語ファイルには、実際のpromptが英語でもlanguageメ�
 | 部分 | コード実装 | 実データでの受入・残作業 |
 |---|---|---|
 | 共通native接続 | stdio RPC、loopback API、固定argv、元要求と実要求、役別SSE/usage、成果物の分割転送とSHA検証 | 各ハーネスの全経路が接続を通ること、retry・timeout・reset・cleanupを確認 |
-| Babel | τ³/Vita/旅行/Claw単問CLIのrecipe、native記録の厳密な正規化 | 日本語data一式が未入手。Vitaにtask全体の再試行3回の固定値があり、無再試行版の差分とSHAを受入前に用意する。購買の起動recipeは未完了 |
+| Babel | τ³/Vita/旅行/Claw単問CLIのrecipe、native記録の厳密な正規化 | 日本語・共通data取得済み、選定38件の資産を確認。code/data互換性とnative受入は未完了。Vitaの再試行3回の無効化差分、購買の起動recipeも必要 |
 | SalesLLM日本語派生 | 顧客の内部情報を分離した対話、構造化終了、品質・意向・言語の役別採点、固定較正との照合 | 12scriptと判定文の日本語review、顧客忠実性・意向・品質の較正。実モデルはまだ呼んでいない |
 | 科学 | Linux専用の2環境コンテナ採点器、HDF5読込preflight、OR採点、所有コンテナのみの後始末 | 10小問の日本語pack、HDF5・vendor・image SHA、正解/誤答/空提出の実機control |
 | 最適化 | native HTTP採点client、全テスト件数とnative得点式の照合、raw保存 | 分離judgeの起動・停止・全テスト資産、compile errorの分類を含む実機control |
-| CRM / SWE | 汎用native接続とnative得点の正規化 | 専用Orgと初期状態reset / amd64環境、agent・日本語版・native verifierの専用実行recipeは取得・受入待ち |
+| CRM / SWE | 汎用native接続とnative得点の正規化 | CRMの公式共有B2B Orgで読み取り接続済み。8問は更新操作が不要。共有データの状態・時点、日本語・evaluatorを確認する。SWEのamd64環境と両者の専用実行recipeは受入待ち |
 
 CLI recipeとfixtureが通っても `execution_ready=true` にはしない。モデル間の優劣、100件の得点、所要時間はいずれも未測定。
 

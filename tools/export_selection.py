@@ -13,15 +13,15 @@ LABELS = {'babel-tau3': '規則・ツール · τ³', 'babel-deepplanning': '計
           'frontier-algorithmic': '最適化 · Frontier', 'salesllm-ja': '営業対話 · SalesLLM派生', 'crmarena-pro-sales-ja': '営業実務 · CRMArena',
           'swebench-pro-v2-ja': '実装修正 · SWE-bench Pro V2'}
 REASONS = {
-    'babel-tau3': '小売・知識検索・通信・航空の4領域。公開standard IDから一定のSHA順位で選定。日本語本文は取得後に点検します。',
-    'babel-deepplanning': '購買は公式3難易度から各2件、旅行は日数で分けた4件。制約の種類を分散させました。日本語query以外のDB・ツール資産も必要です。',
+    'babel-tau3': '小売・知識検索・通信・航空の4領域。公開standard IDから一定のSHA順位で選定。公式日本語データを取得済みで、内容とtoolの整合を点検します。',
+    'babel-deepplanning': '購買は公式3難易度から各2件、旅行は日数で分けた4件。制約の種類を分散させました。公式日本語DBも取得済みで、変換器・native環境の受入が必要です。',
     'babel-vitabench': '複数領域の連携を4件に厚くし、配送・店舗・旅行の単一領域も含めました。',
-    'babel-claw': 'メール・予定・追客・議事録・在庫・調達・苦情・サポート・利益・報告を含む候補です。名称からの選定で、実Web・画像の要否は本文入手後に確認します。',
+    'babel-claw': 'メール・予定・追客・議事録・在庫・調達・苦情・サポート・利益・報告を含む候補です。本文・graderを取得済みで、実Web・画像・依存先の要否を点検します。',
     'livecodebench': '日本語原文のあるAtCoderからeasy 4 / medium 7 / hard 7。接続試験の4問を除外。取得済みJSONL範囲からの選定で、release全体の無作為標本ではありません。',
     'scicode-verified': '異なる10主問題の第1小問。前段の生成結果を省略する問題を避け、科学・数値実装の分野を広げました。',
     'frontier-algorithmic': 'packing・path・map・circuit・permutation・sequenceの6種類。全テストと問題固有のnative得点式を維持します。',
     'salesllm-ja': '難易度4段階から各3件、基底シナリオも12件すべて別。日本語の顧客役と採点役は実際の較正が必要です。',
-    'crmarena-pro-sales-ja': '見込み客評価・見積承認・案件段階の修正・営業サイクルから各2件。専用評価Orgが未入手です。',
+    'crmarena-pro-sales-ja': '見込み客評価・見積承認・案件段階の修正・営業サイクルから各2件。公式共有Orgの読み取り接続済みで、状態・時点・評価器を検証します。',
     'swebench-pro-v2-ja': 'Python 3 / Go 3 / Web 2の異なる8repo。対象モデルの成績やgold patchを使わずに選定。amd64の採点環境が必要です。'}
 
 
@@ -45,7 +45,7 @@ def export(selection, quick, detailed):
 <style>*{box-sizing:border-box}body{margin:0;background:#f6f8fc;color:#17243b;font:15px/1.7 system-ui,"Yu Gothic UI",sans-serif}main{max-width:1240px;margin:auto;padding:40px 28px 70px}a{color:#315bea}h1{font-size:32px;line-height:1.3;margin:12px 0}h2{font-size:20px;margin:38px 0 16px}.eyebrow{color:#315bea;letter-spacing:.1em;font-size:12px;font-weight:700}.intro{max-width:870px;color:#526078}.metrics{display:flex;gap:40px;margin:26px 0}.metrics strong{font-size:32px;line-height:1.2;display:block}.metrics span,.muted{color:#68768d;font-size:12px}.note{border-left:3px solid #e6ae50;padding:12px 18px;background:#fff9ed;max-width:950px}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}article{border:1px solid #e1e7f0;border-radius:10px;background:white;padding:18px 20px;position:relative}article>span{font-weight:650;display:block;padding-right:90px}article>strong{position:absolute;right:20px;top:15px;font-size:23px}article small{font-size:15px;color:#718098}article p{font-size:13px;color:#5b687f;margin:9px 0 0}.toolbar{display:flex;gap:20px;align-items:center;flex-wrap:wrap;margin:16px 0}.toolbar input[type=search]{border:1px solid #c9d4e5;border-radius:7px;padding:11px 14px;min-width:290px;font:inherit;background:white}.toolbar label{cursor:pointer}table{width:100%;border-collapse:collapse;table-layout:fixed;background:white;border:1px solid #e1e7f0;font-size:13px}th{text-align:left;color:#6c7890;font-weight:550;padding:12px 15px;background:#edf2fa}td{border-top:1px solid #e8edf4;padding:17px 15px;vertical-align:top;overflow-wrap:anywhere}td strong{display:block;font-size:14px;margin:4px 0}code{font:11px/1.5 ui-monospace,monospace;color:#6a7891;overflow-wrap:anywhere}.family{font-size:11px;color:#597094}.number{color:#9aa6b8;font-size:12px}.badge{display:inline-block;padding:2px 8px;color:#315bea;background:#edf1ff;border-radius:4px;margin-bottom:5px}details p{font-size:12px;color:#657289}summary{cursor:pointer;color:#526481}tr[hidden]{display:none}footer{color:#7b869a;font-size:12px;margin-top:28px}.empty{display:none;padding:20px;background:white}.empty.visible{display:block}@media(max-width:740px){main{padding:26px 15px}.cards{grid-template-columns:1fr}.metrics{gap:24px}.metrics strong{font-size:27px}.table-wrap{overflow:auto}table{min-width:720px}h1{font-size:27px}}</style>
 <main><header><div class="eyebrow">BEACONBENCH / SELECTION REVIEW</div><h1>測る課題を、見える形に。</h1><p class="intro">Quick20とDetailed100の候補一覧。対象モデルの正誤を使わず、業務・分野・元の難易度で選びました。QuickはDetailedと同じ問題の部分集合です。</p></header>
 <div class="metrics"><div><strong>20 / 100</strong><span>Quick / Detailed · ケース数</span></div><div><strong>10</strong><span>評価系列</span></div><div><strong>準備中</strong><span>正式セットの状態</span></div></div>
-<p class="note">問題IDの選定は済んでいます。日本語データ・専用環境・採点器の受入が揃うまで実行可能にはしません。このページに実測得点や実回答は含まれていません。</p>
+<p class="note">問題IDの選定は済んでいます。Babelデータは取得し、CRM共有環境の読み取り接続も確認済みです。日本語版・実行環境・採点器の受入完了までは実行可能にしません。このページに実測得点や実回答は含まれていません。</p>
 <h2>分野のバランスと選定理由</h2><div class="cards">''' + cards + '''</div>
 <h2>100件の候補</h2><div class="toolbar"><input type="search" id="search" placeholder="分野・問題IDで絞り込み" aria-label="候補を検索"><label><input type="checkbox" id="quick"> Quick20のみ</label><span id="count" class="muted">100件を表示</span></div>
 <div class="table-wrap"><table><colgroup><col style="width:6%"><col style="width:39%"><col style="width:15%"><col style="width:40%"></colgroup><thead><tr><th>#</th><th>系列・元の問題ID</th><th>セット / 元の難易度</th><th>取得・受入条件</th></tr></thead><tbody>''' + ''.join(rows) + '''</tbody></table></div><div class="empty" id="empty">一致する候補がありません。</div>
