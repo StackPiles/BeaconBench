@@ -6,7 +6,7 @@ BeaconBenchは実行管理・条件固定・計測・保存・レポートを共
 
 ```mermaid
 flowchart TB
-  UI[予定Web画面 / CLI] --> Coordinator[実行管理と所有権]
+  UI[Web画面 / CLI] --> Coordinator[実行管理と所有権]
   UI --> Config[モデル・設定レジストリ]
   Config --> Coordinator
   Coordinator --> Registry[固定セット・資産・言語pack]
@@ -21,7 +21,7 @@ flowchart TB
   Store --> Report[比較表・全文・証拠]
 ```
 
-## 予定する配置
+## 配置
 
 | パス | 責務 |
 |---|---|
@@ -30,18 +30,20 @@ flowchart TB
 | `protocols/` | 共通サンプリング、実エンジン上限、終了規則、cache方針 |
 | `execution/` | セットと独立した試行回数・seed・集計方針の参照設定 |
 | `ui/prototype/` | 通信・実行を伴わない画面試作。正式UIの設計確認用 |
+| `ui/runtime/` | 実データを使うWeb画面。Pythonサーバーと同梱 |
 | `schemas/` | case・run・実行設定・測定・判定・翻訳のJSON契約 |
-| `src/beaconbench/`（予定） | 実行管理、model transport、記録、再開、統計、レポート |
-| `adapters/`（予定） | 上流のtask / environment / grader接続 |
+| `src/beaconbench/` | resolver、API、model transport、記録、再開、採点接続 |
+| `src/beaconbench/lcb_executor.py` | 固定LCB採点器とLinuxの分離コンテナの接続 |
+| `adapters/`（予定） | 今後の対話・tool・各分野のnative接続 |
 | `local/`（非公開） | endpoint・credential参照・host設定 |
 | `.beaconbench/assets/`（非公開） | hashを検証した外部資産 |
-| `runs/`（非公開） | 原回答・イベント・判定・レポート |
+| `.beaconbench/runs/`（非公開） | 原回答・イベント・判定・結果 |
 
 プロセス起動、Docker、SSH、remote executorは実行管理側へ置く。問題adapterに個別ホストのパス・IP・認証を埋め込まない。学習済みモデルや過去の回答をコードtreeへ混ぜない。
 
 ## 契約
 
-以下は予定インターフェース。まだ実装はない。
+以下は拡張時の設計契約。現在の単発Chat / command採点の実装と、今後の対話adapterを含む契約の対応は[実行手順](12-running.md)に示す。
 
 | 操作 | 入力 | 出力・制約 |
 |---|---|---|

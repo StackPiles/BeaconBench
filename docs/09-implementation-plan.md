@@ -2,9 +2,11 @@
 
 ## 現在の成果
 
-M0は公開リポジトリ、設計文書、draft catalog / suite / protocol、JSON schema案、架空の契約例、設計整合性checker、操作できる静的な画面試作。実モデル生成、第三者資産取得、日本語翻訳、grader実装、実測結果は含まない。
+M0の設計基盤に加え、M1のregistry・共通resolver・SSE transport・計測・記録・CLI・Web API・実画面を実装した。M2はLCBの単発生成・固定採点器接続から着手し、公式日本語原文の取込器とLinuxコンテナexecutor、正答・誤答controlによる受入を用意した。
 
-チェック結果は静的な設計契約の確認であり、ベンチマークが動いた証拠ではない。
+実画面は実行・停止・保存回答による再開・結果・全文・採点根拠を扱う。Quick / Detailedの問題ID、SciCode / Frontier / Babel / 営業の汎用adapter、統計区間、公開export、エンジン起動管理は未完了。実装済み機能と準備手順は[12 実行手順](12-running.md)で管理する。
+
+静的検査・fixture統合テスト・実モデル受入を区別する。設計チェックが通ったことだけで問題セットを実行可能としない。
 
 ## 段階
 

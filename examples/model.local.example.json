@@ -1,0 +1,17 @@
+{
+  "id": "local-model",
+  "name": "Local vLLM model",
+  "api_model": "replace-with-served-model-id",
+  "base_url": "http://127.0.0.1:8000/v1",
+  "api_key_env": "LOCAL_LLM_API_KEY",
+  "context_tokens": 262144,
+  "output_tokens": 131072,
+  "adapter": "vllm",
+  "engine": {
+    "label": "Operator verified engine configuration",
+    "reasoning_effort": "xhigh",
+    "resource_group": "local-gpu"
+  },
+  "revision": "replace-with-weights-and-engine-revision",
+  "cache_policy": "shared-service-uncontrolled"
+}

@@ -1,14 +1,24 @@
 [project]
 name = "beaconbench"
-version = "0.0.0"
+version = "0.1.0"
 description = "Japanese-first local LLM evaluation: quality, tokens, and speed"
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-dependencies = []
+dependencies = ["httpx==0.28.1", "jsonschema==4.26.0"]
+
+[project.scripts]
+beaconbench = "beaconbench.cli:main"
+
+[build-system]
+requires = ["hatchling==1.33.0"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/beaconbench"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"ui/runtime" = "beaconbench/web"
 
 [dependency-groups]
-dev = ["jsonschema==4.26.0"]
-
-[tool.uv]
-package = false
+dev = []

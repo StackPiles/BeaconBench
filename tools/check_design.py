@@ -1,4 +1,4 @@
-"""Offline checks for M0 design files; never starts a model or downloads data."""
+"""Offline checks for design/publication files; no model calls or downloads."""
 from __future__ import annotations
 
 import json
@@ -47,7 +47,7 @@ def public_files(root: Path) -> list[Path]:
         names = result.stdout.decode('utf-8').split('\0')
         paths = sorted({root / name for name in names if name})
     else:
-        directories = ['docs', 'catalog', 'suites', 'protocols', 'execution', 'schemas', 'examples', 'tools', 'tests', 'ui']
+        directories = ['docs', 'catalog', 'suites', 'protocols', 'execution', 'schemas', 'examples', 'tools', 'tests', 'ui', 'src']
         paths = [x for name in directories for x in (root / name).rglob('*') if x.is_file()]
         paths += [root / name for name in ['README.md', 'AGENTS.md', 'NOTICE.md', 'LICENSE', '.gitignore', '.gitattributes', 'pyproject.toml', 'uv.lock'] if (root / name).is_file()]
         paths = sorted(set(paths))
