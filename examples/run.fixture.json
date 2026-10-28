@@ -1,8 +1,10 @@
 {
-  "schema_version": "0.1.0-draft",
+  "schema_version": "0.2.0-draft",
   "fixture": true,
   "run_id": "fixture-run",
   "suite_id": "fixture-suite",
+  "run_settings_asset_ref": "fixture://run-settings/default",
+  "run_settings_sha256": "c21b10d66e4299c78c66cc7185a8f1232719d79a7584856d6f94f570da0427ea",
   "state": "draft",
   "execution_ready": false,
   "protocol_sha256": "75ad35fbecfe8766535433db5cf35428fe881df7166e95b8a3b96296b69558e6",

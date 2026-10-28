@@ -7,7 +7,8 @@ const DEMO_MODELS = [
   { id: "demo-model-b", name: "モデルB", family: "llama.cpp", engine: { backend: "llamacpp", kv: "f16", mtp: 0 }, nativeDecode: 46.2, reasoning: 60000, cached: 80000, helperTotal: 70100 }
 ];
 const BASE_PRESET = { id: "standard", name: "基準設定", temperature: 1, topP: 0.95, contextTokens: 262144, outputTokens: 131072, thinking: "model-native-maximum" };
-const SUITES = { quick: { name: "Quick", cases: 20, trials: 1 }, detailed: { name: "Detailed", cases: 100, trials: 3 } };
+const SUITES = { quick: { name: "Quick", cases: 20 }, detailed: { name: "Detailed", cases: 100 } };
+const DEFAULT_RUN_SETTINGS = { trials_per_case: 1, seed_policy: { base_seed: 42, derivation: "sha256-case-revision-trial-v1", trial_index_origin: 0 }, aggregation_policy: "all-trials" };
 const CASES = [
   { id: "demo-code-1", title: "配列の並べ替え", category: "コード", a: true, b: true, secondsA: 160, secondsB: 150, inputA: 30000, inputB: 28000, outputA: 4000, outputB: 6000, question: "渡された配列を指定した順序で並べ替える関数を作成してください。", answerA: "def solve(values):\n    return sorted(values)", answerB: "def solve(values):\n    return list(sorted(values))" },
   { id: "demo-code-2", title: "更新に対応する集計", category: "コード", a: true, b: false, secondsA: 240, secondsB: 210, inputA: 40000, inputB: 37000, outputA: 6000, outputB: 8000, question: "値の更新と区間の集計に対応する方法を示してください。", answerA: "更新と集計を木構造で管理します。空区間の扱いも同じ規則に揃えます。", answerB: "区間ごとの合計値を保存します。更新後も元の合計値を返します。" },
@@ -20,24 +21,40 @@ const CASES = [
 ];
 
 function copy(value) { return JSON.parse(JSON.stringify(value)); }
-function validatePreset(preset) {
-  if (!Number.isFinite(preset.temperature) || preset.temperature < 0 || preset.temperature > 2) return "温度を0〜2で入力してください。";
-  if (!Number.isFinite(preset.topP) || preset.topP <= 0 || preset.topP > 1) return "top-pを0より大きく1以下で入力してください。";
-  if (!Number.isInteger(preset.contextTokens) || preset.contextTokens < 1) return "コンテキストを正の整数で入力してください。";
-  if (!Number.isInteger(preset.outputTokens) || preset.outputTokens < 1) return "一要求の最大出力を正の整数で入力してください。";
-  if (preset.outputTokens >= preset.contextTokens) return "入力の余地を残すため、出力をコンテキストより小さくしてください。";
-  return null;
+function presetErrors(preset) {
+  const errors = {};
+  if (typeof preset.name !== "string" || !preset.name.trim()) errors.name = "プリセット名を入力してください。";
+  if (!Number.isFinite(preset.temperature) || preset.temperature < 0 || preset.temperature > 2) errors.temperature = "温度を0〜2で入力してください。";
+  if (!Number.isFinite(preset.topP) || preset.topP <= 0 || preset.topP > 1) errors.topP = "top-pを0より大きく1以下で入力してください。";
+  if (!Number.isSafeInteger(preset.contextTokens) || preset.contextTokens < 1) errors.contextTokens = "コンテキストを正の整数で入力してください。";
+  if (!Number.isSafeInteger(preset.outputTokens) || preset.outputTokens < 1) errors.outputTokens = "一要求の最大出力を正の整数で入力してください。";
+  else if (preset.outputTokens >= preset.contextTokens) errors.outputTokens = "入力の余地を残すため、出力をコンテキストより小さくしてください。";
+  if (!["model-native-maximum", "off"].includes(preset.thinking)) errors.thinking = "対応する思考設定を選んでください。";
+  return errors;
 }
-function buildPlan(models, presets, suiteId) {
+function validatePreset(preset) { return Object.values(presetErrors(preset))[0] || null; }
+function validateTrialCount(value) { return Number.isSafeInteger(value) && value > 0 ? null : "試行回数を1以上の整数で入力してください。"; }
+function validateBaseSeed(value) { return Number.isSafeInteger(value) && value >= 0 && value <= 2147483647 ? null : "基底seedを0〜2147483647の整数で入力してください。"; }
+function validateRunSettings(settings) {
+  if (!settings || typeof settings !== "object") return "実行設定を指定してください。";
+  return validateTrialCount(settings.trials_per_case) || validateBaseSeed(settings.seed_policy?.base_seed)
+    || (settings.seed_policy?.derivation !== DEFAULT_RUN_SETTINGS.seed_policy.derivation || settings.seed_policy?.trial_index_origin !== 0 ? "seed方針が未対応です。" : null)
+    || (settings.aggregation_policy !== "all-trials" ? "全試行を集計する方針を指定してください。" : null);
+}
+function buildPlan(models, presets, suiteId, runSettings = DEFAULT_RUN_SETTINGS) {
   if (!models.length || !presets.length) throw new Error("モデルと設定をそれぞれ1つ以上選んでください。");
   if (!SUITES[suiteId]) throw new Error("評価セットが不明です。");
   if (new Set(models.map(x => x.id)).size !== models.length || new Set(presets.map(x => x.id)).size !== presets.length) throw new Error("同じ構成が重複しています。");
   for (const preset of presets) { const error = validatePreset(preset); if (error) throw new Error(error); }
+  const error = validateRunSettings(runSettings);
+  if (error) throw new Error(error);
   const suite = SUITES[suiteId];
+  const plannedTrials = models.length * presets.length * suite.cases * runSettings.trials_per_case;
+  if (!Number.isSafeInteger(plannedTrials)) throw new Error("合計試行数が正確に計算できる数値の範囲を超えています。");
   return {
     prototype: true, execution_ready: false, language: "ja", suite_id: suiteId + ".v0.draft",
-    cases_per_configuration: suite.cases, trials_per_case: suite.trials,
-    planned_trials: models.length * presets.length * suite.cases * suite.trials,
+    cases_per_configuration: suite.cases, run_settings: copy(runSettings),
+    planned_trials: plannedTrials,
     planned_api_calls: null,
     framework_limits: { total_output_tokens: null, tool_calls: null, agent_turns: null, framework_deadline_seconds: null },
     native_termination: "preserve-and-record",
@@ -61,13 +78,13 @@ function summarizeDemo(key) {
     nativeDecode: model.nativeDecode };
 }
 
-if (typeof module !== "undefined") module.exports = { buildPlan, validatePreset, summarizeDemo, DEMO_MODELS, BASE_PRESET, CASES };
+if (typeof module !== "undefined") module.exports = { buildPlan, validatePreset, validateRunSettings, summarizeDemo, DEMO_MODELS, BASE_PRESET, DEFAULT_RUN_SETTINGS, SUITES, CASES };
 
 if (typeof document !== "undefined") {
   const state = { demo: true, metricModel: "a", selectedModels: new Set(DEMO_MODELS.map(x => x.id)),
     models: copy(DEMO_MODELS), selectedPresets: new Set(["standard"]),
     presets: [copy(BASE_PRESET), { ...copy(BASE_PRESET), id: "low-temperature", name: "温度0.6", temperature: 0.6 }],
-    editingPreset: "standard", suite: "quick", view: "overview", detail: "answer", activeCase: null };
+    editingPreset: "standard", suite: "quick", runSettings: copy(DEFAULT_RUN_SETTINGS), view: "overview", detail: "answer", activeCase: null };
   const $ = id => document.getElementById(id);
   const fmt = value => (value / 1000).toFixed(value % 1000 ? 1 : 0) + "K";
   const duration = value => Math.floor(value / 60) + "分" + String(value % 60).padStart(2, "0") + "秒";
@@ -86,11 +103,13 @@ if (typeof document !== "undefined") {
   }
   function toast(message) { $("toast").textContent = message; $("toast").classList.add("visible"); clearTimeout(toastTimer); toastTimer = setTimeout(() => $("toast").classList.remove("visible"), 3500); }
   function showView(name) {
+    if (!["overview", "configure", "cases"].includes(name)) name = "overview";
     state.view = name;
     document.querySelectorAll(".view").forEach(item => item.classList.toggle("hidden", item.id !== "view-" + name));
     document.querySelectorAll(".nav-item").forEach(item => { const selected = item.dataset.view === name; item.classList.toggle("active", selected); if (selected) item.setAttribute("aria-current", "page"); else item.removeAttribute("aria-current"); });
-    $("breadcrumb-title").textContent = { overview: "比較結果", configure: "比較を作成", cases: "ケース明細" }[name];
+    if (location.hash !== "#" + name) history.replaceState(null, "", "#" + name);
     window.scrollTo(0, 0);
+    $(name === "configure" ? "configure-heading" : name === "cases" ? "cases-heading" : "overview-heading").focus({ preventScroll: true });
   }
   function statusBadge(value) {
     const kind = typeof value === "number" ? "score" : value ? "pass" : "fail";
@@ -100,28 +119,28 @@ if (typeof document !== "undefined") {
     const data = summarizeDemo(state.metricModel);
     const items = [
       ["正誤式の成功", data.correct + " / " + data.binary, "ケース", "最適化の連続点は含めない"],
-      ["最適化の得点", data.optimization.toFixed(1), "/ 100", "独立した架空の連続点"],
+      ["最適化の得点", data.optimization.toFixed(1), "/ 100", "最適化ケースの連続点"],
       ["対象モデルの消費", fmt(data.total), "tokens", "入力 " + fmt(data.prompt) + " ＋ 出力 " + fmt(data.completion)],
       ["課題完了時間", Math.floor(data.seconds / 60), "分", "対話・ツールの時間を含む"],
-      ["生成速度", data.nativeDecode.toFixed(1), "token/s", "架空のengine報告値"]
+      ["生成速度", data.nativeDecode.toFixed(1), "token/s", "エンジン報告の生成速度"]
     ];
     $("metric-grid").replaceChildren(...items.map(([title, value, unit, note]) => el("div", { class: "metric-card" },
-      el("div", { class: "metric-label" }, title, el("span", { class: "metric-decoration", "aria-hidden": "true" }, "⋄")),
+      el("div", { class: "metric-label" }, title),
       el("div", { class: "metric-value" }, state.demo ? value : "—", el("small", {}, state.demo ? unit : "未測定")),
       el("div", { class: "metric-foot" }, state.demo ? note : "実測結果はまだありません"))));
-    document.querySelector(".scope-meta").textContent = state.demo ? "8ケース · 日本語 · 各1試行" : "未測定 · 日本語";
-    document.querySelector(".scope-chip").textContent = state.demo ? "架空のサンプル比較" : "実測結果なし";
+    document.querySelector(".scope-meta").textContent = state.demo ? "8ケース · 日本語 · 各1回" : "未測定 · 日本語";
+    document.querySelector(".scope-chip").textContent = state.demo ? "サンプル比較" : "実測結果なし";
   }
   function renderComparison() {
     if (!state.demo) { $("comparison-body").replaceChildren(el("tr", {}, el("td", { colspan: "6", class: "empty-cell" }, "実測結果はまだありません。"))); return; }
     $("comparison-body").replaceChildren(...DEMO_MODELS.map((model, index) => {
       const key = index === 0 ? "a" : "b", data = summarizeDemo(key);
       return el("tr", {},
-        el("td", {}, el("div", { class: "model-cell" }, el("span", { class: "model-avatar " + key }, index ? "B" : "A"), el("div", {}, el("div", { class: "model-name" }, model.name), el("div", { class: "model-caption" }, model.family + " · 基準設定 · 架空")))),
+        el("td", {}, el("div", { class: "model-cell" }, el("span", { class: "model-avatar " + key }, index ? "B" : "A"), el("div", {}, el("div", { class: "model-name" }, model.name), el("div", { class: "model-caption" }, model.family + " · " + model.engine.kv.toUpperCase() + " KV · " + (model.engine.mtp ? "MTP" + model.engine.mtp : "MTPなし"))))),
         el("td", { class: "score-good" }, data.correct + " / " + data.binary, el("span", { class: "cell-foot" }, "正誤式ケース")),
         el("td", {}, data.optimization.toFixed(1), el("span", { class: "cell-foot" }, "連続点 / 100")),
         el("td", {}, fmt(data.total), el("span", { class: "cell-foot" }, "補助 " + fmt(data.helperTotal) + " は別")),
-        el("td", {}, duration(data.seconds)), el("td", {}, data.nativeDecode.toFixed(1) + " tok/s"));
+        el("td", {}, duration(data.seconds)), el("td", {}, data.nativeDecode.toFixed(1) + " tok/s", el("span", { class: "cell-foot" }, "エンジン報告値")));
     }));
   }
   function renderQuality() {
@@ -135,7 +154,7 @@ if (typeof document !== "undefined") {
         const fill = el("div", { class: "bar-fill model-" + key }); fill.style.width = correct / rows.length * 100 + "%";
         bars.append(el("div", { class: "bar-track", role: "img", "aria-label": category + " モデル" + key.toUpperCase() + " " + correct + "/" + rows.length }, fill));
       }
-      return el("div", { class: "quality-row" }, el("span", { class: "quality-label" }, category), bars, el("span", { class: "quality-score" }, a + " / " + b));
+      return el("div", { class: "quality-row" }, el("span", { class: "quality-label" }, category), bars, el("div", { class: "quality-score" }, el("span", {}, "A " + a + "/" + rows.length), el("span", {}, "B " + b + "/" + rows.length)));
     }));
   }
   function renderTokens() {
@@ -143,7 +162,8 @@ if (typeof document !== "undefined") {
     $("token-chart").replaceChildren(...DEMO_MODELS.map((model, index) => {
       const data = summarizeDemo(index ? "b" : "a");
       const input = el("div", { class: "token-input" }), output = el("div", { class: "token-output" });
-      input.style.width = data.prompt / 430000 * 100 + "%"; output.style.width = data.completion / 430000 * 100 + "%";
+      const largest = Math.max(summarizeDemo("a").total, summarizeDemo("b").total);
+      input.style.width = data.prompt / largest * 100 + "%"; output.style.width = data.completion / largest * 100 + "%";
       return el("div", { class: "token-row" }, el("div", { class: "token-heading" }, model.name, el("strong", { class: "token-total" }, fmt(data.total))),
         el("div", { class: "token-bar", role: "img", "aria-label": model.name + " 入力" + data.prompt + "、出力" + data.completion }, input, output),
         el("div", { class: "token-detail" }, el("span", {}, "入力 " + fmt(data.prompt)), el("span", {}, "出力 " + fmt(data.completion))),
@@ -183,25 +203,42 @@ if (typeof document !== "undefined") {
   }
   function renderEditor() {
     const preset = state.presets.find(item => item.id === state.editingPreset);
-    for (const [id, key] of [["temperature", "temperature"], ["top-p", "topP"], ["context-tokens", "contextTokens"], ["output-tokens", "outputTokens"], ["thinking", "thinking"]]) $(id).value = preset[key];
+    for (const [id, key] of [["preset-name", "name"], ["temperature", "temperature"], ["top-p", "topP"], ["context-tokens", "contextTokens"], ["output-tokens", "outputTokens"], ["thinking", "thinking"]]) $(id).value = Number.isNaN(preset[key]) ? "" : preset[key];
     renderDifference();
   }
   function renderDifference() {
     const preset = state.presets.find(item => item.id === state.editingPreset), error = validatePreset(preset);
+    const errors = presetErrors(preset);
+    for (const [id, key] of [["preset-name", "name"], ["temperature", "temperature"], ["top-p", "topP"], ["context-tokens", "contextTokens"], ["output-tokens", "outputTokens"], ["thinking", "thinking"]]) {
+      $(id).setAttribute("aria-invalid", String(Boolean(errors[key])));
+    }
     const labels = { temperature: "温度", topP: "top-p", contextTokens: "コンテキスト", outputTokens: "一要求の最大出力", thinking: "思考" };
-    const changes = Object.entries(labels).filter(([key]) => preset[key] !== BASE_PRESET[key]).map(([key, label]) => label + "：" + BASE_PRESET[key] + " → " + preset[key]);
+    const display = (key, value) => key === "thinking" ? (value === "off" ? "思考なし" : "モデル固有の最大設定") : value;
+    const changes = Object.entries(labels).filter(([key]) => preset[key] !== BASE_PRESET[key]).map(([key, label]) => label + "：" + display(key, BASE_PRESET[key]) + " → " + display(key, preset[key]));
     $("preset-diff").classList.toggle("changed", Boolean(error || changes.length));
     $("preset-diff").textContent = error || (changes.length ? "基準との差分：" + changes.join(" / ") : "基準設定との差分はありません。");
   }
-  function selectedPlan() { return buildPlan(state.models.filter(item => state.selectedModels.has(item.id)), state.presets.filter(item => state.selectedPresets.has(item.id)), state.suite); }
+  function selectedPlan() { return buildPlan(state.models.filter(item => state.selectedModels.has(item.id)), state.presets.filter(item => state.selectedPresets.has(item.id)), state.suite, state.runSettings); }
   function renderSummary() {
     const suite = SUITES[state.suite];
     $("plan-models").textContent = state.selectedModels.size; $("plan-presets").textContent = state.selectedPresets.size;
-    $("plan-suite").textContent = suite.cases + " / " + suite.trials;
-    $("plan-trials").textContent = (state.selectedModels.size * state.selectedPresets.size * suite.cases * suite.trials).toLocaleString();
-    $("plan-formula").textContent = [state.selectedModels.size, state.selectedPresets.size, suite.cases, suite.trials].join(" × ");
-    try { selectedPlan(); $("show-plan").disabled = false; $("plan-warning").textContent = "接続・能力・採点資産の確認前です。計画のプレビューだけ表示します。"; }
-    catch (error) { $("show-plan").disabled = true; $("plan-warning").textContent = error.message; }
+    const count = state.runSettings.trials_per_case;
+    const trialError = validateTrialCount(count), seedError = validateBaseSeed(state.runSettings.seed_policy.base_seed);
+    $("trial-error").hidden = !trialError; $("trial-error").textContent = trialError || "";
+    $("seed-error").hidden = !seedError; $("seed-error").textContent = seedError || "";
+    $("trials-per-case").setAttribute("aria-invalid", String(Boolean(trialError)));
+    $("base-seed").setAttribute("aria-invalid", String(Boolean(seedError)));
+    document.querySelectorAll("[data-trials]").forEach(button => button.setAttribute("aria-pressed", String(Number(button.dataset.trials) === count)));
+    $("plan-suite").textContent = suite.name + " · " + suite.cases + "ケース";
+    $("plan-repetitions").textContent = trialError ? "未設定" : count.toLocaleString() + "回";
+    $("plan-formula").textContent = trialError ? "試行回数を入力してください。" : state.selectedModels.size + "モデル × " + state.selectedPresets.size + "設定 × " + suite.cases + "ケース × " + count.toLocaleString() + "回";
+    try {
+      const plan = selectedPlan();
+      $("plan-trials").textContent = plan.planned_trials.toLocaleString();
+      $("show-plan").disabled = false; $("plan-warning").textContent = "接続と評価資産は未確認です。設定内容の確認のみ行えます。";
+    } catch (error) {
+      $("plan-trials").textContent = "—"; $("show-plan").disabled = true; $("plan-warning").textContent = error.message;
+    }
   }
   function openCase(item) { state.activeCase = item; state.detail = "answer"; $("case-title").textContent = item.title; $("case-subtitle").textContent = item.category + " · " + item.id + " · 日本語の架空ケース"; renderDetail(); $("case-dialog").showModal(); }
   function renderDetail() {
@@ -230,24 +267,31 @@ if (typeof document !== "undefined") {
   document.querySelectorAll("[data-detail]").forEach(button => button.addEventListener("click", () => { state.detail = button.dataset.detail; renderDetail(); }));
   document.querySelectorAll("[data-metric-model]").forEach(button => button.addEventListener("click", () => { state.metricModel = button.dataset.metricModel; document.querySelectorAll("[data-metric-model]").forEach(item => { const selected = item === button; item.classList.toggle("selected", selected); item.setAttribute("aria-pressed", String(selected)); }); renderMetrics(); }));
   $("show-demo").addEventListener("change", event => { state.demo = event.target.checked; renderResults(); });
-  $("refresh-view").addEventListener("click", () => { renderResults(); toast("画面内の表示を更新しました。実測データの取得は行っていません。"); });
   $("case-search").addEventListener("input", renderCases);
   $("edit-preset").addEventListener("change", event => { state.editingPreset = event.target.value; renderEditor(); });
-  for (const [id, key] of [["temperature", "temperature"], ["top-p", "topP"], ["context-tokens", "contextTokens"], ["output-tokens", "outputTokens"], ["thinking", "thinking"]]) {
-    $(id).addEventListener("input", event => { const preset = state.presets.find(item => item.id === state.editingPreset); preset[key] = key === "thinking" ? event.target.value : event.target.valueAsNumber; renderDifference(); renderSummary(); });
+  for (const [id, key] of [["preset-name", "name"], ["temperature", "temperature"], ["top-p", "topP"], ["context-tokens", "contextTokens"], ["output-tokens", "outputTokens"], ["thinking", "thinking"]]) {
+    $(id).addEventListener("input", event => { const preset = state.presets.find(item => item.id === state.editingPreset); preset[key] = ["name", "thinking"].includes(key) ? event.target.value : event.target.valueAsNumber; if (key === "name") renderPresetOptions(); renderDifference(); renderSummary(); });
   }
+  $("trials-per-case").addEventListener("input", event => { state.runSettings.trials_per_case = event.target.valueAsNumber; renderSummary(); });
+  $("base-seed").addEventListener("input", event => { state.runSettings.seed_policy.base_seed = event.target.valueAsNumber; renderSummary(); });
+  document.querySelectorAll("[data-trials]").forEach(button => button.addEventListener("click", () => {
+    state.runSettings.trials_per_case = Number(button.dataset.trials); $("trials-per-case").value = state.runSettings.trials_per_case; renderSummary();
+  }));
   document.querySelectorAll('input[name="suite"]').forEach(input => input.addEventListener("change", event => { state.suite = event.target.value; renderSummary(); }));
   $("duplicate-preset").addEventListener("click", () => { const original = state.presets.find(item => item.id === state.editingPreset); const preset = { ...copy(original), id: "custom-" + state.presets.length, name: original.name + "のコピー" }; state.presets.push(preset); state.editingPreset = preset.id; state.selectedPresets.add(preset.id); renderPresetOptions(); renderEditor(); renderSummary(); toast("画面内に設定を複製しました。保存・送信はしていません。"); });
   $("show-plan").addEventListener("click", () => {
     const plan = selectedPlan();
-    $("plan-description").textContent = plan.combinations.length + "構成 · " + plan.cases_per_configuration + "ケース × 各" + plan.trials_per_case + "試行 · 合計" + plan.planned_trials.toLocaleString() + "試行";
+    $("plan-description").textContent = plan.combinations.length + "構成 · " + plan.cases_per_configuration + "ケース × 各" + plan.run_settings.trials_per_case + "回 · 合計" + plan.planned_trials.toLocaleString() + "試行";
     $("plan-configurations").replaceChildren(...plan.combinations.map(({ model, preset }) => el("tr", {},
       el("td", {}, model.name, el("span", { class: "cell-foot" }, model.family + " · " + model.engine.kv.toUpperCase() + " KV · " + (model.engine.mtp ? "MTP" + model.engine.mtp : "MTPなし"))),
       el("td", {}, preset.name, el("span", { class: "cell-foot" }, "温度 " + preset.temperature + " · top-p " + preset.topP)),
       el("td", {}, (preset.contextTokens / 1024) + "K / " + (preset.outputTokens / 1024) + "K"))));
     $("plan-json").textContent = JSON.stringify(plan, null, 2);
+    $("plan-technical").open = false;
     $("plan-dialog").showModal();
   });
   document.querySelector(".brand").addEventListener("click", event => { event.preventDefault(); showView("overview"); });
+  window.addEventListener("hashchange", () => showView(location.hash.slice(1)));
   renderResults(); renderModelOptions(); renderPresetOptions(); renderEditor(); renderSummary();
+  showView(location.hash.slice(1));
 }

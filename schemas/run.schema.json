@@ -5,7 +5,7 @@
   "type": "object",
   "properties": {
     "schema_version": {
-      "const": "0.1.0-draft"
+      "const": "0.2.0-draft"
     },
     "fixture": {
       "type": "boolean"
@@ -17,6 +17,14 @@
     "suite_id": {
       "type": "string",
       "minLength": 1
+    },
+    "run_settings_asset_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "run_settings_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
     },
     "state": {
       "enum": [
@@ -118,6 +126,8 @@
     "fixture",
     "run_id",
     "suite_id",
+    "run_settings_asset_ref",
+    "run_settings_sha256",
     "state",
     "execution_ready",
     "protocol_sha256",

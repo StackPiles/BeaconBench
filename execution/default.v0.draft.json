@@ -1,0 +1,15 @@
+{
+  "schema_version": "0.1.0-draft",
+  "profile_id": "default.v0.draft",
+  "status": "draft",
+  "execution_ready": false,
+  "settings": {
+    "trials_per_case": 1,
+    "seed_policy": {
+      "base_seed": 42,
+      "derivation": "sha256-case-revision-trial-v1",
+      "trial_index_origin": 0
+    },
+    "aggregation_policy": "all-trials"
+  }
+}

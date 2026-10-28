@@ -6,10 +6,6 @@
   "language": "ja",
   "protocol_id": "common-ja.v0.draft",
   "cases_target": 20,
-  "trials_per_case": 1,
-  "trial_seeds": [
-    42
-  ],
   "selection_frozen": false,
   "case_refs": [],
   "allocation": [

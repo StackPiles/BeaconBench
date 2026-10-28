@@ -28,8 +28,9 @@ flowchart TB
 | `catalog/` | 候補、出典、能力タグ、採用条件 |
 | `suites/` | Quick / Detailed / 互換セットの版付きmanifest |
 | `protocols/` | 共通サンプリング、実エンジン上限、終了規則、cache方針 |
+| `execution/` | セットと独立した試行回数・seed・集計方針の参照設定 |
 | `ui/prototype/` | 通信・実行を伴わない画面試作。正式UIの設計確認用 |
-| `schemas/` | case・run・測定・判定・翻訳のJSON契約 |
+| `schemas/` | case・run・実行設定・測定・判定・翻訳のJSON契約 |
 | `src/beaconbench/`（予定） | 実行管理、model transport、記録、再開、統計、レポート |
 | `adapters/`（予定） | 上流のtask / environment / grader接続 |
 | `local/`（非公開） | endpoint・credential参照・host設定 |
@@ -87,7 +88,7 @@ beaconbench catalog
 beaconbench assets fetch <lock>
 beaconbench language verify <pack>
 beaconbench suite freeze <draft>
-beaconbench plan --suite <frozen> --model <config>
+beaconbench plan --suite <frozen> --model <config> --trials-per-case 1
 beaconbench run --plan <resolved-plan>
 beaconbench status <run>
 beaconbench resume <run>

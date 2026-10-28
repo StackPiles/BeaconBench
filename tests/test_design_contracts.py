@@ -3,6 +3,7 @@ import copy
 import importlib.util
 import unittest
 from pathlib import Path
+from jsonschema.exceptions import ValidationError
 
 ROOT = Path(__file__).resolve().parents[1]
 SPEC = importlib.util.spec_from_file_location('design_checks', ROOT / 'tools/check_design.py')
@@ -22,15 +23,32 @@ class Contracts(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, 'cap added'):
                 checks.validate_blueprints(*args)
 
-    def test_reuse_requires_shared_protocol_and_seed_prefix(self):
-        for change in ['protocol', 'seed']:
+    def test_suite_cannot_embed_trials_or_seed_settings(self):
+        for field, value in [('trials_per_case', 3), ('trial_seeds', [42]), ('seed_policy', {})]:
             args = self.inputs()
-            if change == 'protocol':
-                args[1]['protocol_id'] = 'different'
-            else:
-                args[1]['trial_seeds'] = [999]
-            with self.assertRaises(ValueError):
+            args[1][field] = value
+            with self.assertRaisesRegex(ValueError, 'independent'):
                 checks.validate_blueprints(*args)
+
+    def test_reuse_still_requires_shared_protocol(self):
+        args = self.inputs()
+        args[1]['protocol_id'] = 'different'
+        with self.assertRaisesRegex(ValueError, 'protocol mismatch'):
+            checks.validate_blueprints(*args)
+
+    def test_run_trials_are_independent_positive_integers_with_default_one(self):
+        settings = checks.read_json(ROOT / 'execution/default.v0.draft.json')['settings']
+        self.assertEqual(settings['trials_per_case'], 1)
+        for value in [1, 3, 5, 7, 1000]:
+            checks.validate_run_settings({**settings, 'trials_per_case': value})
+        for value in [0, -1, 1.5, True, None, '3']:
+            with self.assertRaises(ValidationError):
+                checks.validate_run_settings({**settings, 'trials_per_case': value})
+
+    def test_repetitions_do_not_select_only_the_best_answer(self):
+        settings = checks.read_json(ROOT / 'execution/default.v0.draft.json')['settings']
+        with self.assertRaises(ValidationError):
+            checks.validate_run_settings({**settings, 'aggregation_policy': 'best-of-n'})
 
     def test_wrong_allocation_or_unverified_frozen_set_is_rejected(self):
         for change in ['count', 'ready', 'frozen']:

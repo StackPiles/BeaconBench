@@ -5,6 +5,7 @@
 ```text
 runs/<run-id>/
   plan.json                     解決済みの実行条件・版・role
+  run-settings.json             試行回数・seed方針・全試行集計のsnapshot
   manifest.json                 状態と成果物索引
   assets.lock.json              上流・翻訳・環境・helperの固定情報
   events.jsonl                  append-onlyのイベント
@@ -37,7 +38,7 @@ runs/<run-id>/
 - 有効サンプリング、思考設定、capacity profile、cache policy、並列度、seed、native終了条件。
 - 固定helperのID・revision・prompt・sampling・環境、agent harnessとadapterの版。
 
-Suite名やQuick/Detailedの表示名だけは生成fingerprintへ入れない。同じcase・trial・全実行条件ならQuickからDetailedへ再利用できる。予定値だけ一致し、実際の要求・有効設定の確認がない回答は同一条件扱いにしない。
+Suite名、Quick/Detailedの表示名、予定ケース数、予定試行回数はcase・trial単位の生成fingerprintへ入れない。実際のcase版・trial index・導出seedと全生成条件を照合する。run planのsnapshotとSHAには予定試行回数を含め、回数追加は元runを変更せず新しいplanにする。同じcase・trial・全実行条件ならQuickからDetailedへ再利用できる。予定値だけ一致し、実際の要求・有効設定の確認がない回答は同一条件扱いにしない。
 
 採点fingerprintは、回答原本SHA、grader code、テスト集合、許容誤差・除外規則、コンテナdigest、採点helper・prompt、adapter版を含む。生成と採点のfingerprintを分け、採点だけを新しい版で実行できるようにする。
 

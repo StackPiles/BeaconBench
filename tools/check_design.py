@@ -47,7 +47,7 @@ def public_files(root: Path) -> list[Path]:
         names = result.stdout.decode('utf-8').split('\0')
         paths = sorted({root / name for name in names if name})
     else:
-        directories = ['docs', 'catalog', 'suites', 'protocols', 'schemas', 'examples', 'tools', 'tests', 'ui']
+        directories = ['docs', 'catalog', 'suites', 'protocols', 'execution', 'schemas', 'examples', 'tools', 'tests', 'ui']
         paths = [x for name in directories for x in (root / name).rglob('*') if x.is_file()]
         paths += [root / name for name in ['README.md', 'AGENTS.md', 'NOTICE.md', 'LICENSE', '.gitignore', '.gitattributes', 'pyproject.toml', 'uv.lock'] if (root / name).is_file()]
         paths = sorted(set(paths))
@@ -85,15 +85,15 @@ def validate_blueprints(catalog, quick, detailed, protocol) -> None:
     require(all(x['execution_ready'] is False for x in catalog['entries']), 'M0 catalog cannot claim execution readiness')
     require(quick['protocol_id'] == detailed['protocol_id'] == protocol['protocol_id'], 'Quick and Detailed protocol mismatch')
     require(quick['subset_of'] == detailed['suite_id'], 'Quick subset relationship missing')
-    require(quick['trial_seeds'] == detailed['trial_seeds'][:quick['trials_per_case']], 'Trial seed prefix differs')
     for suite in [quick, detailed]:
+        require(not {'trials_per_case', 'trial_seeds', 'seed_policy'}.intersection(suite),
+                'Trial settings must be independent of the suite')
         require(suite['status'] == 'draft' and suite['execution_ready'] is False, 'M0 suites must stay draft')
         require(not suite['selection_frozen'] and not suite['case_refs'], 'Unverified selection cannot be frozen')
         rows = suite['allocation']
         require(len({x['source_id'] for x in rows}) == len(rows), 'Duplicate allocation source')
         require(sum(x['cases'] for x in rows) == suite['cases_target'], 'Allocation does not match target count')
         require(all(x['source_id'] in ids and type(x['cases']) is int and x['cases'] >= 0 for x in rows), 'Unknown source or invalid case count')
-        require(len(suite['trial_seeds']) == suite['trials_per_case'], 'Trial seed count mismatch')
     small = {x['source_id']: x['cases'] for x in quick['allocation']}
     large = {x['source_id']: x['cases'] for x in detailed['allocation']}
     require(all(large.get(key, 0) >= count for key, count in small.items()), 'Quick cannot be included in Detailed')
@@ -103,6 +103,10 @@ def validate_blueprints(catalog, quick, detailed, protocol) -> None:
     require(protocol['status'] == 'draft' and protocol['execution_ready'] is False, 'M0 protocol must stay draft')
     require(protocol['quality_regeneration_retries'] == 0, 'Quality regeneration is not allowed')
     require(protocol['native_benchmark_termination_rules'] == 'preserve-and-record', 'Native rules changed')
+
+
+def validate_run_settings(settings) -> None:
+    Draft202012Validator(read_json(ROOT / 'schemas/run-settings.schema.json')).validate(settings)
 
 
 def validate_measurement_semantics(record) -> None:
@@ -152,8 +156,12 @@ def main() -> None:
     detailed = read_json(ROOT / 'suites/detailed.v0.draft.json')
     protocol = read_json(ROOT / 'protocols/common-ja.v0.draft.json')
     validate_blueprints(catalog, quick, detailed, protocol)
+    defaults = read_json(ROOT / 'execution/default.v0.draft.json')
+    require(defaults['status'] == 'draft' and defaults['execution_ready'] is False, 'Run defaults must stay draft')
+    validate_run_settings(defaults['settings'])
+    require(defaults['settings']['trials_per_case'] == 1, 'Default trials per case must be one')
     fixtures = 0
-    for name in ['case', 'run', 'measurement', 'grade', 'translation']:
+    for name in ['case', 'run', 'run-settings', 'measurement', 'grade', 'translation']:
         schema = read_json(ROOT / ('schemas/' + name + '.schema.json'))
         Draft202012Validator.check_schema(schema)
         example = read_json(ROOT / ('examples/' + name + '.fixture.json'))
@@ -164,6 +172,7 @@ def main() -> None:
     print(json.dumps({'status': 'passed', 'public_files': len(paths), 'json_files': json_count,
                       'local_links': link_count, 'schemas_and_fixtures': fixtures,
                       'quick_cases_proposed': quick['cases_target'], 'detailed_cases_proposed': detailed['cases_target'],
+                      'default_trials_per_case': defaults['settings']['trials_per_case'],
                       'execution_ready': False, 'model_calls': 0, 'downloads_in_check': 0}, ensure_ascii=False))
 
 

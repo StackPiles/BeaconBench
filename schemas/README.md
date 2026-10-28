@@ -6,6 +6,7 @@ JSON Schema Draft 2020-12を使用する。これらはM0の契約案であり�
 |---|---|---|
 | [case](case.schema.json) | 元task・言語・観測・非公開採点資産の参照 | [case fixture](../examples/case.fixture.json) |
 | [run](run.schema.json) | 計画・状態・版・分母・復帰 | [run fixture](../examples/run.fixture.json) |
+| [run settings](run-settings.schema.json) | セットと独立した試行回数・seed・全試行集計 | [run settings fixture](../examples/run-settings.fixture.json) |
 | [measurement](measurement.schema.json) | 呼び出しrole・usage・時間・終了理由 | [measurement fixture](../examples/measurement.fixture.json) |
 | [grade](grade.schema.json) | 生判定への参照と版付きmetric | [grade fixture](../examples/grade.fixture.json) |
 | [translation](translation.schema.json) | 原文・翻訳SHA、変更可能箇所、検証状態 | [translation fixture](../examples/translation.fixture.json) |

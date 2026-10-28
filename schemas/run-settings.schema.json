@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StackPiles/BeaconBench/blob/main/schemas/run-settings.schema.json",
+  "title": "BeaconBench independent run settings draft contract",
+  "type": "object",
+  "properties": {
+    "fixture": { "type": "boolean" },
+    "trials_per_case": { "type": "integer", "minimum": 1, "default": 1 },
+    "seed_policy": {
+      "type": "object",
+      "properties": {
+        "base_seed": { "type": "integer", "minimum": 0, "maximum": 2147483647 },
+        "derivation": { "const": "sha256-case-revision-trial-v1" },
+        "trial_index_origin": { "const": 0 }
+      },
+      "required": ["base_seed", "derivation", "trial_index_origin"],
+      "additionalProperties": false
+    },
+    "aggregation_policy": { "const": "all-trials" }
+  },
+  "required": ["trials_per_case", "seed_policy", "aggregation_policy"],
+  "additionalProperties": false
+}
