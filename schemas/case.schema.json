@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StackPiles/BeaconBench/blob/main/schemas/case.schema.json",
+  "title": "BeaconBench case draft contract",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0-draft"
+    },
+    "fixture": {
+      "type": "boolean"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "cluster_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "enum": [
+        "ja",
+        "en"
+      ]
+    },
+    "task_kind": {
+      "enum": [
+        "single_turn_code",
+        "interactive",
+        "optimization",
+        "repository_change",
+        "contract_fixture"
+      ]
+    },
+    "source": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "upstream_task_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "assets_sha256": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[0-9a-f]{64}$"
+        }
+      },
+      "required": [
+        "source_id",
+        "upstream_task_id",
+        "revision",
+        "assets_sha256"
+      ],
+      "additionalProperties": false
+    },
+    "language_pack_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "model_visible": {
+      "type": "object",
+      "properties": {
+        "messages_asset_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tools_asset_ref": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "required": [
+        "messages_asset_ref",
+        "tools_asset_ref"
+      ],
+      "additionalProperties": false
+    },
+    "grading_asset_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "native_rules_asset_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "required_capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "fixture",
+    "case_id",
+    "cluster_id",
+    "language",
+    "task_kind",
+    "source",
+    "language_pack_sha256",
+    "model_visible",
+    "grading_asset_ref",
+    "native_rules_asset_ref",
+    "required_capabilities"
+  ],
+  "additionalProperties": false
+}

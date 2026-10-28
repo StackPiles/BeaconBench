@@ -1,0 +1,59 @@
+# 09 実装順序と受入条件
+
+## 現在の成果
+
+M0は公開リポジトリ、設計文書、draft catalog / suite / protocol、JSON schema案、架空の契約例、設計整合性checker。実モデル生成、第三者資産取得、日本語翻訳、grader実装、実測結果は含まない。
+
+チェック結果は静的な設計契約の確認であり、ベンチマークが動いた証拠ではない。
+
+## 段階
+
+| 段階 | 成果物 | 受入条件 |
+|---|---|---|
+| M0 設計基盤 | 本リポジトリと文書・schema・draft | リンク、ID、配分、null制限、公開範囲、契約例の静的検証が通る |
+| M1 記録と接続 | model transport、SSE、usage、event store、plan/status | fake endpointで複数chunk、遅延usage、思考込み、tool、切断を正しく記録 |
+| M2 既存コード評価 | LCB / SciCode-Verified / Frontierの汎用adapter、互換14問 | 参照解・誤答・数値許容誤差・除外テスト・空提出、2環境、ARM64採点を確認 |
+| M3 日本語基盤とBabel | language pack、4系列adapter、helper contract | 上流日本語資産のSHA、顧客役、変換器、模擬サービス、metric mappingが固定できる |
+| M4 営業 | SalesLLM日本語、CRMの営業系 | 日本語の顧客役・購買意向判定の較正と、CRMの状態resetが確認できる |
+| M5 セット固定と比較 | Quick / Detailedのfrozen manifest、統計・全文レポート | 全ケースの受入、Quick⊂Detailed、最初の試行再利用、分母・区間・時間が正しい |
+| M6 拡張 | SWE-bench Pro、画像・動画、TERMS等 | 別trackの資産・実行環境・公式条件が揃い、既存系列と分離できる |
+
+M4とM6の候補をM5の100枠へ含めるには、その枠も受入完了が必要。先に小さい集合を固定する場合は、別のsuite IDと実際の件数でリリースする。未完成の枠を成功・失敗・0点へ換算しない。
+
+段階番号は作業の区分であり、100ケース版の発行まで直列に進めるという意味ではない。100枠案に含めたSWE-bench Proの受入は、M5の正式セット固定より前に完了させる必要がある。
+
+## 実装の最初の単位
+
+1. ファイル原本・completion marker・event記録と、計画・状態確認。
+2. 偽のOpenAI互換endpointを使う計測・再開テスト。
+3. 既存14問の採点規則を個別環境から分離し、互換adapterとして移す。
+4. BabelArenaの上流日本語で少数の接続確認。
+5. 独自翻訳・営業の顧客役と採点器を検証する。
+6. 問題選定を固定して初めてQuickの実測へ進む。
+
+この順序なら、測定器の不具合と対象モデルの能力を切り分けながら、既存資産と日本語評価を接続できる。
+
+## 実装時の重点テスト
+
+| 対象 | 失敗を防ぐ確認 |
+|---|---|
+| トークン | reasoningがcompletionへ内包される例で二重計上しない。unknownを0にしない |
+| 時間 | first chunkがmetadataだけの例、tool先行、streamなし、複数hostのclockを区別 |
+| 再開 | 要求・翻訳・モデル・helper・採点規則のどれかが変われば不適切な再利用を拒否 |
+| 異常 | 完成回答は品質で再生成しない。切断した回答を完成扱いにしない |
+| 分母 | invalid simulator、未対応、未実行、native timeoutを規則どおり表示 |
+| 翻訳 | 否定・単位・数値・ID・コードの変更、参照切れを検出 |
+| 採点 | 正答controlと誤答control、境界値、NaN/Inf、空提出、清浄環境での再採点 |
+| 資源 | 失敗後も所有leaseを解放し、必要な常用復帰を実応答で確認 |
+| 公開 | credential・個別host・private入力を含むexportを拒否し、raw原本を保つ |
+| 表示 | 回答全文と根拠へ辿れ、生成文をscriptとして実行しない |
+
+## 実測開始前に決める事項
+
+- 固定する20 / 100の問題ID、能力・難易度・時間の根拠。
+- 日本語packのreview方法、顧客役と採点役の較正集合・閾値。
+- support endpointのモデル・revision・実行資源と、外部API費用の扱い。
+- reference容量に非対応なモデル用の別protocolと、比較表での区別。
+- 外部Org・amd64 executor・実検索・画像の採用範囲。
+
+未決事項は [判断記録](decisions.md) に保持する。設計書の作成だけでこれらが承認・検証済みとは扱わない。

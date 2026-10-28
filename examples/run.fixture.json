@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0-draft",
+  "fixture": true,
+  "run_id": "fixture-run",
+  "suite_id": "fixture-suite",
+  "state": "draft",
+  "execution_ready": false,
+  "protocol_sha256": "75ad35fbecfe8766535433db5cf35428fe881df7166e95b8a3b96296b69558e6",
+  "assets_lock_sha256": "f1bdfd41a4ace7de010c0b80b0d5105929241b78f377c4af25ef68064b190de0",
+  "target_config_sha256": "58735fd4eb234271fb7901343bd64102c5c48e24bd1e432bbdd12cca774325ef",
+  "support_lock_sha256": "5fd0ec323a65c95c7eba0ae6c3e15819bd6443a701576e65c36d960e3c59f69c",
+  "event_log_asset_ref": "fixture://events/fixture-run",
+  "restoration_status": "not_required",
+  "counts": {
+    "planned": 1,
+    "attempted": 0,
+    "completed": 0,
+    "scored": 0,
+    "invalid_instrument": 0,
+    "infrastructure_error": 0,
+    "unsupported": 0,
+    "interrupted": 0
+  }
+}

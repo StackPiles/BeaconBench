@@ -1,0 +1,132 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StackPiles/BeaconBench/blob/main/schemas/run.schema.json",
+  "title": "BeaconBench run draft contract",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0-draft"
+    },
+    "fixture": {
+      "type": "boolean"
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "suite_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "state": {
+      "enum": [
+        "draft",
+        "preflight",
+        "ready",
+        "generating",
+        "generated",
+        "scoring",
+        "scored",
+        "finalized",
+        "interrupted",
+        "infrastructure_error",
+        "unsupported"
+      ]
+    },
+    "execution_ready": {
+      "type": "boolean"
+    },
+    "protocol_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "assets_lock_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "target_config_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "support_lock_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "event_log_asset_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "restoration_status": {
+      "enum": [
+        "not_required",
+        "pending",
+        "verified",
+        "failed"
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "planned": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "attempted": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "completed": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "scored": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_instrument": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "infrastructure_error": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unsupported": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "interrupted": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "planned",
+        "attempted",
+        "completed",
+        "scored",
+        "invalid_instrument",
+        "infrastructure_error",
+        "unsupported",
+        "interrupted"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "fixture",
+    "run_id",
+    "suite_id",
+    "state",
+    "execution_ready",
+    "protocol_sha256",
+    "assets_lock_sha256",
+    "target_config_sha256",
+    "support_lock_sha256",
+    "event_log_asset_ref",
+    "restoration_status",
+    "counts"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,190 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StackPiles/BeaconBench/blob/main/schemas/measurement.schema.json",
+  "title": "BeaconBench measurement draft contract",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0-draft"
+    },
+    "fixture": {
+      "type": "boolean"
+    },
+    "request_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trial_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "attempt_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "enum": [
+        "target",
+        "user",
+        "evaluator",
+        "conversion",
+        "lang_judge"
+      ]
+    },
+    "status": {
+      "enum": [
+        "completed",
+        "interrupted",
+        "failed",
+        "usage_missing"
+      ]
+    },
+    "usage": {
+      "type": "object",
+      "properties": {
+        "prompt_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "cached_prompt_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "completion_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "reasoning_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "visible_output_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "total_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "prompt_tokens",
+        "cached_prompt_tokens",
+        "completion_tokens",
+        "reasoning_tokens",
+        "visible_output_tokens",
+        "total_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "usage_source": {
+      "enum": [
+        "provider_reported",
+        "engine_reported",
+        "retokenized_estimate",
+        "unavailable"
+      ]
+    },
+    "completion_includes_reasoning": {
+      "type": [
+        "boolean",
+        "null"
+      ]
+    },
+    "times": {
+      "type": "object",
+      "properties": {
+        "request_wall_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "ttft_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "ttfv_seconds": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "native_decode_tokens_per_second": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "request_wall_seconds",
+        "ttft_seconds",
+        "ttfv_seconds",
+        "native_decode_tokens_per_second"
+      ],
+      "additionalProperties": false
+    },
+    "termination": {
+      "type": "string",
+      "minLength": 1
+    },
+    "request_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "response_sha256": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  },
+  "required": [
+    "schema_version",
+    "fixture",
+    "request_id",
+    "case_id",
+    "trial_id",
+    "attempt_id",
+    "role",
+    "status",
+    "usage",
+    "usage_source",
+    "completion_includes_reasoning",
+    "times",
+    "termination",
+    "request_sha256",
+    "response_sha256"
+  ],
+  "additionalProperties": false
+}

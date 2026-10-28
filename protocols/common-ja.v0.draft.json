@@ -1,0 +1,44 @@
+{
+  "schema_version": "0.1.0-draft",
+  "protocol_id": "common-ja.v0.draft",
+  "status": "draft",
+  "execution_ready": false,
+  "primary_language": "ja",
+  "parallel_trials": 1,
+  "sampling": {
+    "temperature": 1.0,
+    "top_p": 0.95,
+    "top_k_semantics": "disabled-after-backend-verification",
+    "min_p": 0.0,
+    "presence_penalty": 0.0,
+    "frequency_penalty": 0.0,
+    "repetition_penalty": 1.0
+  },
+  "thinking": {
+    "enabled_when_supported": true,
+    "effort": "model-native-maximum-verified",
+    "cross_model_equal_compute_claimed": false
+  },
+  "reference_capacity": {
+    "context_tokens": 262144,
+    "output_tokens_per_request": 131072,
+    "output_includes_thinking": true,
+    "unsupported_policy": "separate-capacity-profile"
+  },
+  "limits": {
+    "total_output_tokens": null,
+    "tool_calls": null,
+    "agent_turns": null,
+    "framework_deadline_seconds": null
+  },
+  "native_benchmark_termination_rules": "preserve-and-record",
+  "cache": {
+    "between_cases": "cold-verified",
+    "within_case": "normal-reuse-verified"
+  },
+  "quality_regeneration_retries": 0,
+  "infrastructure_retry": "new-attempt-with-preserved-evidence",
+  "usage_missing_policy": "null-with-provenance",
+  "support_models": "must-be-locked-before-execution",
+  "japanese_instrument_calibration": "required-before-execution"
+}

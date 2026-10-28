@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StackPiles/BeaconBench/blob/main/schemas/translation.schema.json",
+  "title": "BeaconBench translation draft contract",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0-draft"
+    },
+    "fixture": {
+      "type": "boolean"
+    },
+    "pack_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_language": {
+      "enum": [
+        "en",
+        "zh",
+        "ja"
+      ]
+    },
+    "target_language": {
+      "const": "ja"
+    },
+    "origin": {
+      "enum": [
+        "upstream_japanese",
+        "beaconbench_adaptation"
+      ]
+    },
+    "source_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "translated_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "translatable_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "protected_tokens": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "review_status": {
+      "enum": [
+        "draft",
+        "translated",
+        "reviewed",
+        "controls_passed",
+        "instrument_calibrated",
+        "frozen"
+      ]
+    },
+    "instrument_calibration": {
+      "enum": [
+        "pending",
+        "passed",
+        "failed",
+        "not_applicable"
+      ]
+    },
+    "review_evidence_asset_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "fixture",
+    "pack_id",
+    "case_id",
+    "source_language",
+    "target_language",
+    "origin",
+    "source_sha256",
+    "translated_sha256",
+    "translatable_paths",
+    "protected_tokens",
+    "review_status",
+    "instrument_calibration",
+    "review_evidence_asset_refs"
+  ],
+  "additionalProperties": false
+}

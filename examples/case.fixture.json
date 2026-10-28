@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0-draft",
+  "fixture": true,
+  "case_id": "fixture-arithmetic-ja",
+  "cluster_id": "fixture-arithmetic",
+  "language": "ja",
+  "task_kind": "contract_fixture",
+  "source": {
+    "source_id": "contract-fixture",
+    "upstream_task_id": "fixture-01",
+    "revision": null,
+    "assets_sha256": null
+  },
+  "language_pack_sha256": "d39f477d1c87f5a5ed7c6be87d8a3754ece9dc23c116816d9dae649e87e70f5a",
+  "model_visible": {
+    "messages_asset_ref": "fixture://messages/arithmetic-ja",
+    "tools_asset_ref": null
+  },
+  "grading_asset_ref": "fixture://grader/arithmetic",
+  "native_rules_asset_ref": "fixture://rules/eos",
+  "required_capabilities": []
+}

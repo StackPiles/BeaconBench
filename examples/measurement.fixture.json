@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0-draft",
+  "fixture": true,
+  "request_id": "fixture-request-01",
+  "case_id": "fixture-arithmetic-ja",
+  "trial_id": "trial-01",
+  "attempt_id": "attempt-01",
+  "role": "target",
+  "status": "completed",
+  "usage": {
+    "prompt_tokens": 100,
+    "cached_prompt_tokens": 40,
+    "completion_tokens": 20,
+    "reasoning_tokens": 8,
+    "visible_output_tokens": null,
+    "total_tokens": 120
+  },
+  "usage_source": "provider_reported",
+  "completion_includes_reasoning": true,
+  "times": {
+    "request_wall_seconds": 1.0,
+    "ttft_seconds": 0.2,
+    "ttfv_seconds": 0.3,
+    "native_decode_tokens_per_second": null
+  },
+  "termination": "eos",
+  "request_sha256": "2fe784b0d2911744e76efa456fb28b13ee979cbf0e84cb44272c3cbcc1e8a823",
+  "response_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049"
+}

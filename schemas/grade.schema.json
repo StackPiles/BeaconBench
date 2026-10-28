@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/StackPiles/BeaconBench/blob/main/schemas/grade.schema.json",
+  "title": "BeaconBench grade draft contract",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "0.1.0-draft"
+    },
+    "fixture": {
+      "type": "boolean"
+    },
+    "case_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "trial_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "grader_fingerprint": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "answer_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": [
+        "scored",
+        "invalid_instrument",
+        "infrastructure_error",
+        "unscored"
+      ]
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "type": [
+              "number",
+              "boolean",
+              "null"
+            ]
+          },
+          "unit": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "name",
+          "value",
+          "unit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "raw_grade_asset_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "evidence_asset_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "fixture",
+    "case_id",
+    "trial_id",
+    "grader_fingerprint",
+    "answer_sha256",
+    "status",
+    "metrics",
+    "raw_grade_asset_ref",
+    "evidence_asset_refs"
+  ],
+  "additionalProperties": false
+}

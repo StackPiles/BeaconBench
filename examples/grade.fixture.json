@@ -1,0 +1,20 @@
+{
+  "schema_version": "0.1.0-draft",
+  "fixture": true,
+  "case_id": "fixture-arithmetic-ja",
+  "trial_id": "trial-01",
+  "grader_fingerprint": "10244baeae0cceedcbe7dccd1731a66f44eb326db5ab52b238397eb6e8476a66",
+  "answer_sha256": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
+  "status": "scored",
+  "metrics": [
+    {
+      "name": "correct",
+      "value": true,
+      "unit": "boolean"
+    }
+  ],
+  "raw_grade_asset_ref": "fixture://grades/raw-01",
+  "evidence_asset_refs": [
+    "fixture://grades/evidence-01"
+  ]
+}

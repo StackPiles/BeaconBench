@@ -1,0 +1,77 @@
+{
+  "schema_version": "0.1.0-draft",
+  "suite_id": "detailed.v0.draft",
+  "status": "draft",
+  "execution_ready": false,
+  "language": "ja",
+  "protocol_id": "common-ja.v0.draft",
+  "cases_target": 100,
+  "trials_per_case": 3,
+  "trial_seeds": [
+    42,
+    314159,
+    271828
+  ],
+  "selection_frozen": false,
+  "case_refs": [],
+  "allocation": [
+    {
+      "source_id": "babel-tau3",
+      "category": "tools_policy",
+      "cases": 10
+    },
+    {
+      "source_id": "babel-deepplanning",
+      "category": "planning",
+      "cases": 10
+    },
+    {
+      "source_id": "babel-vitabench",
+      "category": "cross_domain_work",
+      "cases": 8
+    },
+    {
+      "source_id": "babel-claw",
+      "category": "orchestration",
+      "cases": 10
+    },
+    {
+      "source_id": "livecodebench",
+      "category": "coding",
+      "cases": 18
+    },
+    {
+      "source_id": "scicode-verified",
+      "category": "scientific_coding",
+      "cases": 10
+    },
+    {
+      "source_id": "frontier-algorithmic",
+      "category": "optimization",
+      "cases": 6
+    },
+    {
+      "source_id": "salesllm-ja",
+      "category": "sales_dialogue",
+      "cases": 12
+    },
+    {
+      "source_id": "crmarena-pro-sales-ja",
+      "category": "sales_operations",
+      "cases": 8
+    },
+    {
+      "source_id": "swebench-pro-v2-ja",
+      "category": "repository_change",
+      "cases": 8
+    }
+  ],
+  "subset_of": null,
+  "english_translation_controls_in_primary_denominator": false,
+  "limits": {
+    "total_output_tokens": null,
+    "tool_calls": null,
+    "agent_turns": null,
+    "framework_deadline_seconds": null
+  }
+}

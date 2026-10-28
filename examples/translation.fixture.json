@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0-draft",
+  "fixture": true,
+  "pack_id": "fixture-ja.v0",
+  "case_id": "fixture-arithmetic-ja",
+  "source_language": "en",
+  "target_language": "ja",
+  "origin": "beaconbench_adaptation",
+  "source_sha256": "5841a928cceb0c2e3f9813eba12eb3b9a8706447d42521364320fc12d5b1393b",
+  "translated_sha256": "1f67c2b7de73753450a2c0e3e138a45c2b16cca0fca9ec36f3a3cc0c5a6c2789",
+  "translatable_paths": [
+    "/messages/0/content"
+  ],
+  "protected_tokens": [
+    "19",
+    "23",
+    "+"
+  ],
+  "review_status": "draft",
+  "instrument_calibration": "not_applicable",
+  "review_evidence_asset_refs": []
+}

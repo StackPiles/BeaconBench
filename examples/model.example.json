@@ -1,0 +1,13 @@
+{
+  "example_only": true,
+  "model_id": "SET_MODEL_ID",
+  "base_url_env": "BEACON_MODEL_BASE_URL",
+  "api_key_env": "BEACON_MODEL_API_KEY",
+  "model_revision": null,
+  "engine_build": null,
+  "hardware_config_ref": "local://hardware",
+  "thinking_setting": "VERIFY_NATIVE_SETTING",
+  "capabilities_verified": false,
+  "runtime_capacity_verified": false,
+  "support_role": null
+}

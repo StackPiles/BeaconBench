@@ -1,0 +1,294 @@
+{
+  "schema_version": "0.1.0-draft",
+  "observed_on": "2026-10-28",
+  "entries": [
+    {
+      "id": "babel-tau3",
+      "title": "BabelArena / τ³-Bench",
+      "category": "tools_policy",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/QwenLM/BabelArena",
+      "observed_revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "upstream_ja",
+      "primary_language": "ja",
+      "open_gates": [
+        "helper-lock",
+        "japanese-assets",
+        "retrieval-tokenizer",
+        "native-grader"
+      ],
+      "license": {
+        "api_spdx_observation": "NOASSERTION",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "babel-deepplanning",
+      "title": "BabelArena / DeepPlanning",
+      "category": "planning",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/QwenLM/BabelArena",
+      "observed_revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "upstream_ja",
+      "primary_language": "ja",
+      "open_gates": [
+        "converter-controls",
+        "rules-grader",
+        "japanese-assets"
+      ],
+      "license": {
+        "api_spdx_observation": "NOASSERTION",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "babel-vitabench",
+      "title": "BabelArena / VitaBench",
+      "category": "cross_domain_work",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/QwenLM/BabelArena",
+      "observed_revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "upstream_ja",
+      "primary_language": "ja",
+      "open_gates": [
+        "helper-lock",
+        "environment-reset",
+        "native-grader"
+      ],
+      "license": {
+        "api_spdx_observation": "NOASSERTION",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "babel-claw",
+      "title": "BabelArena / ClawEval",
+      "category": "orchestration",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/QwenLM/BabelArena",
+      "observed_revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "upstream_ja",
+      "primary_language": "ja",
+      "open_gates": [
+        "text-track-selection",
+        "grader-dependency-assets",
+        "sandbox",
+        "web-policy"
+      ],
+      "license": {
+        "api_spdx_observation": "NOASSERTION",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "livecodebench",
+      "title": "LiveCodeBench",
+      "category": "coding",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/LiveCodeBench/LiveCodeBench",
+      "observed_revision": "28fef95ea8c9f7a547c8329f2cd3d32b92c1fa24",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "translation",
+      "primary_language": "ja",
+      "open_gates": [
+        "pinned-test-set",
+        "japanese-review",
+        "positive-negative-controls"
+      ],
+      "license": {
+        "api_spdx_observation": "MIT",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "scicode-verified",
+      "title": "SciCode-Verified",
+      "category": "scientific_coding",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/flyingwagner/scicode-verified",
+      "observed_revision": "0b40bd4a3a8a7820cd7eac68f1dbee590bac69b4",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "translation",
+      "primary_language": "ja",
+      "open_gates": [
+        "cleaned-hdf5",
+        "two-pinned-environments",
+        "subproblem-contract",
+        "japanese-review"
+      ],
+      "license": {
+        "api_spdx_observation": null,
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "frontier-algorithmic",
+      "title": "Frontier-CS Algorithmic",
+      "category": "optimization",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/FrontierCS/Frontier-CS",
+      "observed_revision": "12ab26840cff15f1d0ab09004dafd07f92c14b60",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "translation",
+      "primary_language": "ja",
+      "open_gates": [
+        "all-case-tests",
+        "scoring-rule-lock",
+        "arm64-executor",
+        "japanese-review"
+      ],
+      "license": {
+        "api_spdx_observation": "MIT",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "salesllm-ja",
+      "title": "SalesLLM / BeaconBench Japanese adaptation",
+      "category": "sales_dialogue",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+      "observed_revision": "782c0d22db7c931166e05c163c964b925119376c",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "translation_and_calibration",
+      "primary_language": "ja",
+      "open_gates": [
+        "customer-fidelity-ja",
+        "intent-grader-ja",
+        "scoring-formula-lock",
+        "japanese-review"
+      ],
+      "license": {
+        "api_spdx_observation": null,
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "crmarena-pro-sales-ja",
+      "title": "CRMArena-Pro / Sales / Japanese adaptation",
+      "category": "sales_operations",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/SalesforceAIResearch/CRMArena",
+      "observed_revision": "22033e5364b4ca5faf71fe29deae181b4c518706",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "translation_and_calibration",
+      "primary_language": "ja",
+      "open_gates": [
+        "org-access",
+        "environment-reset",
+        "license-review",
+        "japanese-review"
+      ],
+      "license": {
+        "api_spdx_observation": "NOASSERTION",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "swebench-pro-v2-ja",
+      "title": "SWE-bench Pro V2 / Japanese adaptation",
+      "category": "repository_change",
+      "status": "candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/scaleapi/SWE-bench_Pro-os",
+      "observed_revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+      "observed_revision_role": "design-reference-only",
+      "data_revision": null,
+      "grader_digest": null,
+      "language_plan": "translation",
+      "primary_language": "ja",
+      "open_gates": [
+        "amd64-executor",
+        "locked-agent",
+        "clean-regrade",
+        "japanese-review"
+      ],
+      "license": {
+        "api_spdx_observation": "MIT",
+        "review_status": "required-before-asset-redistribution"
+      },
+      "readiness_evidence": []
+    },
+    {
+      "id": "terms-bench",
+      "title": "TERMS-Bench",
+      "category": "negotiation",
+      "status": "extension_candidate",
+      "execution_ready": false,
+      "repository_url": null,
+      "reference_url": "https://terms-bench.github.io/",
+      "observed_revision": null,
+      "data_revision": null,
+      "grader_digest": null,
+      "primary_language": "ja",
+      "language_plan": "translation",
+      "open_gates": [
+        "official-evaluation-code",
+        "data-and-seeds",
+        "license-review",
+        "japanese-review"
+      ],
+      "readiness_evidence": []
+    },
+    {
+      "id": "frontiercs2",
+      "title": "FrontierCS 2",
+      "category": "research_engineering",
+      "status": "extension_candidate",
+      "execution_ready": false,
+      "repository_url": "https://github.com/FrontierCS/FrontierCS-2",
+      "observed_revision": null,
+      "data_revision": null,
+      "grader_digest": null,
+      "primary_language": "ja",
+      "language_plan": "translation",
+      "open_gates": [
+        "source-audit",
+        "agent-harness",
+        "research-executor",
+        "japanese-review"
+      ],
+      "readiness_evidence": []
+    }
+  ]
+}

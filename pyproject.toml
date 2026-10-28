@@ -1,0 +1,14 @@
+[project]
+name = "beaconbench"
+version = "0.0.0"
+description = "Japanese-first local LLM evaluation: quality, tokens, and speed"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+dependencies = []
+
+[dependency-groups]
+dev = ["jsonschema==4.26.0"]
+
+[tool.uv]
+package = false
