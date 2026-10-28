@@ -1,0 +1,2489 @@
+{
+  "schema_version": "0.4.0",
+  "selection_id": "normal-ja-selection.v1.candidate",
+  "status": "candidate_selected",
+  "selection_frozen": false,
+  "execution_ready": false,
+  "language": "ja",
+  "selection_seed": "beaconbench-selection-v1",
+  "case_count": 100,
+  "selection_policy": {
+    "target_results_used": false,
+    "quick_is_subset": true,
+    "trial_settings_embedded": false,
+    "unavailable_assets_replaced": false,
+    "source_content_review": "pending where dataset or Japanese assets are missing"
+  },
+  "cases": [
+    {
+      "id": "babel-claw-033b5523bdbbef",
+      "source_id": "babel-claw",
+      "native_id": "T014_meeting_notes",
+      "domain": "general",
+      "title": "meeting_notes",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-1f7b96d8c04495",
+      "source_id": "babel-claw",
+      "native_id": "T150_project_progress_report",
+      "domain": "general",
+      "title": "project_progress_report",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-2eb43aee01712a",
+      "source_id": "babel-claw",
+      "native_id": "T020_inventory_check",
+      "domain": "general",
+      "title": "inventory_check",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-45408c281b8542",
+      "source_id": "babel-claw",
+      "native_id": "T116_ticket_kb_suggestion",
+      "domain": "general",
+      "title": "ticket_kb_suggestion",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-691df97daf2179",
+      "source_id": "babel-claw",
+      "native_id": "T110_complaint_investigation",
+      "domain": "general",
+      "title": "complaint_investigation",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-8296dcf9d46955",
+      "source_id": "babel-claw",
+      "native_id": "T132_order_profit_analysis",
+      "domain": "general",
+      "title": "order_profit_analysis",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-85316b98f74661",
+      "source_id": "babel-claw",
+      "native_id": "T006_email_reply_draft",
+      "domain": "general",
+      "title": "email_reply_draft",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-ba4cff7afed205",
+      "source_id": "babel-claw",
+      "native_id": "T118_customer_followup",
+      "domain": "general",
+      "title": "customer_followup",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-d66f4ebea99821",
+      "source_id": "babel-claw",
+      "native_id": "T030_cross_service_meeting",
+      "domain": "general",
+      "title": "cross_service_meeting",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-claw-ff0153779136c9",
+      "source_id": "babel-claw",
+      "native_id": "T036_vendor_procurement",
+      "domain": "general",
+      "title": "vendor_procurement",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "task_data_missing",
+        "japanese_sidecar_missing",
+        "text_and_web_dependency_review",
+        "native_controls",
+        "sandbox_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/claw/task_subsets/standard/general.txt"
+      },
+      "selection_reason": "Text-office candidates cover mail, calendar, follow-up, notes, inventory, procurement, support, profit and reporting. Real-web/image dependencies still require content review.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-1dff7b17dbdb33",
+      "source_id": "babel-deepplanning",
+      "native_id": "1",
+      "domain": "shopping-L1",
+      "title": "購買制約 L1",
+      "difficulty": "official-level-1",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "shopping_database_missing",
+        "tokenizer_lock",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/shoppingplanning/data/level_1_query_meta_ja.json",
+        "record_sha256": "73f4de6d40d652b29348267ad684f5c7a3531d5962bb4ca9cadf5eb5a5d8d6dc"
+      },
+      "selection_reason": "Two shopping cases at each official level cover item, review, delivery and budget constraints without using model performance.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-b96fe26c9bf068",
+      "source_id": "babel-deepplanning",
+      "native_id": "45",
+      "domain": "shopping-L1",
+      "title": "購買制約 L1",
+      "difficulty": "official-level-1",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "shopping_database_missing",
+        "tokenizer_lock",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/shoppingplanning/data/level_1_query_meta_ja.json",
+        "record_sha256": "fc6720287176553204549173c6a20e464c96312e5cfbe6033b895b72bbdc8497"
+      },
+      "selection_reason": "Two shopping cases at each official level cover item, review, delivery and budget constraints without using model performance.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-0e9cdeac495633",
+      "source_id": "babel-deepplanning",
+      "native_id": "46",
+      "domain": "shopping-L2",
+      "title": "購買制約 L2",
+      "difficulty": "official-level-2",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "shopping_database_missing",
+        "tokenizer_lock",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/shoppingplanning/data/level_2_query_meta_ja.json",
+        "record_sha256": "312b0b78d144b06e63ebc1dd5b4f15faa6c652c91d1accceac192a3fad8c209c"
+      },
+      "selection_reason": "Two shopping cases at each official level cover item, review, delivery and budget constraints without using model performance.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-c7c5c61a7d130b",
+      "source_id": "babel-deepplanning",
+      "native_id": "1",
+      "domain": "shopping-L2",
+      "title": "購買制約 L2",
+      "difficulty": "official-level-2",
+      "quick": true,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "shopping_database_missing",
+        "tokenizer_lock",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/shoppingplanning/data/level_2_query_meta_ja.json",
+        "record_sha256": "4eaf38fb483a9b9185b8adff8a0deacf4b4fa0cfa916298aa2e9cf9d751b0a7f"
+      },
+      "selection_reason": "Two shopping cases at each official level cover item, review, delivery and budget constraints without using model performance.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-10def059c4ee66",
+      "source_id": "babel-deepplanning",
+      "native_id": "1",
+      "domain": "shopping-L3",
+      "title": "購買制約 L3",
+      "difficulty": "official-level-3",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "shopping_database_missing",
+        "tokenizer_lock",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/shoppingplanning/data/level_3_query_meta_ja.json",
+        "record_sha256": "42cd977a647332f0c0e563dc0499e41d7156e1e9314bdb4267e4d3aaa8fb66ad"
+      },
+      "selection_reason": "Two shopping cases at each official level cover item, review, delivery and budget constraints without using model performance.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-8fec077072a4d7",
+      "source_id": "babel-deepplanning",
+      "native_id": "14",
+      "domain": "shopping-L3",
+      "title": "購買制約 L3",
+      "difficulty": "official-level-3",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "shopping_database_missing",
+        "tokenizer_lock",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/shoppingplanning/data/level_3_query_meta_ja.json",
+        "record_sha256": "f4df4ecdde6265dff96c501ea4e6f969f0e4ebf9b92394066a3adcc71656f710"
+      },
+      "selection_reason": "Two shopping cases at each official level cover item, review, delivery and budget constraints without using model performance.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-242f1e1c36292b",
+      "source_id": "babel-deepplanning",
+      "native_id": "47",
+      "domain": "travel",
+      "title": "旅程・日程・予算制約",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "travel_database_missing",
+        "converter_calibration",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/travelplanning/data/travelplanning_query_ja.json",
+        "record_sha256": "5fbc56d0d74d5de3bc9d4a74cda7a20d6c9e132a798890d39e5f926176b2751f"
+      },
+      "selection_reason": "Four travel cases span source trip lengths; shopping and travel use distinct native metrics.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-2839bc9a3125f0",
+      "source_id": "babel-deepplanning",
+      "native_id": "88",
+      "domain": "travel",
+      "title": "旅程・日程・予算制約",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "travel_database_missing",
+        "converter_calibration",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/travelplanning/data/travelplanning_query_ja.json",
+        "record_sha256": "f6c86ecc5e8ace3433c28598595e991be951dcfe51e6c43b74764cda125e1286"
+      },
+      "selection_reason": "Four travel cases span source trip lengths; shopping and travel use distinct native metrics.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-953f2a15572382",
+      "source_id": "babel-deepplanning",
+      "native_id": "1",
+      "domain": "travel",
+      "title": "旅程・日程・予算制約",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "travel_database_missing",
+        "converter_calibration",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/travelplanning/data/travelplanning_query_ja.json",
+        "record_sha256": "4a7b25337320a9a4c4ea36158f1250b93d1e341b7938e6b330d64a2181001b13"
+      },
+      "selection_reason": "Four travel cases span source trip lengths; shopping and travel use distinct native metrics.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-deepplanning-ae8f78510cf1a5",
+      "source_id": "babel-deepplanning",
+      "native_id": "108",
+      "domain": "travel",
+      "title": "旅程・日程・予算制約",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_present",
+      "execution_ready": false,
+      "readiness_gates": [
+        "travel_database_missing",
+        "converter_calibration",
+        "native_controls"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "benchmarks/deepplanning/travelplanning/data/travelplanning_query_ja.json",
+        "record_sha256": "78bf9f7f76af39b05b45be6757406263f6231c7f9f23884bba4f8f6e89e9e16b"
+      },
+      "selection_reason": "Four travel cases span source trip lengths; shopping and travel use distinct native metrics.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-34fa1f4cf513d1",
+      "source_id": "babel-tau3",
+      "native_id": "47",
+      "domain": "airline",
+      "title": "規則とツールの対話 / airline",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/airline/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-28a49e72e1565f",
+      "source_id": "babel-tau3",
+      "native_id": "task_075",
+      "domain": "banking_knowledge",
+      "title": "規則とツールの対話 / banking_knowledge",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/banking_knowledge/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-872c9ff25615fb",
+      "source_id": "babel-tau3",
+      "native_id": "task_017",
+      "domain": "banking_knowledge",
+      "title": "規則とツールの対話 / banking_knowledge",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/banking_knowledge/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-eceabbc717fe0e",
+      "source_id": "babel-tau3",
+      "native_id": "task_064",
+      "domain": "banking_knowledge",
+      "title": "規則とツールの対話 / banking_knowledge",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/banking_knowledge/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-3097bbd3b3dbe7",
+      "source_id": "babel-tau3",
+      "native_id": "113",
+      "domain": "retail",
+      "title": "規則とツールの対話 / retail",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/retail/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-31d220080ee3b1",
+      "source_id": "babel-tau3",
+      "native_id": "88",
+      "domain": "retail",
+      "title": "規則とツールの対話 / retail",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/retail/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-c669921b1330c9",
+      "source_id": "babel-tau3",
+      "native_id": "54",
+      "domain": "retail",
+      "title": "規則とツールの対話 / retail",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/retail/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-f98e8f70070cb4",
+      "source_id": "babel-tau3",
+      "native_id": "101",
+      "domain": "retail",
+      "title": "規則とツールの対話 / retail",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/retail/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-6f6dd099df57e1",
+      "source_id": "babel-tau3",
+      "native_id": "[service_issue]contract_end_suspension|unseat_sim_card[PERSONA:Hard]",
+      "domain": "telecom",
+      "title": "規則とツールの対話 / telecom",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/telecom/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-tau3-d4bff00d18f946",
+      "source_id": "babel-tau3",
+      "native_id": "[mms_issue]bad_network_preference|break_app_both_permissions[PERSONA:Easy]",
+      "domain": "telecom",
+      "title": "規則とツールの対話 / telecom",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "helper_lock",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/tau3/task_subsets/standard/telecom/base.txt"
+      },
+      "selection_reason": "4 domain strata: retail 4, knowledge 3, telecom 2, airline 1; deterministic ID rank within the official standard subset",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-3674e29681759e",
+      "source_id": "babel-vitabench",
+      "native_id": "A0812003",
+      "domain": "cross",
+      "title": "複合業務 / cross",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/cross.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-61fec2d7588781",
+      "source_id": "babel-vitabench",
+      "native_id": "10807009",
+      "domain": "cross",
+      "title": "複合業務 / cross",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/cross.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-80dd2db8c8a94f",
+      "source_id": "babel-vitabench",
+      "native_id": "A0808005",
+      "domain": "cross",
+      "title": "複合業務 / cross",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/cross.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-8cd1f15c8addf7",
+      "source_id": "babel-vitabench",
+      "native_id": "A0807004",
+      "domain": "cross",
+      "title": "複合業務 / cross",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/cross.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-82e3942b104067",
+      "source_id": "babel-vitabench",
+      "native_id": "J0721001",
+      "domain": "delivery",
+      "title": "複合業務 / delivery",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/delivery.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-b21847fb7f2c28",
+      "source_id": "babel-vitabench",
+      "native_id": "G0721003",
+      "domain": "delivery",
+      "title": "複合業務 / delivery",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/delivery.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-1b20092a155457",
+      "source_id": "babel-vitabench",
+      "native_id": "10826084",
+      "domain": "instore",
+      "title": "複合業務 / instore",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/instore.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "babel-vitabench-237a29ae9b55c4",
+      "source_id": "babel-vitabench",
+      "native_id": "D0811007",
+      "domain": "ota",
+      "title": "複合業務 / ota",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "upstream_ja_assets_pending",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_domain_data_missing",
+        "customer_judge_calibration",
+        "native_controls",
+        "environment_reset"
+      ],
+      "source": {
+        "repository": "QwenLM/BabelArena",
+        "revision": "36960fbb7ee1aac5082fa7307264abc612a180f4",
+        "path": "data/vitabench/task_subsets/standard/ota.txt"
+      },
+      "selection_reason": "Cross-domain work is emphasized; delivery, in-store and travel remain represented. IDs selected before evaluating the target model.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-965185ebb02c67",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "78",
+      "domain": "lead_qualification",
+      "title": "営業実務 / lead_qualification",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "f9aa4aa85ebc9bc58290a10d64c3d07d3a48f705a4b19a053e0e5d0bfbc66fe0"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-ade234db47a6ab",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "47",
+      "domain": "lead_qualification",
+      "title": "営業実務 / lead_qualification",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "69eb3a934abfcb458f82c04cd54e9f0bfe70be111a001221bbf08b286ef02e05"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-8b71a2a4e6b99f",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "1772",
+      "domain": "quote_approval",
+      "title": "営業実務 / quote_approval",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "38d48a55e9b305d5dc3ea8666165ef03b061ae189203e348911334b61d694c3f"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-b1ac26961f8fbe",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "1837",
+      "domain": "quote_approval",
+      "title": "営業実務 / quote_approval",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "5edc13484b213462e0c3aa500d122cbf2b5dc079b8f6894a3a8e5e1832a5833f"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-1a67b9760db366",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "2097",
+      "domain": "sales_cycle_understanding",
+      "title": "営業実務 / sales_cycle_understanding",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "ac880eb3a23e3cb3dd6f085a810f75bac3016f956f32ee81ed0dc428058ba42a"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-4ea4a97fc8ac28",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "2118",
+      "domain": "sales_cycle_understanding",
+      "title": "営業実務 / sales_cycle_understanding",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "3d3a374ca9985d8add473315269296ff1831b3a3d4dbb0ab3f76848126b52208"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-9f1d83898d7c76",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "1287",
+      "domain": "wrong_stage_rectification",
+      "title": "営業実務 / wrong_stage_rectification",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "b89c495366da532034250c823c5231624a675836cd651b2313c0b2f974b10a2f"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "crmarena-pro-sales-ja-ffda5c5efdc5ca",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "1314",
+      "domain": "wrong_stage_rectification",
+      "title": "営業実務 / wrong_stage_rectification",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "dedicated_test_org_missing",
+        "org_initial_state_reset",
+        "japanese_requests_and_documents_review",
+        "native_metric_controls",
+        "asset_terms_review"
+      ],
+      "source": {
+        "repository": "Salesforce/CRMArenaPro",
+        "revision": "8c055f5b45f15f7d996ee99277c4d0ea5049c6a8",
+        "path": "tasks_b2b.json",
+        "record_sha256": "b61b816f338b63943897944d7e9a3bbb18ad5418f48d6c1f861d8877733a8b84"
+      },
+      "selection_reason": "Two cases from each of four sales workflow types; Quick includes lead qualification and quote approval. No connection to the public shared Salesforce org is attempted.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "frontier-algorithmic-f1d6b9705aebe8",
+      "source_id": "frontier-algorithmic",
+      "native_id": "7",
+      "domain": "circuit-construction",
+      "title": "Build a Computer",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "native_scoring_and_all_tests_controls",
+        "isolated_grading_host"
+      ],
+      "source": {
+        "repository": "FrontierCS/Frontier-CS",
+        "revision": "12ab26840cff15f1d0ab09004dafd07f92c14b60",
+        "path": "algorithmic/problems/7/statement.txt",
+        "file_sha256": "1c95ce615bf5c0baa70232b71e2871b85a400ca98f562878e8e89b40b950e2d3"
+      },
+      "selection_reason": "Six distinct construction/optimization families. Preserve all native tests and native resource/score formulas; do not normalize into a made-up overall score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "frontier-algorithmic-db2de93e059648",
+      "source_id": "frontier-algorithmic",
+      "native_id": "5",
+      "domain": "directed-path",
+      "title": "Hamiltonian Path Challenge",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "native_scoring_and_all_tests_controls",
+        "isolated_grading_host"
+      ],
+      "source": {
+        "repository": "FrontierCS/Frontier-CS",
+        "revision": "12ab26840cff15f1d0ab09004dafd07f92c14b60",
+        "path": "algorithmic/problems/5/statement.txt",
+        "file_sha256": "2a1ab924b01c43d4c9100ea61c090b08b7cd969382d49981a8daf97c7481fead"
+      },
+      "selection_reason": "Six distinct construction/optimization families. Preserve all native tests and native resource/score formulas; do not normalize into a made-up overall score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "frontier-algorithmic-81cb958bfe9f16",
+      "source_id": "frontier-algorithmic",
+      "native_id": "6",
+      "domain": "graph-map",
+      "title": "worldmap",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "native_scoring_and_all_tests_controls",
+        "isolated_grading_host"
+      ],
+      "source": {
+        "repository": "FrontierCS/Frontier-CS",
+        "revision": "12ab26840cff15f1d0ab09004dafd07f92c14b60",
+        "path": "algorithmic/problems/6/statement.txt",
+        "file_sha256": "9d77f88663313fde27dae5f5aae744e58d0e94ca121876b19cf6e40267a023f2"
+      },
+      "selection_reason": "Six distinct construction/optimization families. Preserve all native tests and native resource/score formulas; do not normalize into a made-up overall score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "frontier-algorithmic-c7b9a3dc196f7c",
+      "source_id": "frontier-algorithmic",
+      "native_id": "0",
+      "domain": "packing",
+      "title": "Pack the Polyominoes (Reflections Allowed)",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "native_scoring_and_all_tests_controls",
+        "isolated_grading_host"
+      ],
+      "source": {
+        "repository": "FrontierCS/Frontier-CS",
+        "revision": "12ab26840cff15f1d0ab09004dafd07f92c14b60",
+        "path": "algorithmic/problems/0/statement.txt",
+        "file_sha256": "2e2ce3156593f966b5c88f7aff769dfb44ba651a91ab8bdd8e6535ffc8b3973f"
+      },
+      "selection_reason": "Six distinct construction/optimization families. Preserve all native tests and native resource/score formulas; do not normalize into a made-up overall score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "frontier-algorithmic-ec200eb71d8a86",
+      "source_id": "frontier-algorithmic",
+      "native_id": "59",
+      "domain": "permutation-restoration",
+      "title": "Limited Shuffle Restoring",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "native_scoring_and_all_tests_controls",
+        "isolated_grading_host"
+      ],
+      "source": {
+        "repository": "FrontierCS/Frontier-CS",
+        "revision": "12ab26840cff15f1d0ab09004dafd07f92c14b60",
+        "path": "algorithmic/problems/59/statement.txt",
+        "file_sha256": "ec801e2d9dcced8c557510f97bd860a4db9ac5e934b21128515475886defa9f7"
+      },
+      "selection_reason": "Six distinct construction/optimization families. Preserve all native tests and native resource/score formulas; do not normalize into a made-up overall score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "frontier-algorithmic-3d056ea0831b1e",
+      "source_id": "frontier-algorithmic",
+      "native_id": "205",
+      "domain": "sequence-transformation",
+      "title": "Sequence Transformation",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "native_scoring_and_all_tests_controls",
+        "isolated_grading_host"
+      ],
+      "source": {
+        "repository": "FrontierCS/Frontier-CS",
+        "revision": "12ab26840cff15f1d0ab09004dafd07f92c14b60",
+        "path": "algorithmic/problems/205/statement.txt",
+        "file_sha256": "c8a790a50e407f2464742f830a92a5854fed8938b41acf6e186c42663eb62387"
+      },
+      "selection_reason": "Six distinct construction/optimization families. Preserve all native tests and native resource/score formulas; do not normalize into a made-up overall score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-0b088a3a11c0c4",
+      "source_id": "livecodebench",
+      "native_id": "abc392_g",
+      "domain": "atcoder",
+      "title": "Fine Triplets",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "853771b97b029d092b2e4980b88653523deaf1b9dc3538dbefd8ac851a74548f",
+        "official_ja_url": "https://atcoder.jp/contests/abc392/tasks/abc392_g?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-1761b861a0dbcb",
+      "source_id": "livecodebench",
+      "native_id": "abc392_c",
+      "domain": "atcoder",
+      "title": "Bib",
+      "difficulty": "medium",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "be6bfde397cf087886de94528904695b55553a82ef8347af35e9c4413986e95f",
+        "official_ja_url": "https://atcoder.jp/contests/abc392/tasks/abc392_c?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-17c091672360f9",
+      "source_id": "livecodebench",
+      "native_id": "abc388_c",
+      "domain": "atcoder",
+      "title": "Various Kagamimochi",
+      "difficulty": "medium",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "c0150d3ec2607024b3833e2c742b33deefe5fbee332dbf5e4ff3653df58b10e6",
+        "official_ja_url": "https://atcoder.jp/contests/abc388/tasks/abc388_c?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-443a46144bd42e",
+      "source_id": "livecodebench",
+      "native_id": "abc390_f",
+      "domain": "atcoder",
+      "title": "Double Sum 3",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "1ada7b1c511cbba4581d24c9ca2c91d919b0a1989ccb079ea2229c880535ffac",
+        "official_ja_url": "https://atcoder.jp/contests/abc390/tasks/abc390_f?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-4601a0e8d990cd",
+      "source_id": "livecodebench",
+      "native_id": "abc392_d",
+      "domain": "atcoder",
+      "title": "Doubles",
+      "difficulty": "medium",
+      "quick": true,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "15ae0e1d6ca4f99547f96d7647af2707d36d9cdb475c4a34e4fbf76937d28d85",
+        "official_ja_url": "https://atcoder.jp/contests/abc392/tasks/abc392_d?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-86c6ef2b210edd",
+      "source_id": "livecodebench",
+      "native_id": "abc389_a",
+      "domain": "atcoder",
+      "title": "9x9",
+      "difficulty": "easy",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "f910703c3ff57200a7bea92a54812361275ee99d810d91d0a327d12952087ac3",
+        "official_ja_url": "https://atcoder.jp/contests/abc389/tasks/abc389_a?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-8c6655d5976c72",
+      "source_id": "livecodebench",
+      "native_id": "abc390_d",
+      "domain": "atcoder",
+      "title": "Stone XOR",
+      "difficulty": "medium",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "02bc91f67c29c2d0b801ebc074bbb1539493b2aa6bce17f8a862def507eacb0b",
+        "official_ja_url": "https://atcoder.jp/contests/abc390/tasks/abc390_d?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-9a7df49b21a566",
+      "source_id": "livecodebench",
+      "native_id": "abc388_d",
+      "domain": "atcoder",
+      "title": "Coming of Age Celebration",
+      "difficulty": "medium",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "116d432ed79c01b24d5eae405d07394ee2207d91c46295bf2b9ac9d4464c9380",
+        "official_ja_url": "https://atcoder.jp/contests/abc388/tasks/abc388_d?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-9b608187fee204",
+      "source_id": "livecodebench",
+      "native_id": "abc390_e",
+      "domain": "atcoder",
+      "title": "Vitamin Balance",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "ca2d0a705811a38f3579f659cc457009bcbde9caa77fd476e23a4375d6d99b94",
+        "official_ja_url": "https://atcoder.jp/contests/abc390/tasks/abc390_e?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-a9be6c940bf39b",
+      "source_id": "livecodebench",
+      "native_id": "abc389_f",
+      "domain": "atcoder",
+      "title": "Rated Range",
+      "difficulty": "hard",
+      "quick": true,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "2075b09530206be6f2efbd645b5ff667781d4bbc8c1f7584f0e086aa5bc71fe8",
+        "official_ja_url": "https://atcoder.jp/contests/abc389/tasks/abc389_f?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-ae5e459b19ddb5",
+      "source_id": "livecodebench",
+      "native_id": "abc391_f",
+      "domain": "atcoder",
+      "title": "K",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "de863761fc1d6a0660f2d64a0ee31cb011b8c0e40b30605a5360d4bcc4467b5a",
+        "official_ja_url": "https://atcoder.jp/contests/abc391/tasks/abc391_f?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-b1640de796c804",
+      "source_id": "livecodebench",
+      "native_id": "abc388_e",
+      "domain": "atcoder",
+      "title": "Simultaneous Kagamimochi",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "f4892cfc659551946fb9019d47a98ba7ded49f7be7cc180a44a19284ff109888",
+        "official_ja_url": "https://atcoder.jp/contests/abc388/tasks/abc388_e?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-c31e68d3bafe4d",
+      "source_id": "livecodebench",
+      "native_id": "abc393_a",
+      "domain": "atcoder",
+      "title": "Poisonous Oyster",
+      "difficulty": "easy",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "23dcb594f9d4147b9633134100b51a2c8898a97d0a6cee281e776c589181b547",
+        "official_ja_url": "https://atcoder.jp/contests/abc393/tasks/abc393_a?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-c40a21d2958f6f",
+      "source_id": "livecodebench",
+      "native_id": "abc390_c",
+      "domain": "atcoder",
+      "title": "Paint to make a rectangle",
+      "difficulty": "medium",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "edbdbca976bc6465540fe9919e5de19c53e072ad588d3178f6fe9e6fb0f4e77a",
+        "official_ja_url": "https://atcoder.jp/contests/abc390/tasks/abc390_c?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-cd818803e43993",
+      "source_id": "livecodebench",
+      "native_id": "abc389_d",
+      "domain": "atcoder",
+      "title": "Squares in Circle",
+      "difficulty": "medium",
+      "quick": true,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "3fd1c7e604f52293172ef5be3e2e096a6e7baa594c9199dca7d5994807b5dc29",
+        "official_ja_url": "https://atcoder.jp/contests/abc389/tasks/abc389_d?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-dcd20b6cb31f36",
+      "source_id": "livecodebench",
+      "native_id": "abc388_g",
+      "domain": "atcoder",
+      "title": "Simultaneous Kagamimochi 2",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "83162178e46c9a49ec151e3d192d1142d0ae41e2047589794cd3f5f98badfe38",
+        "official_ja_url": "https://atcoder.jp/contests/abc388/tasks/abc388_g?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-e170a8fbde905d",
+      "source_id": "livecodebench",
+      "native_id": "abc390_b",
+      "domain": "atcoder",
+      "title": "Geometric Sequence",
+      "difficulty": "easy",
+      "quick": true,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "9050b3d229f8d9368f572597e365aef0f9ccf72c996d93321035b2993503d2c5",
+        "official_ja_url": "https://atcoder.jp/contests/abc390/tasks/abc390_b?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "livecodebench-e26710011a6c1e",
+      "source_id": "livecodebench",
+      "native_id": "abc391_a",
+      "domain": "atcoder",
+      "title": "Lucky Direction",
+      "difficulty": "easy",
+      "quick": false,
+      "language_status": "native_ja_available",
+      "execution_ready": false,
+      "readiness_gates": [
+        "official_ja_fetch_review",
+        "native_all_tests_controls"
+      ],
+      "source": {
+        "repository": "livecodebench/code_generation_lite",
+        "revision": "0fe84c3912ea0c4d4a78037083943e8f0c4dd505",
+        "path": "test6.jsonl",
+        "record_sha256": "e6103738292c04a6255357adb67c5af95fea5d755c2bb143934e7b946b49f713",
+        "official_ja_url": "https://atcoder.jp/contests/abc391/tasks/abc391_a?lang=ja"
+      },
+      "selection_reason": "4 easy, 7 medium, 7 hard; four current development tasks excluded. Candidate pool is the documented source JSONL ranges, not a claim of full-release representativeness.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-665f4742bceccc",
+      "source_id": "salesllm-ja",
+      "native_id": "9d6f6212-0921-49eb-bb7a-e1605f390585_17",
+      "domain": "easy",
+      "title": "営業対話 / easy",
+      "difficulty": "easy",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "75082c2d68f95a0b9ff6eec87b6bcfe889b12a0779662d8cc2bcbe1ecd400a5f",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-ab52943223c803",
+      "source_id": "salesllm-ja",
+      "native_id": "ce067c2b-5fe2-4cc3-a39b-1254e83aaff1_19",
+      "domain": "easy",
+      "title": "営業対話 / easy",
+      "difficulty": "easy",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "88ee4b269e19afe8b0900023774d7ae636cd3be76af11546aa23bad88971108b",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-d50c9821617dd2",
+      "source_id": "salesllm-ja",
+      "native_id": "cc10f6c2-6d0c-4b11-80c7-eea9ec29839c_15",
+      "domain": "easy",
+      "title": "営業対話 / easy",
+      "difficulty": "easy",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "34d91685ced94663266545f45f31b7cbda5356b4d14f2349ba2161208a5d6587",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-4bbbff491a13f8",
+      "source_id": "salesllm-ja",
+      "native_id": "b2337796-d426-4694-8c8f-b414c3f868d7_28",
+      "domain": "hard",
+      "title": "営業対話 / hard",
+      "difficulty": "hard",
+      "quick": true,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "24e40651aba0f4d61c670ad31674ed32aea805d0173d262d3fd8d3d107e2e0ca",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-88b7570dd8bfb8",
+      "source_id": "salesllm-ja",
+      "native_id": "93ece519-51b6-422b-b08c-939b66f6574e_29",
+      "domain": "hard",
+      "title": "営業対話 / hard",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "15275582ea918b4d4046bc290ead8a7d82952ba4f6b54fd00c09a220eb9f6932",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-e22fb070a39770",
+      "source_id": "salesllm-ja",
+      "native_id": "f519ddfa-d1a8-456c-a135-2c805f682aed_29",
+      "domain": "hard",
+      "title": "営業対話 / hard",
+      "difficulty": "hard",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "9521bf290ed23d269287a1f40b10dced4705b687188b1dfda751f91932ee301d",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-43cd4bda1a60dc",
+      "source_id": "salesllm-ja",
+      "native_id": "ddf16a15-d9af-40df-826e-9d64ed9ee836_20",
+      "domain": "medium",
+      "title": "営業対話 / medium",
+      "difficulty": "medium",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "23fb2c5bed2c7472902b1278dad3d51e875180c3438748925d8027cd69e8f992",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-837d789635b9af",
+      "source_id": "salesllm-ja",
+      "native_id": "67f08d1d-efc8-4dbd-9e16-244ff969f5b4_22",
+      "domain": "medium",
+      "title": "営業対話 / medium",
+      "difficulty": "medium",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "e294e0991103d201b55363c12870dbe0fc527f5e86e0ed60f3dcbb3e054e333e",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-fc00d1f180a2fa",
+      "source_id": "salesllm-ja",
+      "native_id": "f0471955-8f90-4859-bbdf-27a6885b6437_23",
+      "domain": "medium",
+      "title": "営業対話 / medium",
+      "difficulty": "medium",
+      "quick": true,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "b68a131d38fa04a7fcb8918fa750e110580cc0a0e4c68713a61b0aa1a31fb7ce",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-184dd884da679d",
+      "source_id": "salesllm-ja",
+      "native_id": "a78151ad-7ed8-4dc9-8a62-1f9efeef7c15_29",
+      "domain": "very_hard",
+      "title": "営業対話 / very_hard",
+      "difficulty": "very_hard",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "2d066a6b027997ebd84e4df5466dc05de053a5181b682c4d1577361110ce7553",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-b2fb3906eeb729",
+      "source_id": "salesllm-ja",
+      "native_id": "8c095bb5-5bf9-4ebe-a6a3-91fc1fec1b56_30",
+      "domain": "very_hard",
+      "title": "営業対話 / very_hard",
+      "difficulty": "very_hard",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "c11096134550548aa94c0d7db28ba940b88b3e0e9bcfacab6c03fc28414b1ade",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "salesllm-ja-b74bcfada8a7f5",
+      "source_id": "salesllm-ja",
+      "native_id": "c5f1ef59-a1b9-428a-804b-8e8ba3b8360a_29",
+      "domain": "very_hard",
+      "title": "営業対話 / very_hard",
+      "difficulty": "very_hard",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_script_review",
+        "customer_fidelity_calibration",
+        "purchase_intent_calibration",
+        "process_judge_calibration"
+      ],
+      "source": {
+        "repository": "Bairong-Xdynamics/Benchmarking-LLM-Realistic-Selling-Skill",
+        "revision": "782c0d22db7c931166e05c163c964b925119376c",
+        "path": "data/benchmark/conversations_805_en.jsonl",
+        "record_sha256": "60ac1bcf40278bae0baaf01870c45c684a560557a843fc92336dcdd34c73df9f",
+        "reported_language_metadata": "chinese",
+        "observed_prompt_language": "en"
+      },
+      "selection_reason": "Three distinct scenario UUIDs per difficulty; 12 unique base scripts prevent repeated personas from inflating case diversity. Japanese is an adaptation, not the official EN/ZH score.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-03f9e74623bd5a",
+      "source_id": "scicode-verified",
+      "native_id": "16.1",
+      "domain": "independent-first-subproblem",
+      "title": "Davidson_method",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "8a18ab296439fde4a58c8673c66b5338325bc26f21c33a2f45e6acc704f308aa"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-2c2ff41674a12c",
+      "source_id": "scicode-verified",
+      "native_id": "45.1",
+      "domain": "independent-first-subproblem",
+      "title": "finite_difference_heat_equation",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "ef2733d26cef1214af230f72ca578cb98e0c741a1340c11df7fa4af5a8fd963f"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-31fd2682091522",
+      "source_id": "scicode-verified",
+      "native_id": "23.1",
+      "domain": "independent-first-subproblem",
+      "title": "Blahut_Arimoto",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "bf3d381594118b0766c687877cc4108c84238820f776af21ad0db28cea5a2034"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-396a2ddf685ccb",
+      "source_id": "scicode-verified",
+      "native_id": "76.1",
+      "domain": "independent-first-subproblem",
+      "title": "protein_dna_binding",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "5d283c84885d072e759b0e042d5976a4e5d92c45975df4dbd7d407b5ff4168b5"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-4d3494751dd023",
+      "source_id": "scicode-verified",
+      "native_id": "13.1",
+      "domain": "independent-first-subproblem",
+      "title": "Maxwell_Equation_Solver",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "941f25c811c945dec8006c9bb977b3862da28a633d75987dc88ab34a31fa6368"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-7cf6dfa79d0c63",
+      "source_id": "scicode-verified",
+      "native_id": "24.1",
+      "domain": "independent-first-subproblem",
+      "title": "Burgers_equation",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "73edcc6fd6ab52618445932ec3dd0d1fb95c812359768037d879ede6bbacaf57"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-9d2d6ef429ebb1",
+      "source_id": "scicode-verified",
+      "native_id": "9.1",
+      "domain": "independent-first-subproblem",
+      "title": "Weighted_Jacobi",
+      "difficulty": "unclassified",
+      "quick": true,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "afed23f8f4385f4a4855e579e49e3b112ac5beec6ee8ab8af208d1c26b2fb6ea"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-b0f3f393e362ce",
+      "source_id": "scicode-verified",
+      "native_id": "5.1",
+      "domain": "independent-first-subproblem",
+      "title": "Lanczos",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "8801f9ca86c88f8f19bade067b5803ec445c1681be226dbc310e4cef111b553e"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-bf78e1706f896f",
+      "source_id": "scicode-verified",
+      "native_id": "18.1",
+      "domain": "independent-first-subproblem",
+      "title": "NURBS",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "f41c16d1d61f32eae077b459a53104a4af2c2f9179f7866ed07ecf5333e2d27b"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "scicode-verified-f58c27fb7aaf10",
+      "source_id": "scicode-verified",
+      "native_id": "8.1",
+      "domain": "independent-first-subproblem",
+      "title": "Spatial_filters_III",
+      "difficulty": "unclassified",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "japanese_translation_review",
+        "cleaned_hdf5_lock",
+        "two_era_positive_negative_controls"
+      ],
+      "source": {
+        "repository": "shhu2001/SciCode-Verified",
+        "revision": "eea11a866be6860725258702b39ef8651ed26abd",
+        "path": "data/problems_test.jsonl",
+        "record_sha256": "7cfff538c4ddeb149323a42c531ce03c542a19a66c9ca64f4faa930c722814da"
+      },
+      "selection_reason": "Ten distinct main-problem clusters; each is the first subproblem, so no prior generated solution is silently omitted. Linear algebra, information, geometry and physical PDE methods are represented.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-af512271fa8b2a",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_NodeBB__NodeBB-04998908ba6721d64eba79ae3b65a351dcfbc5b5-vnan",
+      "domain": "NodeBB__NodeBB",
+      "title": "リポジトリ修正 / NodeBB__NodeBB",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_NodeBB__NodeBB-04998908ba6721d64eba79ae3b65a351dcfbc5b5-vnan/task.toml",
+        "file_sha256": "c1a952c1d1739dfd848b6cb61a6f04f8b82dc1612dc4cacac29c02fa0796eea9"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-e9985db1055f1d",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_ansible__ansible-5d253a13807e884b7ce0b6b57a963a45e2f0322c-v1055803c3a812189a1133297f7f5468579283f86",
+      "domain": "ansible__ansible",
+      "title": "リポジトリ修正 / ansible__ansible",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_ansible__ansible-5d253a13807e884b7ce0b6b57a963a45e2f0322c-v1055803c3a812189a1133297f7f5468579283f86/task.toml",
+        "file_sha256": "213857b41d3915a406b2006f517e0e56ee146bc29591d19dfe0189c892358d2f"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-884dc8c7834a55",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_flipt-io__flipt-a0cbc0cb65ae601270bdbe3f5313e2dfd49c80e4",
+      "domain": "flipt-io__flipt",
+      "title": "リポジトリ修正 / flipt-io__flipt",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_flipt-io__flipt-a0cbc0cb65ae601270bdbe3f5313e2dfd49c80e4/task.toml",
+        "file_sha256": "27d5d78ba341f96600c2be91b8badfa476010ac43b2a007774ddc30475635a67"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-42aa1e7534263d",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_gravitational__teleport-8302d467d160f869b77184e262adbe2fbc95d9ba-vce94f93ad1030e3136852817f2423c1b3ac37bc4",
+      "domain": "gravitational__teleport",
+      "title": "リポジトリ修正 / gravitational__teleport",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_gravitational__teleport-8302d467d160f869b77184e262adbe2fbc95d9ba-vce94f93ad1030e3136852817f2423c1b3ac37bc4/task.toml",
+        "file_sha256": "71548221109cdae98f44111a1c1f04a150db24f9826df3a12eaa709a1b04bbf5"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-f1f79e7e5d6df3",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_internetarchive__openlibrary-3c48b4bb782189e0858e6c3fc7956046cf3e1cfb-v2d9a6c849c60ed19fd0858ce9e40b7cc8e097e59",
+      "domain": "internetarchive__openlibrary",
+      "title": "リポジトリ修正 / internetarchive__openlibrary",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_internetarchive__openlibrary-3c48b4bb782189e0858e6c3fc7956046cf3e1cfb-v2d9a6c849c60ed19fd0858ce9e40b7cc8e097e59/task.toml",
+        "file_sha256": "2d1c18f2d37128f27dac1d442adbac4e1654830a98e8d0a69d1a360c1f02bb04"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-4dafb7fa545c1a",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_navidrome__navidrome-6b3b4d83ffcf273b01985709c8bc5df12bbb8286",
+      "domain": "navidrome__navidrome",
+      "title": "リポジトリ修正 / navidrome__navidrome",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_navidrome__navidrome-6b3b4d83ffcf273b01985709c8bc5df12bbb8286/task.toml",
+        "file_sha256": "519695c0f27bdfd26b936a1519260aaab14fda3dbfd1b3a3c0807a496cb4f6da"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-492f1d7fb406dc",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_protonmail__webclients-8afd9ce04c8dde9e150e1c2b50d32e7ee2efa3e7",
+      "domain": "protonmail__webclients",
+      "title": "リポジトリ修正 / protonmail__webclients",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_protonmail__webclients-8afd9ce04c8dde9e150e1c2b50d32e7ee2efa3e7/task.toml",
+        "file_sha256": "1beba78499d62e2c84af4fec0d5dc8092687068a18c11bfbdbfeafdd1df15899"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    },
+    {
+      "id": "swebench-pro-v2-ja-05e7ebdf44f41d",
+      "source_id": "swebench-pro-v2-ja",
+      "native_id": "instance_qutebrowser__qutebrowser-8f46ba3f6dc7b18375f7aa63c48a1fe461190430-v2ef375ac784985212b1805e1d0431dc8f1b3c171",
+      "domain": "qutebrowser__qutebrowser",
+      "title": "リポジトリ修正 / qutebrowser__qutebrowser",
+      "difficulty": "V2-public",
+      "quick": false,
+      "language_status": "translation_required",
+      "execution_ready": false,
+      "readiness_gates": [
+        "linux_amd64_executor",
+        "japanese_instruction_review",
+        "fixed_agent",
+        "fresh_image_regrade_controls"
+      ],
+      "source": {
+        "repository": "scaleapi/SWE-bench_Pro-os",
+        "revision": "66f92766bba642462d4bbe5479e83f91f9211862",
+        "path": "v2/tasks/instance_qutebrowser__qutebrowser-8f46ba3f6dc7b18375f7aa63c48a1fe461190430-v2ef375ac784985212b1805e1d0431dc8f1b3c171/task.toml",
+        "file_sha256": "8961da64783ada0344cfb0ede1d5d6e3fad2e325a6795f93c947fecb96e178f8"
+      },
+      "selection_reason": "Eight distinct repositories (Python, Go and web code). One stable ID per repository; no target-model result or reference patch is used for selection.",
+      "selection_basis": "source metadata; no target-model results"
+    }
+  ]
+}

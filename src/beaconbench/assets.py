@@ -23,11 +23,15 @@ def install_pack(root: Path, pack: dict) -> dict:
         identities.add(case['id'])
         if not {'title', 'category', 'generation', 'grader'}.issubset(case):
             raise BenchError('ケースの生成条件または採点条件がありません。')
-        if case['generation'].get('adapter', 'chat') != 'chat':
+        adapter = case['generation'].get('adapter', 'chat')
+        if adapter not in {'chat', 'native', 'dialogue'}:
             raise BenchError('未対応の生成アダプターです。')
-        if set(case['generation']) - {'adapter', 'messages'}:
-            raise BenchError('単発Chatで未対応の生成設定があります。黙って無視せず取込を停止しました。')
-        if case['grader'].get('kind') not in {'diagnostic_exact', 'command'}:
+        allowed = {'chat': {'adapter', 'messages'},
+                   'native': {'adapter', 'executor_id', 'family', 'native_id', 'domain', 'helpers', 'policy', 'language_pack_ref'},
+                   'dialogue': {'adapter', 'script', 'helpers', 'policy', 'native_end_conditions', 'language_pack_ref'}}[adapter]
+        if set(case['generation']) - allowed:
+            raise BenchError('このアダプターで未対応の生成設定があります。黙って無視せず取込を停止しました。')
+        if case['grader'].get('kind') not in {'diagnostic_exact', 'command', 'salesllm_ja'}:
             raise BenchError('未対応の採点器です。')
         if pack['track'] != 'diagnostic' and case['grader']['kind'] == 'diagnostic_exact':
             raise BenchError('接続診断の採点器は通常ベンチマークへ使えません。')
@@ -37,6 +41,19 @@ def install_pack(root: Path, pack: dict) -> dict:
                 raise BenchError('入力メッセージがありません。')
             if not all(isinstance(row, dict) and row.get('role') in {'system', 'user', 'assistant'} and isinstance(row.get('content'), str) for row in messages):
                 raise BenchError('単発入力のメッセージ形式が不正です。')
+        elif adapter == 'native':
+            if not all(isinstance(case['generation'].get(key), str) and case['generation'][key] for key in ('executor_id', 'family', 'native_id')):
+                raise BenchError('nativeの実行器・系列・元の問題IDが不足しています。')
+        else:
+            script = case['generation'].get('script', {})
+            if script.get('language') != pack['language'] or not all(isinstance(script.get(key), str) and script[key] for key in ('assistant_system_prompt', 'customer_system_prompt', 'trigger_sentence')):
+                raise BenchError('営業対話の同じ言語の顧客・営業・開始文が不足しています。')
+            end = case['generation'].get('native_end_conditions', {})
+            if 'generated_turn_limit' in end and (type(end['generated_turn_limit']) is not int or end['generated_turn_limit'] < 1 or not end.get('source')):
+                raise BenchError('対話上限を使う場合は、公式の終了条件と出典を指定してください。')
+        if case['grader'].get('kind') == 'salesllm_ja':
+            if adapter != 'dialogue' or not {'quality_prompt', 'intent_prompt', 'language_prompt', 'native_id'} <= set(case['grader']):
+                raise BenchError('営業採点には日本語対話と固定した品質・意向・言語の判定文が必要です。')
         # Retrieval timestamps, other cases' receipts, suite size and grader
         # policy are not generation inputs. Each case may pin extra environment
         # identity explicitly; its actual messages are always hashed in full.

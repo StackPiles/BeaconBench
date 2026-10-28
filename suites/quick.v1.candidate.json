@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.4.0",
+  "suite_id": "quick.v1.candidate",
+  "status": "candidate_selected",
+  "selection_frozen": false,
+  "execution_ready": false,
+  "language": "ja",
+  "cases_target": 20,
+  "selection_ref": "catalog/selection.v1.candidate.json",
+  "case_refs": [
+    "babel-claw-85316b98f74661",
+    "babel-claw-ba4cff7afed205",
+    "babel-claw-d66f4ebea99821",
+    "babel-deepplanning-c7c5c61a7d130b",
+    "babel-deepplanning-953f2a15572382",
+    "babel-tau3-872c9ff25615fb",
+    "babel-tau3-f98e8f70070cb4",
+    "babel-vitabench-8cd1f15c8addf7",
+    "babel-vitabench-1b20092a155457",
+    "crmarena-pro-sales-ja-965185ebb02c67",
+    "crmarena-pro-sales-ja-8b71a2a4e6b99f",
+    "frontier-algorithmic-c7b9a3dc196f7c",
+    "livecodebench-4601a0e8d990cd",
+    "livecodebench-a9be6c940bf39b",
+    "livecodebench-cd818803e43993",
+    "livecodebench-e170a8fbde905d",
+    "salesllm-ja-4bbbff491a13f8",
+    "salesllm-ja-fc00d1f180a2fa",
+    "scicode-verified-2c2ff41674a12c",
+    "scicode-verified-9d2d6ef429ebb1"
+  ],
+  "subset_of": "detailed.v1.candidate",
+  "limits": {
+    "total_output_tokens": null,
+    "tool_calls": null,
+    "agent_turns": null,
+    "framework_deadline_seconds": null
+  }
+}

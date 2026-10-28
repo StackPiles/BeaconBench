@@ -156,6 +156,13 @@ def main() -> None:
     detailed = read_json(ROOT / 'suites/detailed.v0.draft.json')
     protocol = read_json(ROOT / 'protocols/common-ja.v0.draft.json')
     validate_blueprints(catalog, quick, detailed, protocol)
+    from beaconbench.selection import validate_selection
+    selection = read_json(ROOT / 'catalog/selection.v1.candidate.json')
+    schema = read_json(ROOT / 'schemas/selection.schema.json')
+    Draft202012Validator.check_schema(schema)
+    Draft202012Validator(schema).validate(selection)
+    selected = validate_selection(selection, read_json(ROOT / 'suites/quick.v1.candidate.json'),
+                                  read_json(ROOT / 'suites/detailed.v1.candidate.json'))
     defaults = read_json(ROOT / 'execution/default.v0.draft.json')
     require(defaults['status'] == 'draft' and defaults['execution_ready'] is False, 'Run defaults must stay draft')
     validate_run_settings(defaults['settings'])
@@ -174,6 +181,7 @@ def main() -> None:
                       'quick_cases_proposed': quick['cases_target'], 'detailed_cases_proposed': detailed['cases_target'],
                       'default_trials_per_case': defaults['settings']['trials_per_case'],
                       'execution_ready': False, 'model_calls': 0, 'downloads_in_check': 0}, ensure_ascii=False))
+    print(json.dumps(selected, ensure_ascii=False))
 
 
 if __name__ == '__main__':

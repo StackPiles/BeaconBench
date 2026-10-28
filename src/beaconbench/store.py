@@ -42,7 +42,14 @@ class Store:
         pack = load_pack(self.root, suite)
         models = [self.registry.get('models', identity) for identity in value['model_ids']]
         executors = {}
+        case_bindings, native_executors = {}, {}
         for case in pack['cases']:
+            from .adapters.bindings import resolve_case
+            helpers, native_executor = resolve_case(self, case, suite['track'])
+            if helpers:
+                case_bindings[case['id']] = helpers
+            if native_executor:
+                native_executors[case['id']] = native_executor
             if case['grader']['kind'] == 'command':
                 executor = self.registry.get('executors', case['grader']['executor_id'])
                 from .qualification import verify_qualification
@@ -56,6 +63,7 @@ class Store:
                 combos.append({'id': identity, 'model': copy.deepcopy(model), 'preset': copy.deepcopy(preset), 'request_parameters': parameters})
         plan = {'schema_version': '0.3.0', 'plan_id': 'p-' + uuid.uuid4().hex, 'created_at': utc(),
                 'suite': suite, 'run_settings': settings, 'combinations': combos, 'executors': executors,
+                'case_bindings': case_bindings, 'native_executors': native_executors,
                 'case_count': len(pack['cases']), 'planned_trials': len(combos) * len(pack['cases']) * settings['trials_per_case'],
                 'planned_api_calls': None, 'runtime_revision': runtime_revision(),
                 'framework_limits': {'total_output_tokens': None, 'tool_calls': None, 'agent_turns': None, 'framework_deadline_seconds': None},
@@ -75,10 +83,15 @@ class Store:
         return read_json(self.root / 'plans' / (slug(identity) + '.json'))
 
     def public_plan(self, plan: dict) -> dict:
-        result = {key: copy.deepcopy(row) for key, row in plan.items() if key not in {'combinations', 'executors'}}
+        result = {key: copy.deepcopy(row) for key, row in plan.items() if key not in {'combinations', 'executors', 'case_bindings', 'native_executors'}}
         result['combinations'] = [{'id': row['id'], 'model': self.registry.public_model(row['model']),
                                    'preset': row['preset'], 'request_parameters': row['request_parameters']} for row in plan['combinations']]
         result['evaluation_executors'] = [{'id': row['id'], 'name': row.get('name', row['id']), 'qualified': bool(row.get('qualified'))} for row in plan['executors'].values()]
+        result['helper_instruments'] = [{'case_id': case_id, 'role': role, 'model': self.registry.public_model(row['model']),
+                                         'preset': row['preset'], 'request_parameters': row['request_parameters'], 'policy': row['policy']}
+                                        for case_id, roles in plan.get('case_bindings', {}).items() for role, row in roles.items()]
+        result['native_execution'] = [{'case_id': key, 'id': row['id'], 'family': row['family']}
+                                      for key, row in plan.get('native_executors', {}).items()]
         return result
 
     def run_path(self, identity: str) -> Path:
@@ -124,6 +137,8 @@ class Store:
             value = copy.deepcopy(suite)
             try:
                 for case in load_pack(self.root, suite)['cases']:
+                    from .adapters.bindings import resolve_case
+                    resolve_case(self, case, suite['track'])
                     if case['grader']['kind'] == 'command':
                         executor = self.registry.get('executors', case['grader']['executor_id'])
                         verify_qualification(self.root, executor, case)
@@ -134,7 +149,10 @@ class Store:
         return rows
 
     def lease_keys(self, plan: dict) -> list[str]:
-        return sorted({digest(row['model']['engine'].get('resource_group') or row['model']['base_url']) for row in plan['combinations']})
+        rows = list(plan['combinations']) + [row for roles in plan.get('case_bindings', {}).values() for row in roles.values()]
+        keys = {digest(row['model']['engine'].get('resource_group') or row['model']['base_url']) for row in rows}
+        keys.update(digest(row['resource_group']) for row in plan.get('native_executors', {}).values() if row.get('resource_group'))
+        return sorted(keys)
 
     def reserve(self, identity: str, plan: dict) -> None:
         acquired = []

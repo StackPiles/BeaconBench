@@ -37,7 +37,18 @@ def file_sha(path: Path) -> str:
 def read_json(path: Path) -> Any:
     def bad_constant(value):
         raise BenchError('有限数以外のJSON値は使えません。')
-    value = json.loads(path.read_text(encoding='utf-8-sig'), parse_constant=bad_constant)
+    # Windows can briefly deny a reader while an atomic metadata replacement
+    # or antivirus handle is being released. Do not turn that race into a run
+    # failure, and do not hide a persistent permission error.
+    for attempt in range(6):
+        try:
+            text = path.read_text(encoding='utf-8-sig')
+            break
+        except PermissionError:
+            if os.name != 'nt' or attempt == 5:
+                raise
+            time.sleep(.02 * (attempt + 1))
+    value = json.loads(text, parse_constant=bad_constant)
     canonical(value)  # Also reject numeric overflow such as 1e999.
     return value
 

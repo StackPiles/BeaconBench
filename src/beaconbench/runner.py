@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import copy
 import json
+import math
 import os
 import subprocess
 import sys
@@ -127,7 +128,10 @@ class Worker:
         seed = trial_seed(self.plan['run_settings']['seed_policy']['base_seed'], case['id'], case['generation_revision'], index)
         effective_model = {key: value for key, value in combination['model'].items() if key not in {'id', 'name'}}
         value = {'case_id': case['id'], 'case_revision': case['generation_revision'], 'trial_index': index, 'seed': seed,
-                 'model': effective_model, 'parameters': combination['request_parameters'], 'runtime': self.plan['runtime_revision']}
+                 'model': effective_model, 'parameters': combination['request_parameters'], 'runtime': self.plan['runtime_revision'],
+                 'helpers': {role: binding for role, binding in self.plan.get('case_bindings', {}).get(case['id'], {}).items()
+                             if case['generation'].get('adapter') == 'native' or role in case['generation'].get('helpers', {})},
+                 'native_executor': self.plan.get('native_executors', {}).get(case['id'])}
         return digest(value), seed
 
     def records(self):
@@ -168,20 +172,42 @@ class Worker:
                     active_model={'id': combination['model']['id'], 'name': combination['model']['name']}, received_characters=0,
                     message='回答を生成しています。途中の原本も保存しています。')
         self.event('trial_started', combination_id=combination['id'], case_id=case['id'], trial_index=index, seed=seed)
-        if case['generation'].get('adapter', 'chat') != 'chat':
-            raise BenchError('この生成アダプターはまだ実装されていません。')
-        request = {**combination['request_parameters'], 'messages': copy.deepcopy(case['generation']['messages']), 'seed': seed}
-        response = await chat(combination['model'], request, attempt / 'calls' / '000000', 'target', self.stopped,
-                              lambda fields: self.status(**fields))
-        answer = response['message'].get('content') or ''
-        if response['message'].get('tool_calls'):
-            raise BenchError('単発コード課題で予期しないツール呼び出しが返りました。原本を確認してください。')
+        adapter = case['generation'].get('adapter', 'chat')
+        task_seconds = None
+        if adapter == 'chat':
+            request = {**combination['request_parameters'], 'messages': copy.deepcopy(case['generation']['messages']), 'seed': seed}
+            response = await chat(combination['model'], request, attempt / 'calls' / '000000', 'target', self.stopped,
+                                  lambda fields: self.status(**fields))
+            answer = response['message'].get('content') or ''
+            termination = response['measurement']['termination']
+            if response['message'].get('tool_calls'):
+                raise BenchError('単発コード課題で予期しないツール呼び出しが返りました。原本を確認してください。')
+            task_seconds = time.monotonic() - start
+        else:
+            roles = {'target': {'model': combination['model'], 'request_parameters': combination['request_parameters']},
+                     **self.plan.get('case_bindings', {}).get(case['id'], {})}
+            if adapter == 'native':
+                from .adapters.native import execute
+                native = await execute(self.plan['native_executors'][case['id']],
+                    {'case_id': case['id'], 'generation': case['generation']}, roles, attempt,
+                    self.stopped, lambda fields: self.status(**fields), request_seed=seed)
+                task_seconds = native.get('task_wall_seconds')
+                if task_seconds is not None and (type(task_seconds) not in (int, float) or not math.isfinite(task_seconds) or task_seconds < 0):
+                    raise BenchError('nativeの課題時間の形式が不正です。')
+                answer = native['answer']; termination = native.get('termination', 'native_process_completed')
+            elif adapter == 'dialogue':
+                from .adapters.dialogue import generate
+                native = await generate(case['generation'], roles, attempt, self.stopped, lambda fields: self.status(**fields), seed)
+                task_seconds = native['task_wall_seconds']; answer = native['answer']; termination = native['termination']
+            else:
+                raise BenchError('未対応の生成アダプターです。')
         answer_path = attempt / 'final-answer.txt'
         answer_path.write_text(answer, encoding='utf-8', newline='')
         requests = saved_requests(attempt)
         snapshot = {'status': 'generated', 'case_id': case['id'], 'combination_id': combination['id'], 'trial_index': index,
-                    'seed': seed, 'seed_effective': 'unknown', 'task_wall_seconds': time.monotonic() - start, 'role_totals': request_totals(requests),
-                    'termination': response['measurement']['termination'], 'completed_at': utc()}
+                    'seed': seed, 'seed_effective': 'unknown', 'task_wall_seconds': task_seconds,
+                    'pipeline_wall_seconds': time.monotonic() - start, 'role_totals': request_totals(requests),
+                    'termination': termination, 'completed_at': utc()}
         write_once(attempt / 'trial.json', snapshot)
         files = {path.relative_to(self.store.root).as_posix(): file_sha(path) for path in attempt.rglob('*') if path.is_file() and path.name != '.write.lock'}
         record = {'generation_fingerprint': fingerprint, 'case_id': case['id'], 'trial_index': index,
@@ -194,7 +220,9 @@ class Worker:
 
     async def grade(self, combination, case, index, folder, complete):
         executor = self.plan['executors'].get(case['grader'].get('executor_id'))
-        grade_key = digest({'answer_sha': complete['files'][complete['answer_ref']], 'grader': case['grader'], 'executor': executor})
+        helpers = self.plan.get('case_bindings', {}).get(case['id'], {})
+        grade_key = digest({'answer_sha': complete['files'][complete['answer_ref']], 'generation_fingerprint': complete['generation_fingerprint'], 'grader': case['grader'], 'executor': executor,
+                            'helpers': helpers})
         grades = folder / 'grades' / grade_key
         if (grades / 'complete.json').exists():
             marker = read_json(grades / 'complete.json')
@@ -213,7 +241,16 @@ class Worker:
         else:
             payload = {'case_id': case['id'], 'answer': answer, 'grader': case['grader'], 'run_id': self.identity,
                        'trial_index': index, 'seed': read_json(inside(self.store.root, complete['trial_ref']))['seed']}
-            result = await command_grade(executor, payload, attempt, self.stopped)
+            native_path = inside(self.store.root, complete['answer_ref']).parent / 'native-result.json'
+            if native_path.exists():
+                payload['native_result'] = read_json(native_path)
+            if case['grader']['kind'] == 'salesllm_ja':
+                from .adapters.sales import grade
+                native = {**payload['native_result'], 'sales_goal': case['generation']['script']['assistant_system_prompt']}
+                result = await grade(case['grader'], native, helpers, attempt, self.stopped,
+                                     lambda fields: self.status(**fields), payload['seed'])
+            else:
+                result = await command_grade(executor, payload, attempt, self.stopped)
         marker = {'grader_fingerprint': grade_key, 'result_ref': (attempt / 'result.json').relative_to(self.store.root).as_posix(),
                   'result_sha256': file_sha(attempt / 'result.json')}
         if result['status'] == 'scored':
@@ -232,7 +269,8 @@ class Worker:
             if digest(self.pack) != self.plan['suite']['pack_sha256']:
                 raise BenchError('ケース資産のSHAが異なります。')
             connection_evidence = []
-            for model in {row['model']['id']: row['model'] for row in self.plan['combinations']}.values():
+            bindings = list(self.plan['combinations']) + [row for roles in self.plan.get('case_bindings', {}).values() for row in roles.values()]
+            for model in {digest(row['model']): row['model'] for row in bindings}.values():
                 evidence = await probe(model)
                 connection_evidence.append({'model_id': model['id'], **evidence})
                 if not evidence['available']:
@@ -281,7 +319,9 @@ class Worker:
     def summary(self, rows):
         from .recovery import unclosed_measurement
         observed = []
-        for request in sorted(self.root.glob('trials/*/*/*/attempts/*/calls/*/request.json')):
+        requests = list(self.root.glob('trials/*/*/*/attempts/*/calls/*/request.json'))
+        requests += list(self.root.glob('trials/*/*/*/grades/*/attempt-*/calls/*/request.json'))
+        for request in sorted(requests):
             path = request.parent / 'measurement.json'
             observed.append(read_json(path) if path.exists() else unclosed_measurement(request.parent))
         return {'run_id': self.identity, 'suite': self.plan['suite'], 'run_settings': self.plan['run_settings'],

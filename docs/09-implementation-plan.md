@@ -4,7 +4,7 @@
 
 M0の設計基盤に加え、M1のregistry・共通resolver・SSE transport・計測・記録・CLI・Web API・実画面を実装した。M2はLCBの単発生成・固定採点器接続から着手し、公式日本語原文の取込器とLinuxコンテナexecutor、正答・誤答controlによる受入を用意した。
 
-実画面は実行・停止・保存回答による再開・結果・全文・採点根拠を扱う。Quick / Detailedの問題ID、SciCode / Frontier / Babel / 営業の汎用adapter、統計区間、公開export、エンジン起動管理は未完了。実装済み機能と準備手順は[12 実行手順](12-running.md)で管理する。
+実画面は実行・停止・保存回答による再開・結果・全文・採点根拠を扱う。Quick20 / Detailed100の候補IDを選定し、native RPC、Babel単問recipe・得点正規化、営業の日本語対話・採点、科学・最適化の採点接続を追加した。追加部分はfixture確認の段階で、各公式環境・日本語helperでの実機受入は未完了。統計区間、公開export、エンジン起動管理も未完了。現在の範囲は[13 選定と実装状態](13-selection-and-adapters.md)、準備手順は[12 実行手順](12-running.md)と[14 native接続](14-native-instruments.md)で管理する。
 
 静的検査・fixture統合テスト・実モデル受入を区別する。設計チェックが通ったことだけで問題セットを実行可能としない。
 

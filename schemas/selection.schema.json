@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Explicit source ID selection, separate from runnable private packs",
+  "type": "object",
+  "required": ["schema_version", "selection_id", "status", "selection_frozen", "execution_ready", "language", "selection_seed", "case_count", "selection_policy", "cases"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {"const": "0.4.0"},
+    "selection_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["candidate_selected", "frozen"]},
+    "selection_frozen": {"type": "boolean"},
+    "execution_ready": {"type": "boolean"},
+    "language": {"const": "ja"},
+    "selection_seed": {"type": "string", "minLength": 1},
+    "case_count": {"const": 100},
+    "selection_policy": {
+      "type": "object",
+      "required": ["target_results_used", "quick_is_subset", "trial_settings_embedded", "unavailable_assets_replaced", "source_content_review"],
+      "additionalProperties": false,
+      "properties": {
+        "target_results_used": {"const": false}, "quick_is_subset": {"const": true},
+        "trial_settings_embedded": {"const": false}, "unavailable_assets_replaced": {"const": false},
+        "source_content_review": {"type": "string", "minLength": 1}
+      }
+    },
+    "cases": {"type": "array", "minItems": 100, "maxItems": 100, "items": {"$ref": "#/$defs/case"}}
+  },
+  "$defs": {
+    "sha": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "case": {
+      "type": "object", "additionalProperties": false,
+      "required": ["id", "source_id", "native_id", "domain", "title", "difficulty", "quick", "language_status", "execution_ready", "readiness_gates", "source", "selection_reason", "selection_basis"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1}, "source_id": {"type": "string", "minLength": 1},
+        "native_id": {"type": "string", "minLength": 1}, "domain": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1}, "difficulty": {"type": "string", "minLength": 1},
+        "quick": {"type": "boolean"}, "execution_ready": {"type": "boolean"},
+        "language_status": {"enum": ["native_ja_available", "upstream_ja_present", "upstream_ja_assets_pending", "translation_required", "reviewed_ja"]},
+        "readiness_gates": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "selection_reason": {"type": "string", "minLength": 1}, "selection_basis": {"type": "string", "minLength": 1},
+        "source": {
+          "type": "object", "additionalProperties": false,
+          "required": ["repository", "revision", "path"],
+          "properties": {
+            "repository": {"type": "string", "minLength": 1}, "revision": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+            "path": {"type": "string", "minLength": 1}, "record_sha256": {"$ref": "#/$defs/sha"}, "file_sha256": {"$ref": "#/$defs/sha"},
+            "official_ja_url": {"type": "string", "pattern": "^https://atcoder.jp/"},
+            "observed_prompt_language": {"type": "string"}, "reported_language_metadata": {"type": "string"}
+          }
+        }
+      }
+    }
+  }
+}

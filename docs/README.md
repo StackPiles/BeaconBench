@@ -18,6 +18,8 @@
 | [10 画面と設定](10-interface-and-configuration.md) | モデル・プリセット・比較行列、進捗と結果の画面、設定の版管理 |
 | [11 画面レビュー](11-ui-review.md) | 情報整理、読みやすさ、操作、画面幅の確認 |
 | [12 実行手順](12-running.md) | 実装済み機能、起動、モデル登録、実行・再開、採点器とcontrol |
+| [13 問題選定と実装状態](13-selection-and-adapters.md) | Quick20 / Detailed100の候補ID、理由、出典、取得・受入待ち |
+| [14 native接続と測定器](14-native-instruments.md) | Babel接続、営業派生、helper較正、科学・最適化の採点 |
 | [判断記録](decisions.md) | 合意と提案の区別、根拠、未決事項 |
 
 関連する機械可読設計： [catalog](../catalog/benchmarks.json)、[Quick](../suites/quick.v0.draft.json)、[Detailed](../suites/detailed.v0.draft.json)、[protocol](../protocols/common-ja.v0.draft.json)、[実行設定](../execution/default.v0.draft.json)、[schemas](../schemas/README.md)。

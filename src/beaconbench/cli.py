@@ -30,6 +30,10 @@ def parser():
     qualify = commands.add_parser('executor-qualify')
     qualify.add_argument('executor_id')
     qualify.add_argument('controls', type=Path)
+    instrument = commands.add_parser('instrument-import')
+    for name in ('model-id', 'preset', 'policy', 'expected', 'predictions'):
+        instrument.add_argument('--' + name, type=str if name == 'model-id' else Path, required=True)
+    instrument.add_argument('--fixture', action='store_true')
     check = commands.add_parser('probe')
     check.add_argument('model_id')
     for name, argument in [('run', 'plan_id'), ('status', 'run_id'), ('resume', 'run_id'), ('stop', 'run_id'), ('worker', 'run_id'), ('results', 'run_id')]:
@@ -63,6 +67,10 @@ def main(argv=None):
         elif args.command == 'executor-qualify':
             from .qualification import qualify_executor
             result = asyncio.run(qualify_executor(store, args.executor_id, read_json(args.controls)))
+        elif args.command == 'instrument-import':
+            from .calibration import record_instrument
+            result = record_instrument(store, args.model_id, read_json(args.preset), read_json(args.policy),
+                                       args.expected, args.predictions, fixture=args.fixture)
         elif args.command == 'plan':
             result = store.public_plan(store.plan(read_json(args.config)))
         elif args.command == 'probe':

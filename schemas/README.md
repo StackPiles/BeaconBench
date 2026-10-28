@@ -16,3 +16,6 @@ JSON Schema Draft 2020-12を使用する。これらはM0の契約案であり�
 type検証に加え、usageの包含関係・時間の順序・readyと資産の整合等は意味上の検証が必要。M0のcheckerはschema自体とfixtureの適合、主要な二重計上・不整合を検査する。将来の実run受入にはasset lockと実ファイルSHAの照合も必要。
 
 参考：[JSON Schema Draft 2020-12](https://json-schema.org/draft/2020-12)、[python-jsonschema](https://pypi.org/project/jsonschema/)。
+## 選定一覧の追加契約
+
+`selection.schema.json`は、候補100件の元ID・版・日本語状態・準備条件の契約です。runtimeのprivate case packとは別で、候補の選定だけでは実行可能になりません。Quick / Detailed間の部分集合、分野別配分、試行回数の独立は `beaconbench.selection.validate_selection` と静的checkerで確認します。
