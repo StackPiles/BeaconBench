@@ -45,7 +45,9 @@ def normalize(family: str, native: dict, expected_id: str, *, proportion=.5) -> 
         score = number(info['reward'], 0, 1)
         return {**base, 'score': score, 'passed': full(score), 'metric': 'mean_reward', 'metric_unit': 'native_reward_0_1'}
     if family == 'babel-deepplanning-shopping':
-        identity(native, 'case_name', expected_id)
+        # The selection uses a numeric task ID; the native evaluator names its
+        # database directory case_<ID>. Do not accept arbitrary suffix matches.
+        identity(native, 'case_name', 'case_' + str(expected_id) if str(expected_id).isdigit() else expected_id)
         score = number(native['case_score'], 0, 1)
         return {**base, 'score': score, 'passed': full(score), 'metric': 'case_score', 'metric_unit': 'shopping_case_score_0_1'}
     if family == 'babel-deepplanning-travel':

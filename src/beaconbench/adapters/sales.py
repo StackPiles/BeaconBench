@@ -12,7 +12,7 @@ from .grades import INTENT_SCORES, normalize
 OUTPUT_CONTRACTS = {
     'judge': 'JSONで score（0〜10の整数）と evidence（採点根拠）を返してください。',
     'intent_judge': 'JSONで label（A/B/C/X/Fのいずれか）と evidence（判定根拠）を返してください。',
-    'language_judge': 'JSONで valid（日本語対話として評価可能ならtrue）と evidence（判定根拠）を返してください。',
+    'language_judge': 'JSONで valid（顧客役の日本語が成立していればtrue）、target_japanese（営業役の日本語が成立していればtrue）、evidence（判定根拠）を返してください。営業役の言語違反を顧客役の不成立と混同しないでください。',
 }
 PROMPT_KEYS = {'judge': 'quality_prompt', 'intent_judge': 'intent_prompt', 'language_judge': 'language_prompt'}
 
@@ -33,13 +33,16 @@ def parse_decision(role, text):
     except (TypeError, ValueError):
         raise BenchError('営業採点役のJSON判定が成立していません。') from None
     key = {'judge': 'score', 'intent_judge': 'label', 'language_judge': 'valid'}[role]
-    if not isinstance(row, dict) or set(row) != {key, 'evidence'} or not isinstance(row['evidence'], str) or not row['evidence'].strip():
+    fields = {key, 'evidence', 'target_japanese'} if role == 'language_judge' else {key, 'evidence'}
+    if not isinstance(row, dict) or set(row) != fields or not isinstance(row['evidence'], str) or not row['evidence'].strip():
         raise BenchError('営業採点役の判定または根拠がありません。')
     value = row[key]
     valid = (type(value) is int and 0 <= value <= 10) if role == 'judge' else (
         value in INTENT_SCORES if role == 'intent_judge' and isinstance(value, str) else type(value) is bool if role == 'language_judge' else False)
     if not valid:
         raise BenchError('営業採点役が許容範囲外の判定を返しました。')
+    if role == 'language_judge' and type(row['target_japanese']) is not bool:
+        raise BenchError('営業役の言語判定がboolではありません。')
     return row
 
 
@@ -65,6 +68,8 @@ async def grade(spec, native, helpers, folder, stopped, progress, seed):
         record = {'id': spec['native_id'], 'instrument_valid': True,
                   'conversation_quality': decisions['judge']['score'], 'A/B': decisions['intent_judge']['label']}
         result = normalize('salesllm-ja', record, spec['native_id'], proportion=spec.get('proportion', .5))
+        result['language_consistency'] = {'customer_japanese': decisions['language_judge']['valid'],
+                                          'target_japanese': decisions['language_judge']['target_japanese']}
         result['adaptation'] = 'JA-derived quality and intent judges; not the upstream EN/ZH classifier'
     except BenchError as error:
         result = {'status': 'invalid_instrument', 'message': str(error)}

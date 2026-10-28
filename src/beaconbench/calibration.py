@@ -72,11 +72,32 @@ def record_instrument(store, model_id, preset, policy, expected_path, prediction
         raise BenchError('予測結果の測定器が登録したモデル・条件・方針に一致しません。')
     threshold = policy.get('control_acceptance', {}).get('minimum_macro_f1', .9)
     result = evaluate_controls(expected['cases'], predictions['cases'], expected['labels'], threshold)
+    evidence = {}
+    if not fixture:
+        from .config import request_parameters
+        parameters = request_parameters(model, preset)
+        truth = {row['id']: row for row in expected['cases']}
+        for row in predictions['cases']:
+            call = inside(store.root, row.get('call_ref', ''))
+            if not call.is_dir() or not row.get('call_ref'):
+                raise BenchError('実モデルの較正には各controlの要求・生応答が必要です。')
+            request = read_json(call / 'request.json')['body']
+            measurement = read_json(call / 'measurement.json')
+            if (not measurement.get('completed') or measurement.get('finish_reason') == 'length'
+                    or request.get('messages') != truth[row['id']].get('messages')
+                    or any(request.get(key) != item for key, item in parameters.items())):
+                raise BenchError('較正controlの入力・実効要求・完了状態が登録条件と異なります。')
+            for name in ('request.json', 'measurement.json', 'message.json', 'chunks.jsonl', 'response.sse'):
+                path = call / name
+                if not path.is_file():
+                    raise BenchError('較正controlの生の計測記録が不足しています。')
+                evidence[path.relative_to(store.root).as_posix()] = file_sha(path)
     folder = store.root / 'instruments' / uuid.uuid4().hex
     write_once(folder / 'expected.json', expected); write_once(folder / 'predictions.json', predictions)
     receipt = {'utc': utc(), 'fixture': fixture, 'instrument_fingerprint': fingerprint,
                'passed': result['passed'], 'controls': result, 'files': {
-                   path.relative_to(store.root).as_posix(): file_sha(path) for path in (folder / 'expected.json', folder / 'predictions.json')}}
+                   **{path.relative_to(store.root).as_posix(): file_sha(path) for path in (folder / 'expected.json', folder / 'predictions.json')},
+                   **evidence}}
     write_once(folder / 'receipt.json', receipt)
     return {'path': (folder / 'receipt.json').relative_to(store.root).as_posix(), 'sha256': file_sha(folder / 'receipt.json'),
             'passed': result['passed'], 'controls': result}

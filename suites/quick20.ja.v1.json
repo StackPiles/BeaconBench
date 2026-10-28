@@ -1,0 +1,140 @@
+{
+  "schema_version": "1.0",
+  "id": "quick20-ja-v1",
+  "name": "Quick20 · 日本語 v1",
+  "language": "ja",
+  "track": "benchmark",
+  "case_count": 20,
+  "selection_frozen": true,
+  "execution_ready": false,
+  "readiness_scope": "Public metadata only. A prepared local installation imports a private case pack with accepted executors and helper instruments.",
+  "case_refs": [
+    {
+      "case_id": "babel-claw-85316b98f74661",
+      "source_id": "babel-claw",
+      "native_id": "T006_email_reply_draft",
+      "domain": "general"
+    },
+    {
+      "case_id": "babel-claw-ba4cff7afed205",
+      "source_id": "babel-claw",
+      "native_id": "T118_customer_followup",
+      "domain": "general"
+    },
+    {
+      "case_id": "babel-claw-d66f4ebea99821",
+      "source_id": "babel-claw",
+      "native_id": "T030_cross_service_meeting",
+      "domain": "general"
+    },
+    {
+      "case_id": "babel-deepplanning-c7c5c61a7d130b",
+      "source_id": "babel-deepplanning",
+      "native_id": "1",
+      "domain": "shopping-L2"
+    },
+    {
+      "case_id": "babel-deepplanning-953f2a15572382",
+      "source_id": "babel-deepplanning",
+      "native_id": "1",
+      "domain": "travel"
+    },
+    {
+      "case_id": "babel-tau3-872c9ff25615fb",
+      "source_id": "babel-tau3",
+      "native_id": "task_017",
+      "domain": "banking_knowledge"
+    },
+    {
+      "case_id": "babel-tau3-f98e8f70070cb4",
+      "source_id": "babel-tau3",
+      "native_id": "101",
+      "domain": "retail"
+    },
+    {
+      "case_id": "babel-vitabench-8cd1f15c8addf7",
+      "source_id": "babel-vitabench",
+      "native_id": "A0807004",
+      "domain": "cross"
+    },
+    {
+      "case_id": "babel-vitabench-1b20092a155457",
+      "source_id": "babel-vitabench",
+      "native_id": "10826084",
+      "domain": "instore"
+    },
+    {
+      "case_id": "crmarena-pro-sales-ja-965185ebb02c67",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "78",
+      "domain": "lead_qualification"
+    },
+    {
+      "case_id": "crmarena-pro-sales-ja-8b71a2a4e6b99f",
+      "source_id": "crmarena-pro-sales-ja",
+      "native_id": "1772",
+      "domain": "quote_approval"
+    },
+    {
+      "case_id": "frontier-algorithmic-c7b9a3dc196f7c",
+      "source_id": "frontier-algorithmic",
+      "native_id": "0",
+      "domain": "packing"
+    },
+    {
+      "case_id": "livecodebench-4601a0e8d990cd",
+      "source_id": "livecodebench",
+      "native_id": "abc392_d",
+      "domain": "atcoder"
+    },
+    {
+      "case_id": "livecodebench-a9be6c940bf39b",
+      "source_id": "livecodebench",
+      "native_id": "abc389_f",
+      "domain": "atcoder"
+    },
+    {
+      "case_id": "livecodebench-cd818803e43993",
+      "source_id": "livecodebench",
+      "native_id": "abc389_d",
+      "domain": "atcoder"
+    },
+    {
+      "case_id": "livecodebench-e170a8fbde905d",
+      "source_id": "livecodebench",
+      "native_id": "abc390_b",
+      "domain": "atcoder"
+    },
+    {
+      "case_id": "salesllm-ja-4bbbff491a13f8",
+      "source_id": "salesllm-ja",
+      "native_id": "b2337796-d426-4694-8c8f-b414c3f868d7_28",
+      "domain": "hard"
+    },
+    {
+      "case_id": "salesllm-ja-fc00d1f180a2fa",
+      "source_id": "salesllm-ja",
+      "native_id": "f0471955-8f90-4859-bbdf-27a6885b6437_23",
+      "domain": "medium"
+    },
+    {
+      "case_id": "scicode-verified-2c2ff41674a12c",
+      "source_id": "scicode-verified",
+      "native_id": "45.1",
+      "domain": "independent-first-subproblem"
+    },
+    {
+      "case_id": "scicode-verified-9d2d6ef429ebb1",
+      "source_id": "scicode-verified",
+      "native_id": "9.1",
+      "domain": "independent-first-subproblem"
+    }
+  ],
+  "acceptance_document": "../docs/16-quick20-acceptance.md",
+  "framework_limits": {
+    "total_output_tokens": null,
+    "tool_calls": null,
+    "agent_turns": null,
+    "framework_deadline_seconds": null
+  }
+}

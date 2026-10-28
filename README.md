@@ -8,7 +8,7 @@ BeaconBench（ビーコンベンチ）は、自律エージェントや業務シ
 
 **実モデルへ接続するCLI / Web画面、評価実行、保存・再開、結果表示を実装しています。** OpenAI互換Chat APIへ接続し、思考と最終回答、実要求、SSE、usage、時間、採点証拠を保存します。実行は画面かCLIから明示的に開始します。
 
-現在実データで動かせる評価は、接続診断と、固定済みLCB採点器を接続したコード生成です。**Quick20 / Detailed100の候補IDを選定し、native接続、営業の日本語対話・採点、科学・最適化の採点接続を追加しました。** 追加部分はfixtureで確認した段階です。Babelの日本語・共通データは取得し、CRMは公式研究用共有環境での読み取り接続を確認しました。日本語の内容・helper・各native環境の受入が残るため、20/100の正式セットは実行不可のままです。[取得状況](docs/15-data-and-crm-access.md)と[選定理由・準備状態](docs/13-selection-and-adapters.md)を参照してください。
+**Quick20の日本語版を、受入済み環境で実行できる形にしました。** 日本語内容、実モデルの補助役、公式採点器の正答・誤答control、模擬サービス・隔離実行・保存までを確認し、20件を固定したprivate packとして登録します。実行計画は20ケース・既定各1回です。今回の確認用応答を対象モデルの成績には含めません。Detailed100は候補版のままです。[受入範囲・日本語版の違い・実行方法](docs/16-quick20-acceptance.md)を参照してください。
 
 ```sh
 uv sync --locked
@@ -31,9 +31,9 @@ uv run beaconbench serve
 - モデル接続と起動済みエンジンの識別情報、生成設定を名前付きで登録し、画面で選択・複製・組み合わせ比較を行います。エンジンの起動設定は自動変更しません。
 - 進捗、分野別の品質、消費、時間を画面で確認し、ケースの回答と採点根拠まで辿れるようにします。
 
-## セットの候補構成
+## セットの構成
 
-元の問題IDは[候補版として100件選定](catalog/selection.v1.candidate.json)済みです。以下は候補構成であり、日本語・環境・各採点器の受入が済むまで実行可能な正式セットとは扱いません。
+元の問題IDは[候補版として100件選定](catalog/selection.v1.candidate.json)済みです。そのうちQuickの20件はIDを入れ替えずに受入しました。公開manifestは問題ID・版を示すもので、第三者の問題本文や個別環境を含みません。別環境では同じデータ・測定器・採点器の受入が必要です。
 
 | 分野・候補 | Quick | Detailed |
 |---|---:|---:|
@@ -74,6 +74,7 @@ Quickの20ケースをDetailedに含めます。セットは問題ID・配分・
 - [Quick20 / Detailed100の選定と準備状態](docs/13-selection-and-adapters.md)
 - [native接続と日本語の測定器](docs/14-native-instruments.md)
 - [BabelデータとCRM環境の取得状況](docs/15-data-and-crm-access.md)
+- [Quick20日本語版の受入範囲と実行](docs/16-quick20-acceptance.md)
 
 機械可読の[候補一覧](catalog/benchmarks.json)、[セット案](suites/quick.v0.draft.json)、[比較プロトコル案](protocols/common-ja.v0.draft.json)、[データ契約](schemas/README.md)も保存しています。
 

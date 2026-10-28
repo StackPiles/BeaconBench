@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import base64
 import json
+import math
 import os
 import secrets
 import signal
@@ -85,6 +86,17 @@ class ModelHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(payload)
 
+    def reply_stream(self, value):
+        """SDK compatibility only; origin SSE remains the timing/usage record."""
+        frames = completion_frames(value)
+        payload = (''.join('data: ' + canonical(frame).decode() + '\n\n' for frame in frames)
+                   + 'data: [DONE]\n\n').encode()
+        self.send_response(200)
+        self.send_header('Content-Type', 'text/event-stream')
+        self.send_header('Content-Length', str(len(payload)))
+        self.end_headers()
+        self.wfile.write(payload)
+
     def role(self):
         pieces = self.path.strip('/').split('/')
         if len(pieces) < 3 or pieces[0] not in self.server.roles or pieces[1] != 'v1':
@@ -111,10 +123,11 @@ class ModelHandler(BaseHTTPRequestHandler):
                 self.server.rpc.failure = 'overlapping-native-model-requests'
                 raise BenchError('Native retries/concurrency must be disabled for a one-case trial')
             body = json.loads(self.rfile.read(int(self.headers['Content-Length'])))
-            if body.get('stream'):
-                raise BenchError('The native SDK receives buffered JSON; the origin transport records SSE')
             value = self.server.rpc.model(role, body)
-            self.reply(200, value)
+            if body.get('stream'):
+                self.reply_stream(value)
+            else:
+                self.reply(200, value)
         except Exception:
             self.server.rpc.failure = self.server.rpc.failure or 'native-model-proxy-error'
             # Fatal 400 avoids a native SDK silently retrying an accepted call.
@@ -125,6 +138,21 @@ class ModelHandler(BaseHTTPRequestHandler):
         finally:
             if acquired:
                 self.server.single_flight.release()
+
+
+def completion_frames(value):
+    """Preserve complete content, reasoning, indexed calls and unknown usage."""
+    base = {key: value[key] for key in ('id', 'created', 'model')}
+    base['object'] = 'chat.completion.chunk'
+    choice = value['choices'][0]
+    message = dict(choice['message'])
+    if message.get('tool_calls'):
+        message['tool_calls'] = [{**call, 'index': index} for index, call in enumerate(message['tool_calls'])]
+    frames = [{**base, 'choices': [{'index': 0, 'delta': message, 'finish_reason': None}]},
+              {**base, 'choices': [{'index': 0, 'delta': {}, 'finish_reason': choice['finish_reason']}]}]
+    if value.get('usage') is not None:
+        frames.append({**base, 'choices': [], 'usage': value['usage']})
+    return frames
 
 
 def extract_record(value, spec):
@@ -142,8 +170,27 @@ def extract_record(value, spec):
         value = matches[0]
     for key in spec.get('after_select', []):
         value = value[key]
+    if spec.get('single'):
+        if not isinstance(value, list) or len(value) != 1:
+            raise BenchError('Expected exactly one native event')
+        value = value[0]
     if not isinstance(value, dict):
         raise BenchError('Native grading record is not an object')
+    return value
+
+
+def task_time(root, native, spec, pipeline_seconds):
+    """Use a native agent boundary; never substitute pipeline duration."""
+    if spec is None:
+        return None
+    value = native
+    if 'artifact' in spec:
+        _, raw = result_file(root, spec['artifact'])
+        value = extract_record(raw, spec['artifact'])
+    for key in spec['pointer']:
+        value = value[key]
+    if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= pipeline_seconds + .05:
+        raise BenchError('Native task-completion boundary is invalid')
     return value
 
 
@@ -255,11 +302,13 @@ def run(config, initial):
         manifest = transfer_artifacts(rpc, root, artifact_paths)
         # A native pipeline can include conversion/judging. Its total duration
         # is not silently presented as target task-completion time.
+        pipeline_seconds = time.monotonic() - started
+        measured_task_seconds = task_time(root, native, config.get('task_time'), pipeline_seconds)
         result = {'protocol': WIRE, 'type': 'result', 'case_id': case['case_id'], 'answer': json.dumps(native, ensure_ascii=False),
                   'native_id': generation['native_id'], 'family': generation['family'], 'grade_record': native,
-                  'task_wall_seconds': None, 'native_pipeline_seconds': time.monotonic() - started,
+                  'task_wall_seconds': measured_task_seconds, 'native_pipeline_seconds': pipeline_seconds,
                   'termination': 'native_process_completed', 'coverage': {'all_model_calls_via_rpc': True,
-                     'task_completion_boundary': 'unavailable unless the source wrapper provides a boundary event'},
+                     'task_completion_boundary': config.get('task_time', 'unavailable')},
                   'checkpoint': {'path': str(root), 'result_sha256': file_sha(result_path)}}
         result['artifact_manifest'] = manifest
         write_once(root / 'result.json', result)
@@ -281,8 +330,11 @@ def run(config, initial):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type=Path, required=True)
+    parser.add_argument('--config-sha256')
     args = parser.parse_args()
     try:
+        if args.config_sha256 and file_sha(args.config) != args.config_sha256:
+            raise BenchError('Native configuration differs from the controller lock')
         run(read_json(args.config), json.loads(sys.stdin.readline()))
     except Exception as error:
         print(type(error).__name__ + ': ' + str(error), file=sys.stderr)

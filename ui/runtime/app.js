@@ -47,7 +47,7 @@ async function refreshBootstrap(initial = false) {
     state.presets = copy(boot.presets); state.editing = state.presets[0]?.id;
     if (state.editing) state.selectedPresets.add(state.editing);
     if (boot.models[0]) state.selectedModels.add(boot.models[0].id);
-    state.suiteId = boot.suites.find(row => row.execution_ready && row.track !== "diagnostic")?.id || boot.suites.find(row => row.execution_ready)?.id || null;
+    state.suiteId = boot.suites.find(row => row.execution_ready && row.track === "benchmark")?.id || boot.suites.find(row => row.execution_ready && row.track !== "diagnostic")?.id || boot.suites.find(row => row.execution_ready)?.id || null;
     state.settings = copy(boot.run_defaults);
     $("trials-per-case").value = state.settings.trials_per_case; $("base-seed").value = state.settings.seed_policy.base_seed;
     state.activeRun = boot.runs[0]?.run_id || null; state.resultRun = boot.runs[0]?.run_id || null;

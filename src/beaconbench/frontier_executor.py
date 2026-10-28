@@ -27,6 +27,15 @@ def extract_cpp(answer):
 
 
 def checked_result(native, *, pid, expected_test_count, score_formula_sha256):
+    # The pinned gojudge.js uses this exact prefix for the contestant compile
+    # failure. Checker/interactor compilation failures have different prefixes
+    # and remain infrastructure errors. A bad generated program is a zero
+    # native score, even though it cannot execute the test suite.
+    if native.get('status') == 'error' and str(native.get('error', '')).startswith('Error: compile failed: '):
+        return {'status': 'scored', 'score': 0.0, 'metric': 'native_problem_score',
+                'metric_unit': 'frontier_native_points', 'native_family': 'frontier-algorithmic',
+                'termination': 'compile_error', 'test_coverage': 'not_run_compile_error',
+                'evidence': {'official_result': native, 'score_formula_sha256': score_formula_sha256, 'pid': pid}}
     if native.get('status') != 'done':
         return {'status': 'infrastructure_error', 'message': 'Frontierの判定が未完了か、nativeエラーです。0点に補完しません。', 'evidence': {'native': native}}
     cases = native.get('cases')

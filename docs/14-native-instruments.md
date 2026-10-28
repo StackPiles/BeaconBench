@@ -48,7 +48,7 @@ uv run python tools/export_native_recipe.py --family babel-tau3 --domain retail 
 
 後段の `grader.kind=salesllm_ja` は、日本語で成立するか、会話品質、購買意向の順に別の役を呼ぶ。品質は整数0〜10、意向はA/B/C/X/F。原版の式に合わせ、既定では品質と意向を各0.5で合成する。意向の点数は10/8/6/4/2。**合格閾値を新設しない。** 分類器をLLMに置き換える日本語派生なので、原版のCustomerLM/SaleIntent-BERTと同等とは呼ばない。
 
-`quality_prompt / intent_prompt / language_prompt`は翻訳・review済みのprivate language packで固定し、helperのpolicyに判定文と出力契約のdigestを保持する。コード内で今回の回答に合わせた基準を作らない。不正なJSON、範囲外の得点、言語不成立は `invalid_instrument` で、0点ではない。
+`quality_prompt / intent_prompt / language_prompt`は翻訳・review済みのprivate language packで固定し、helperのpolicyに判定文と出力契約のdigestを保持する。コード内で今回の回答に合わせた基準を作らない。不正なJSON、範囲外の得点、顧客役の言語不成立は `invalid_instrument` で、0点ではない。営業役だけの言語違反は `language_consistency.target_japanese=false` を残し、顧客役が成立していれば得点も保存する。
 
 ## helperの較正証拠
 
@@ -60,18 +60,22 @@ uv run beaconbench --data-dir local/evaluation-data instrument-import \
   --expected local/reviewed-controls.json --predictions local/judge-predictions.json
 ```
 
-expectedには `language=ja / reviewed=true / review_basis / labels / cases[{id,label,critical?}]`、predictionsには `instrument_fingerprint / cases[{id,label}]`を持たせる。fingerprintは登録済みmodel・validated preset・policyのcanonical SHA。較正集合は評価問題と分け、終了/継続、成立/不成立、意向の全クラス、重要な誤判定を含む。欠落・重複は拒否し、不明ラベルはunknownとして残す。
+expectedには `language=ja / reviewed=true / review_basis / labels / cases[{id,label,critical?}]`、predictionsには `instrument_fingerprint / cases[{id,label,call_ref}]`を持たせる。fingerprintは登録済みmodel・validated preset・policyのcanonical SHA。較正集合は評価問題と分け、終了/継続、成立/不成立、意向の全クラス、重要な誤判定を含む。欠落・重複は拒否し、不明ラベルはunknownとして残す。
 
 現実装の開発用受入はmacro-F1 0.9以上、不明0、critical誤判定0。`policy.control_acceptance.minimum_macro_f1`で固定基準を明示できる。この値は母集団精度の保証でも最終的な較正基準の合意でもない。数値品質judgeの較正は0〜10の各ラベルを含めるなど、用途に応じたcontrol集合のレビューが必要。顧客忠実性は発言内容・役割・終了判定の監査結果をcontrolにする。
 
-input/output原本のSHAが較正receiptに含まれ、モデル・preset・policyが違うと利用できない。`--fixture`の証拠はdevelopment trackだけで、本評価の測定器には使えない。現在はfixtureのみ検証済みで、実モデルの日本語較正は未実施。
+実モデルの較正には各controlのcall_refが必要。要求messages・実効設定・完了状態を照合し、要求・計測・回答・chunks・SSE原本のSHAが較正receiptに含まれ、モデル・preset・policyが違うと利用できない。`--fixture`の証拠はdevelopment trackだけで、本評価の測定器には使えない。Quick20では実モデルによる日本語較正を受入済み。適用範囲は[受入記録](16-quick20-acceptance.md)を参照。
 
 command採点器の `executor-qualify` は従来の正解/誤答boolに加え、`expected_score / metric_unit / absolute_tolerance`を扱う。連続得点は異なる期待値を2つ以上含む必要がある。これは得点の受入であり、営業に合格閾値を追加する処理ではない。
 
 ## コード採点器の追加
 
-`beaconbench.science_executor --config ...` はLinux採点ホストで使う。固定した2024/2025のimage SHA、抽出器、HDF5、vendor、各小問資産が必要。第1小問のみを受け付け、HDF5読込を生成コードと別プロセスで先に確認する。生成コードはoffline・非root・read-onlyコンテナで実行し、2環境のORを保存する。nativeの1800秒実行上限とホスト保護条件を記録する。環境不成立を不正解にしない。現在はソース・fixture確認のみで、実機controlは未実施。
+`beaconbench.science_executor --config ...` はLinux採点ホストで使う。固定した2024/2025のimage SHA、抽出器、HDF5、vendor、各小問資産が必要。第1小問のみを受け付け、HDF5読込を生成コードと別プロセスで先に確認する。生成コードはoffline・非root・read-onlyコンテナで実行し、2環境のORを保存する。nativeの1800秒実行上限とホスト保護条件を記録する。環境不成立を不正解にしない。Quick20の9.1/45.1は、HDF5と固定した2環境で実機の正答・誤答controlを受入済み。
 
 `beaconbench.frontier_executor --config ...` は分離されたnative judge環境の内部で使う。接続はloopback限定で、全テスト件数と問題固有の採点コードSHAが必要。nativeの各testのscoreRatioと、固定したjudge_engineの100倍平均を照合する。source、native制限、正当な全テストを保つ。judge自体の起動・cleanup・compile errorを含むcontrolは別途必要であり、このclientが特権コンテナを自動起動することはない。
 
 CRMは公式研究用共有B2B Orgへの読み取り接続を確認した。選定8問のために専用Orgを必須とはしない。共有データの状態・時点、日本語入力、evaluator、読み取り専用の経路を受入する必要がある。SWEはamd64 executorと清浄イメージでのpatch再採点が必要。どちらも得点記録を読むnormalizerだけで専用agent・実行環境まで実装済みとは扱わない。[取得確認の詳細](15-data-and-crm-access.md)を参照。
+
+## Quick20の実機受入
+
+現在の範囲と明示したJA修正は[Quick20受入記録](16-quick20-acceptance.md)を参照。`native_bridge --config ... --config-sha256 ...` はcontrollerが固定した設定ファイルそのもののSHAも照合する。CRMの専用JA read-only agentと、隔離したFrontierホスト管理を追加した。以前のcandidate manifestは当時の未受入記録として保持する。

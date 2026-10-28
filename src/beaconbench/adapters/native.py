@@ -26,7 +26,7 @@ CONTROLLED_FIELDS = {'model', 'stream', 'stream_options', 'max_tokens', 'max_com
                      'top_p', 'top_k', 'min_p', 'seed', 'presence_penalty', 'frequency_penalty',
                      'repetition_penalty', 'reasoning_effort', 'chat_template_kwargs'}
 SAFE_ENV = {'PATH', 'PATHEXT', 'SYSTEMROOT', 'WINDIR', 'COMSPEC', 'TEMP', 'TMP', 'TMPDIR',
-            'PYTHONPATH', 'VIRTUAL_ENV', 'LANG', 'LC_ALL', 'USERPROFILE', 'HOME'}
+            'PYTHONPATH', 'VIRTUAL_ENV', 'LANG', 'LC_ALL', 'USERPROFILE', 'HOME', 'PROGRAMDATA'}
 
 
 def locked_files(executor):

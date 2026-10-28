@@ -1,6 +1,6 @@
 # 13 Quick20 / Detailed100の選定と実装状態
 
-2026-10-28。**元の問題IDを100件選定し、そのうち20件をQuickとした。候補版であり、実行可能な正式セットではない。** 日本語内容・依存環境・測定器の受入が済んでから別のfrozen版を発行する。Babelの公式データ取得と、CRMの公式研究用共有環境の接続を後に確認したため、以下の取得状況を更新した。[取得確認の詳細](15-data-and-crm-access.md)を参照。
+2026-10-28。元の問題IDを100件選定し、そのうち20件をQuickとした。**Quickの20件はIDを維持して日本語・測定器・実行環境の受入を完了した。** `quick20-ja-v1` のprivate packを登録した環境で実行する。Detailed100と当初のcandidate manifestは候補記録として保持する。[現在の受入範囲](16-quick20-acceptance.md)と[取得確認](15-data-and-crm-access.md)を参照。
 
 元データの全文、参照解、顧客の内部設定は配布しない。[100件の選定一覧](../catalog/selection.v1.candidate.json)に元ID・出典revision・選定理由・未完了条件を保存し、[Quick](../suites/quick.v1.candidate.json)と[Detailed](../suites/detailed.v1.candidate.json)はそのIDを参照する。試行回数・試行seed・モデル設定はセットへ埋め込まない。
 

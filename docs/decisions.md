@@ -42,10 +42,10 @@
 
 ## 未決・未検証
 
-- 日本語SalesLLMの顧客役・購買意向採点器・較正閾値。
-- BabelArena helperの具体的モデルと実行ホスト。
-- ClawEvalの日本語データ・実Web/画像/依存grader確認と、単問native CLIでの受入。
-- CRMArena-Proの公式共有Orgの状態・時点の検証、日本語資料・利用条件。更新課題で専用Orgが必要になる場合のreset。
+- 日本語SalesLLMの母集団での判定精度と、較正集合の拡充。Quick20の固定control受入は別途完了。
+- 他の実行環境へ移す場合のBabelArena helperと環境の再受入。
+- Detailed側ClawEvalの実Web/画像/依存grader受入。Quick3件はテキストのmock serviceで確認済み。
+- Detailed側CRMの日本語受入。共有Orgの再取得時の状態照合、更新課題で専用Orgが必要になる場合のreset。
 - SWE-bench Pro V2のamd64 executor。TERMS-Benchの公式実行実装と再利用条件。
 - 旧14問の再配布可能なasset lockと共通採点v2移植。
 - 候補100件の本文・難易度の内容確認と正式freeze、日本語packの公開範囲。
@@ -57,3 +57,5 @@
 2026-10-28：対象モデルの回答を使わず候補100件とQuick20を選定した。候補のIDと正式に実行できるasset lockを区別する。ユーザー回答によりBabelArenaのdata bundleとCRM専用Orgはどちらも未入手と確認。取得待ちを保ち、fixture上の接続・採点実装を進めた。Clawの固定版CLIに単問実行経路がある新しい証拠に基づき、そのrecipeを採用したが、実データでの受入済みとはしない。稼働中サービスと固定済みrunには適用しない。
 
 2026-10-28 追補：ユーザーから取得可否を再確認する指示を受け、Hugging Face配布APIと実ファイルを調査。GitHub実行資料の「未公開」という記述と異なり、公式 `Qwen/BabelArena` が公開済みだった。日本語・共通等4,871ファイルを取得してSHA照合し、Babel38件の日本語資産を確認した。前の取得待ちは確認不足として修正する。また、公式研究用共有B2B Orgへ認証・GETでの読み取りが成功した。選定8問はいずれもデータ更新を行わないため、専用Orgを一律必須とした実装上の仮定を見直す。共有環境の状態・時点とnative evaluatorの受入は残し、新しい本評価は開始しない。
+
+2026-10-28 受入追補：Quick20を実行可能にする明示指定に従い、同じ20 IDの日本語内容、固定した実モデル補助役、native正負control、隔離採点、mock service、read-only CRM、全役割の計測と保存を確認した。日本語Vitaの終了マーカーの欠落、Clawの日付、ストリーム形式、LCBの確率比較を別版として記録した。新しい能力測定の回答で判定基準を調整していない。Detailed100は未受入。詳細は[Quick20受入記録](16-quick20-acceptance.md)。

@@ -70,6 +70,11 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if path == '/api/bootstrap':
                 registry = store.registry.read()
+                suites = store.available_suites()
+                drafts = [draft for draft in draft_suites() if not any(
+                    row.get('execution_ready') and row.get('track') == 'benchmark'
+                    and row.get('case_count') == draft['case_count']
+                    and row['id'].startswith(draft['id'].split('.')[0]) for row in suites)]
                 models = []
                 for model in registry['models']:
                     value = store.registry.public_model(model)
@@ -78,7 +83,7 @@ class Handler(BaseHTTPRequestHandler):
                     models.append(value)
                 return self.send(200, {'version': __version__, 'csrf_token': self.server.csrf, 'models': models,
                                        'presets': registry['presets'], 'run_defaults': registry['run_defaults'],
-                                       'suites': store.available_suites() + draft_suites(), 'runs': store.runs(), 'demo': False})
+                                       'suites': suites + drafts, 'runs': store.runs(), 'demo': False})
             if path == '/api/runs':
                 return self.send(200, {'runs': store.runs()})
             pieces = path.strip('/').split('/')

@@ -29,7 +29,9 @@ from beaconbench.selection import validate_selection
 from beaconbench.store import Store
 from beaconbench.science_executor import scripts
 from beaconbench.frontier_executor import checked_result
-from beaconbench.native_bridge import extract_record, render, result_file
+from beaconbench.native_bridge import completion_frames, extract_record, render, result_file, task_time
+from beaconbench.native_score import grade as native_grade
+from beaconbench.crm_native import extracted, run as crm_run
 from beaconbench.util import BenchError, digest, file_sha, read_json, write_once
 
 
@@ -37,6 +39,62 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class SelectionAndGrading(unittest.TestCase):
+    def test_native_stream_keeps_tool_indices_reasoning_and_unknown_usage(self):
+        message = {'role': 'assistant', 'content': None, 'reasoning_content': 'observed reasoning',
+                   'tool_calls': [{'id': 'call-a', 'type': 'function', 'function': {'name': 'execute', 'arguments': '{"content":"SELECT Id FROM Lead"}'}}]}
+        frames = completion_frames({'id': 'x', 'created': 1, 'model': 'fixed', 'usage': None,
+                                    'choices': [{'message': message, 'finish_reason': 'tool_calls'}]})
+        self.assertEqual(len(frames), 2)
+        self.assertEqual(frames[0]['choices'][0]['delta']['tool_calls'][0]['index'], 0)
+        self.assertEqual(frames[0]['choices'][0]['delta']['reasoning_content'], 'observed reasoning')
+        self.assertFalse(any('usage' in frame for frame in frames))
+        self.assertEqual(frames[-1]['choices'][0]['finish_reason'], 'tool_calls')
+
+    def test_native_configuration_mismatch_stops_before_launch(self):
+        with tempfile.TemporaryDirectory() as directory:
+            config = Path(directory) / 'config.json'; config.write_text('{}', encoding='utf-8')
+            result = subprocess.run([sys.executable, '-m', 'beaconbench.native_bridge', '--config', str(config),
+                                     '--config-sha256', '0' * 64], input='', capture_output=True, text=True)
+            self.assertEqual(result.returncode, 1)
+            self.assertIn('configuration differs', result.stderr)
+            self.assertEqual(list(Path(directory).iterdir()), [config])
+
+    def test_crm_changed_shared_state_is_rejected_before_a_target_call(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); tasks = root / 'tasks.json'; schema = root / 'schema.json'; connector = root / 'connector.py'
+            write_once(tasks, [{'idx': 78, 'task': 'lead_qualification', 'reward_metric': 'exact_match'}]); write_once(schema, [])
+            connector.write_text('''from pathlib import Path
+class Connector:
+ def __init__(self,c): self.marker=c['marker']
+ def fingerprint(self,task): return 'a'*64
+ def close(self): Path(self.marker).write_text('closed')
+def connect(c): return Connector(c)
+''', encoding='utf-8')
+            config = {'tasks_file': str(tasks), 'schema_file': str(schema), 'connector_file': str(connector),
+                      'native_turn_limit': 20, 'native_turn_limit_source_sha256': 'c'*64,
+                      'environment_fingerprints': {'78': 'b'*64}, 'connection': {'marker': str(root / 'closed')},
+                      'lock_files': [{'path': str(p), 'sha256': file_sha(p)} for p in (tasks, schema, connector)]}
+            with self.assertRaisesRegex(BenchError, '固定した比較条件'):
+                crm_run(config, native_id='78', work_root=root / 'trial', target_url='http://127.0.0.1:1/v1', judge_url='http://127.0.0.1:1/v1')
+            self.assertTrue((root / 'closed').exists())
+            self.assertFalse((root / 'trial/grade.json').exists())
+
+    def test_native_boundary_identity_and_crm_extractor_fail_closed(self):
+        self.assertEqual(task_time(Path('.'), {'duration': .5}, {'pointer': ['duration']}, 1), .5)
+        self.assertIsNone(task_time(Path('.'), {}, None, 1))
+        for value in (True, -1, math.inf, 2):
+            with self.assertRaises(BenchError): task_time(Path('.'), {'duration': value}, {'pointer': ['duration']}, 1)
+        payload = {'case_id': 'one', 'grader': {'native_id': '1', 'family': 'babel-deepplanning-shopping'},
+                   'native_result': {'case_id': 'one', 'native_id': '1', 'family': 'babel-deepplanning-shopping',
+                                     'coverage': {'all_model_calls_via_rpc': True}, 'grade_record': {'case_name': 'case_1', 'case_score': 1}}}
+        self.assertTrue(native_grade(payload)['passed'])
+        payload['native_result']['native_id'] = '2'
+        with self.assertRaises(BenchError): native_grade(payload)
+        with self.assertRaises(BenchError): normalize('babel-deepplanning-shopping', {'case_name': 'case_21', 'case_score': 1}, '1')
+        self.assertEqual(extracted({'extracted_answers': ['Need', 'Authority']}), ['Authority', 'Need'])
+        for value in ({'extracted_answers': []}, {'extracted_answers': ['Need', 'Need']}, {'extracted_answers': ['Need'], 'explanation': 'extra'}):
+            with self.assertRaises(BenchError): extracted(value)
+
     def test_babel_recipe_uses_one_explicit_case_and_records_native_limits(self):
         for family, domain in [('babel-tau3', 'retail'), ('babel-vitabench', 'cross')]:
             prepared = recipe(family, domain)
@@ -76,6 +134,8 @@ class SelectionAndGrading(unittest.TestCase):
         with self.assertRaises(BenchError): checked_result(result, pid='0', expected_test_count=3, score_formula_sha256='a'*64)
         with self.assertRaises(BenchError): checked_result({**result, 'score': 80}, pid='0', expected_test_count=2, score_formula_sha256='a'*64)
         self.assertEqual(checked_result({'status': 'error'}, pid='0', expected_test_count=2, score_formula_sha256='a'*64)['status'], 'infrastructure_error')
+        self.assertEqual(checked_result({'status': 'error', 'error': 'Error: compile failed: invalid submitted code'}, pid='0', expected_test_count=2, score_formula_sha256='a'*64)['score'], 0)
+        self.assertEqual(checked_result({'status': 'error', 'error': 'Error: checker compile failed: missing dependency'}, pid='0', expected_test_count=2, score_formula_sha256='a'*64)['status'], 'infrastructure_error')
 
     def test_selection_is_explicit_nested_and_does_not_control_trials(self):
         selection = read_json(ROOT / 'catalog/selection.v1.candidate.json')
@@ -144,7 +204,7 @@ class ModelFixture(BaseHTTPRequestHandler):
         text = {'target': '42', 'customer': '{"reply":"条件に合うので購入します。","conversation_ended":true,"end_reason":"条件を確認して購入を選択"}',
                 'judge': '{"score":8,"evidence":"商品条件に基づく会話"}',
                 'intent_judge': '{"label":"A","evidence":"顧客が購入を明示"}',
-                'language_judge': '{"valid":true,"evidence":"日本語で評価可能"}'}[body['model']]
+                'language_judge': '{"valid":true,"target_japanese":false,"evidence":"顧客は日本語だが、営業役は数字だけで日本語の成立を確認できない"}'}[body['model']]
         frames = [{'choices': [{'index': 0, 'delta': {'role': 'assistant', 'content': text}}]},
                   {'choices': [{'index': 0, 'delta': {}, 'finish_reason': 'stop'}]},
                   {'choices': [], 'usage': {'prompt_tokens': 10, 'completion_tokens': 4, 'total_tokens': 14}}]
@@ -205,6 +265,7 @@ class MeasuredAdapters(unittest.TestCase):
         self.assertNotIn('PRIVATE_PRODUCT_42', json.dumps(customer))
         summary = read_json(self.store.run_path(identity) / 'summary.json')
         self.assertEqual(summary['rows'][0]['grade']['score'], 9)
+        self.assertFalse(summary['rows'][0]['grade']['language_consistency']['target_japanese'])
         self.assertNotIn('passed', summary['rows'][0]['grade'])
         self.assertEqual(sum(row['requests'] for row in summary['observed_usage_in_this_run'].values()), 5)
         dialogue = next(self.store.run_path(identity).rglob('dialogue.jsonl')).read_text(encoding='utf-8').splitlines()
@@ -227,6 +288,11 @@ class MeasuredAdapters(unittest.TestCase):
         self.assertTrue(reference['passed']); self.assertEqual(len(self.endpoint.requests), 0)
         verify_instrument(self.store.root, reference, self.models['judge'], self.preset, policy, allow_fixture=True)
         with self.assertRaises(BenchError): verify_instrument(self.store.root, reference, self.models['judge'], self.preset, policy)
+        # Removing a fixture declaration does not replace measured raw calls.
+        expected.unlink(); observed.unlink()
+        write_once(expected, {'language': 'ja', 'reviewed': True, 'review_basis': 'authored test control', 'labels': ['yes', 'no'], 'cases': cases})
+        write_once(observed, {'instrument_fingerprint': digest({'model': self.models['judge'], 'preset': self.preset, 'policy': policy}), 'cases': cases})
+        with self.assertRaises(BenchError): record_instrument(self.store, 'judge', self.preset, policy, expected, observed)
 
     def test_native_pack_requires_paired_controls_and_the_frozen_worker_runs_it(self):
         script = self.root / 'native_worker_fixture.py'

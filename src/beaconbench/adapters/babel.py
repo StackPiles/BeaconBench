@@ -41,7 +41,8 @@ def recipe(family, domain):
                                 **({'TAU2_LANGUAGE': 'japanese'} if tau else {'VITA_AUTO_RESUME': '0'})},
                 'result': {'path': 'simulation/results.json' if tau else 'simulation.json', 'pointer': ['simulations'], 'id_field': 'task_id'},
                 'artifact_globs': ['simulation/**/*'] if tau else ['simulation.json'],
-                'native_rules': {'agent_steps': 100, 'trial_count_per_invocation': 1, 'concurrency': 1, 'framework_caps': None},
+                'task_time': {'pointer': ['duration']},
+                'native_rules': {'agent_steps': 200 if tau else 100, 'trial_count_per_invocation': 1, 'concurrency': 1, 'framework_caps': None},
                 'known_blockers': [] if tau else ['Pinned vita/run.py hardcodes max_retries=3 in run_task; a hashed no-retry patch is required before qualification.']}
     if family == 'babel-deepplanning-travel':
         models = {'models': {role: {'model_name': role, 'model_type': 'openai', 'base_url': '${' + role.upper() + '_BASE_URL}',
@@ -69,6 +70,7 @@ def recipe(family, domain):
                 'native_cwd': '${SOURCE_ROOT}/benchmarks/claw',
                 'result': {'glob': 'traces/**/*.jsonl', 'format': 'jsonl', 'filter': {'type': 'grading_result'}, 'id_field': 'task_id'},
                 'artifact_globs': ['traces/**/*'],
+                'task_time': {'artifact': {'glob': 'traces/**/*.jsonl', 'format': 'jsonl', 'filter': {'type': 'trace_end'}, 'single': True}, 'pointer': ['wall_time_s']},
                 'native_rules': {'source': 'claw_eval CLI and task YAML', 'framework_caps': None},
                 'known_blockers': ['Inspect the selected Japanese task YAML for real-web, image, user-simulator and dependent graders. Add required helper roles before qualification.']}
     raise BenchError('この系列は汎用RPC接続と得点正規化を使用し、専用CLIレシピの受入は未完了です。')

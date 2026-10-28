@@ -296,7 +296,8 @@ class Worker:
                 complete = self.verified(folder, self.generation_fingerprint(combination, case, index)[0])
                 grade, marker = await self.grade(combination, case, index, folder, complete)
                 trial = read_json(inside(self.store.root, complete['trial_ref']))
-                rows[row_index]['grade'] = {key: grade[key] for key in ('status', 'passed', 'score', 'metric', 'metric_unit', 'grade_wall_seconds') if key in grade}
+                rows[row_index]['grade'] = {key: grade[key] for key in ('status', 'passed', 'score', 'metric', 'metric_unit', 'grade_wall_seconds',
+                    'components', 'language_consistency', 'adaptation') if key in grade}
                 rows[row_index]['grade_marker'] = marker
                 self.state['scored'] += int(grade['status'] == 'scored')
                 atomic_json(self.root / 'summary.json', self.summary(rows))
