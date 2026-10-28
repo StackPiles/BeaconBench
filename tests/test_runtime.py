@@ -318,6 +318,30 @@ class Runtime(unittest.TestCase):
         self.assertEqual(len(self.endpoint.requests), 2)
         self.assertTrue(any(path.read_bytes() == original for path in self.store.run_path(identity).rglob('response.sse')))
 
+    def test_hard_exit_recovery_preserves_raw_and_keeps_unreported_usage_unknown(self):
+        from beaconbench.recovery import recover_requests, unclosed_measurement
+        from beaconbench.runner import request_totals
+        from beaconbench.util import append_json
+        identity = self.store.create_run(self.plan())
+        run = self.store.run_path(identity)
+        call = run / 'trials/config/case/0/attempts/0/calls/000000'
+        write_once(call / 'request.json', {'role': 'target', 'body': {'messages': []}})
+        raw = b'data: partial\n\n'
+        (call / 'response.sse').write_bytes(raw)
+        unknown = unclosed_measurement(call)
+        self.assertIsNone(unknown['times']['request_wall_seconds'])
+        self.assertIsNone(request_totals([unknown])['target']['total_tokens'])
+        append_json(call / 'chunks.jsonl', {'elapsed_seconds': 1.2, 'data': {'choices': []}})
+        self.assertEqual(recover_requests(run), 1)
+        recovered = read_json(call / 'measurement.json')
+        self.assertEqual((call / 'response.sse').read_bytes(), raw)
+        self.assertFalse(recovered['completed'])
+        self.assertEqual(recovered['termination'], 'process_failure')
+        self.assertTrue(recovered['times']['request_wall_censored'])
+        self.assertEqual(recovered['times']['request_wall_seconds'], 1.2)
+        self.assertIsNone(request_totals([recovered])['target']['completion_tokens'])
+        self.assertEqual(recover_requests(run), 0)
+
 
 if __name__ == '__main__':
     unittest.main()

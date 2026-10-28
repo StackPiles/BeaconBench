@@ -32,9 +32,11 @@ def request_totals(rows: list[dict]) -> dict:
         values['requests'] = len(selected)
         values['requests_with_usage'] = sum(row['usage']['total_tokens'] is not None for row in selected)
         values['known_total_tokens'] = sum(row['usage']['total_tokens'] or 0 for row in selected)
-        values['request_wall_seconds'] = sum(row['times']['request_wall_seconds'] for row in selected)
+        walls = [row['times']['request_wall_seconds'] for row in selected]
+        values['request_wall_seconds'] = None if any(value is None for value in walls) else sum(walls)
         count, wall = values['completion_tokens'], values['request_wall_seconds']
-        values['request_throughput_tokens_per_second'] = count / wall if count is not None and wall > 0 else None
+        values['request_throughput_tokens_per_second'] = count / wall if count is not None and wall is not None and wall > 0 else None
+        values['censored_requests'] = sum(bool(row['times'].get('request_wall_censored')) for row in selected)
         native = [row['native_decode'] for row in selected if row.get('native_decode')]
         values['native_decode'] = native
         roles[role] = values
@@ -277,7 +279,11 @@ class Worker:
             self.store.release(self.identity, self.plan)
 
     def summary(self, rows):
-        observed = [read_json(path) for path in sorted(self.root.glob('trials/*/*/*/attempts/*/calls/*/measurement.json'))]
+        from .recovery import unclosed_measurement
+        observed = []
+        for request in sorted(self.root.glob('trials/*/*/*/attempts/*/calls/*/request.json')):
+            path = request.parent / 'measurement.json'
+            observed.append(read_json(path) if path.exists() else unclosed_measurement(request.parent))
         return {'run_id': self.identity, 'suite': self.plan['suite'], 'run_settings': self.plan['run_settings'],
                 'updated_at': utc(), 'phase': self.state['phase'], 'planned_trials': self.plan['planned_trials'],
                 'rows': rows, 'combinations': [{'id': row['id'], 'model': self.store.registry.public_model(row['model']), 'preset': row['preset']} for row in self.plan['combinations']],
@@ -307,6 +313,9 @@ def launch(store: Store, plan_id: str | None = None, resume_id: str | None = Non
         process = None
         try:
             (folder / 'stop.json').unlink(missing_ok=True)
+            if resume_id:
+                from .recovery import recover_requests
+                recover_requests(folder)
             from .frozen_runtime import materialize_runtime
             runtime = materialize_runtime(store.root, plan['runtime_revision'])
             environment = {**os.environ, 'PYTHONPATH': str(runtime)}
