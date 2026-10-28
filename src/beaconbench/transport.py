@@ -3,9 +3,11 @@ from __future__ import annotations
 
 import asyncio
 import codecs
+import hashlib
 import json
 import math
 import os
+import re
 import time
 from pathlib import Path
 from typing import Callable
@@ -81,6 +83,10 @@ async def chat(model: dict, body: dict, folder: Path, role: str, stopped: Callab
                progress: Callable[[dict], None]) -> dict:
     folder.mkdir(parents=True, exist_ok=False)
     body = {**body, 'stream': True, 'stream_options': {'include_usage': True}}
+    from .context_budget import fit
+    if stopped():
+        raise UserStop()
+    body, context_budget = await fit(model, body, folder, client, headers(model))
     write_once(folder / 'request.json', {'role': role, 'body': body, 'started_at': utc()})
     started = time.monotonic()
     content, reasoning, calls = [], [], {}
@@ -101,6 +107,10 @@ async def chat(model: dict, body: dict, folder: Path, role: str, stopped: Callab
         # Ensure no nonfinite values get silently serialized into measurements.
         json.dumps(data, allow_nan=False)
         append_json(folder / 'chunks.jsonl', {'elapsed_seconds': time.monotonic() - started, 'data': data})
+        if context_budget and isinstance(data.get('usage'), dict):
+            observed_prompt = data['usage'].get('prompt_tokens')
+            if type(observed_prompt) is int and observed_prompt > context_budget['prompt_tokens_upper_bound']:
+                raise TransportFailure('コンテキストの計数上界が実測を下回りました。原本を保持して停止します。')
         if data.get('error'):
             raise TransportFailure('モデルAPIがストリーム内でエラーを返しました。')
         if isinstance(data.get('usage'), dict):
@@ -155,13 +165,25 @@ async def chat(model: dict, body: dict, folder: Path, role: str, stopped: Callab
             progress({'role': role, 'request_elapsed_seconds': elapsed, 'received_characters': received})
 
     async def transfer():
-        nonlocal done, ttft, ttfv
+        nonlocal done, ttft, ttfv, failure
         async with client() as connection:
             async with connection.stream('POST', model['base_url'] + '/chat/completions', headers=headers(model), json=body) as response:
                 safe_headers = {key: response.headers[key] for key in ('content-type', 'x-request-id') if key in response.headers}
                 write_once(folder / 'http.json', {'status': response.status_code, 'headers': safe_headers})
                 if response.status_code != 200:
-                    # Error bodies may echo credentials. Persist the status, never authorization data.
+                    # Retain only a digest and strictly numeric context facts;
+                    # a provider's free-form error can echo authorization data.
+                    raw_error = await response.aread()
+                    text = raw_error.decode('utf-8', errors='replace')
+                    evidence = {'status': response.status_code, 'body_sha256': hashlib.sha256(raw_error).hexdigest()}
+                    patterns = {'context_tokens': r'maximum context length is (\d+) tokens',
+                                'requested_output_tokens': r'requested (\d+) output tokens',
+                                'prompt_tokens_at_least': r'prompt contains at least (\d+) input tokens'}
+                    for key, pattern in patterns.items():
+                        match = re.search(pattern, text)
+                        if match: evidence[key] = int(match.group(1))
+                    write_once(folder / 'http-error.json', evidence)
+                    failure = 'request_rejected'
                     raise TransportFailure('モデルAPIの応答に失敗しました（HTTP ' + str(response.status_code) + '）。')
                 if 'text/event-stream' not in response.headers.get('content-type', ''):
                     raw = await response.aread()
@@ -216,7 +238,7 @@ async def chat(model: dict, body: dict, folder: Path, role: str, stopped: Callab
         failure = 'user_stop'
         raise
     except (httpx.HTTPError, json.JSONDecodeError, UnicodeError, TransportFailure, ValueError) as error:
-        failure = 'transport_lost'
+        failure = failure or 'transport_lost'
         if isinstance(error, TransportFailure):
             raise
         raise TransportFailure('通信または応答の解析に失敗しました。原本を保存しました。') from None

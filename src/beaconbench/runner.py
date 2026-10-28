@@ -150,7 +150,7 @@ class Worker:
         fingerprint, seed = self.generation_fingerprint(combination, case, index)
         previous = self.verified(folder, fingerprint)
         if previous:
-            return previous, False
+            return previous, bool(previous.get('reused_from'))
         reuse_path = self.store.root / 'reuse' / (fingerprint + '.json')
         if reuse_path.exists():
             reference = read_json(reuse_path)
@@ -188,9 +188,17 @@ class Worker:
                      **self.plan.get('case_bindings', {}).get(case['id'], {})}
             if adapter == 'native':
                 from .adapters.native import execute
+                replay_calls = None
+                replay_manifest = self.root / 'native-replay.json'
+                if replay_manifest.exists():
+                    replay = read_json(replay_manifest)
+                    if replay.get('case_id') == case['id']:
+                        if replay.get('generation_fingerprint') != fingerprint:
+                            raise BenchError('途中再開の条件が保存済みの指紋と一致しません。')
+                        replay_calls = replay['calls']
                 native = await execute(self.plan['native_executors'][case['id']],
                     {'case_id': case['id'], 'generation': case['generation']}, roles, attempt,
-                    self.stopped, lambda fields: self.status(**fields), request_seed=seed)
+                    self.stopped, lambda fields: self.status(**fields), request_seed=seed, replay_calls=replay_calls)
                 task_seconds = native.get('task_wall_seconds')
                 if task_seconds is not None and (type(task_seconds) not in (int, float) or not math.isfinite(task_seconds) or task_seconds < 0):
                     raise BenchError('nativeの課題時間の形式が不正です。')
@@ -324,7 +332,9 @@ class Worker:
         requests += list(self.root.glob('trials/*/*/*/grades/*/attempt-*/calls/*/request.json'))
         for request in sorted(requests):
             path = request.parent / 'measurement.json'
-            observed.append(read_json(path) if path.exists() else unclosed_measurement(request.parent))
+            measurement = read_json(path) if path.exists() else unclosed_measurement(request.parent)
+            if not measurement.get('reused_from'):
+                observed.append(measurement)
         return {'run_id': self.identity, 'suite': self.plan['suite'], 'run_settings': self.plan['run_settings'],
                 'updated_at': utc(), 'phase': self.state['phase'], 'planned_trials': self.plan['planned_trials'],
                 'rows': rows, 'combinations': [{'id': row['id'], 'model': self.store.registry.public_model(row['model']), 'preset': row['preset']} for row in self.plan['combinations']],

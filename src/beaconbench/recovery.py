@@ -3,10 +3,31 @@ from __future__ import annotations
 
 import json
 import math
+import shutil
 from pathlib import Path
 
 from .transport import usage_values
 from .util import BenchError, file_sha, read_json, utc, write_once
+
+
+def replay_model_call(reference, parameters, role, folder):
+    """Replay a hash-locked accepted call only when its complete request matches."""
+    source = Path(reference['folder'])
+    for name, expected in reference['files'].items():
+        if file_sha(source / name) != expected:
+            raise BenchError('再生元の応答が変更されています。再生成せず停止します。')
+    request, measurement = read_json(source / 'request.json'), read_json(source / 'measurement.json')
+    effective = {**parameters, 'stream': True, 'stream_options': {'include_usage': True}}
+    if request['role'] != role or request['body'] != effective or measurement.get('completed') is not True:
+        raise BenchError('再生元と現在の要求が一致しません。保存済み回答を保全して停止します。')
+    folder.mkdir(parents=True, exist_ok=False)
+    for name in reference['files']:
+        if name == 'measurement.json': continue
+        shutil.copyfile(source / name, folder / name)
+    measurement = {**measurement, 'reused_from': str(source)}
+    write_once(folder / 'measurement.json', measurement)
+    write_once(folder / 'replay.json', {'source': str(source), 'files': reference['files'], 'new_model_request': False})
+    return {'message': read_json(source / 'message.json'), 'measurement': measurement}
 
 
 def unclosed_measurement(call: Path) -> dict:

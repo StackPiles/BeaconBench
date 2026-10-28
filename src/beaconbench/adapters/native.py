@@ -44,7 +44,7 @@ def require_locked(executor, paths):
 
 
 async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stopped, progress,
-                  *, request_seed: int, stage='generate') -> dict:
+                  *, request_seed: int, stage='generate', replay_calls=None) -> dict:
     locked_files(executor)
     command = executor['command']
     if not command or not isinstance(command, list) or not all(isinstance(part, str) for part in command):
@@ -157,8 +157,12 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                 request_folder = folder / 'calls' / f'{sequence:06d}'
                 sequence += 1
                 try:
-                    response = await chat(binding['model'], parameters, request_folder, role,
-                                          lambda: stopped() or process.returncode is not None, progress)
+                    if replay_calls and sequence <= len(replay_calls):
+                        from ..recovery import replay_model_call
+                        response = replay_model_call(replay_calls[sequence - 1], parameters, role, request_folder)
+                    else:
+                        response = await chat(binding['model'], parameters, request_folder, role,
+                                              lambda: stopped() or process.returncode is not None, progress)
                 except UserStop:
                     if not stopped():
                         raise BenchError('native実行器が要求の途中で終了しました。途中の原本を保全しました。') from None
@@ -174,6 +178,8 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
             await process.wait()
             if process.returncode or result is None:
                 raise BenchError('native実行器が結果を返さず終了しました。原本を確認してください。')
+            if replay_calls and sequence < len(replay_calls):
+                raise BenchError('保存済み応答の再生が完了する前にnativeが終了しました。')
 
         async def cancel():
             while not stopped():
@@ -204,5 +210,9 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                                                 'exit_code': process.returncode, 'failure': failure})
             for stream in streams.values(): stream['handle'].close()
             write_once(work / 'artifact-manifest.json', artifacts)
+    if replay_calls:
+        result['recovery'] = {'replayed_model_calls': len(replay_calls), 'current_native_task_wall_seconds': result.get('task_wall_seconds'),
+                              'task_wall_seconds_unavailable': 'original task boundary was not persisted before infrastructure failure'}
+        result['task_wall_seconds'] = None
     write_once(folder / 'native-result.json', result)
     return result

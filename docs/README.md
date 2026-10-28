@@ -53,3 +53,4 @@ flowchart LR
 - ソースの最新変更を既存の評価セットへ自動適用しない。異なる版は別の比較系列にする。
 
 - [Quick20日本語版の受入と実行](16-quick20-acceptance.md)
+- [長い会話の出力枠と途中復旧](17-context-budget-and-recovery.md)

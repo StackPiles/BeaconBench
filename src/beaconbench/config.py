@@ -98,7 +98,7 @@ def validate_model(value: dict) -> dict:
         raise BenchError('未対応のモデル接続方式です。')
     if not isinstance(value['engine'], dict) or not isinstance(value['cache_policy'], str):
         raise BenchError('エンジン設定とキャッシュ方針を指定してください。')
-    if set(value['engine']) - {'label', 'reasoning_effort', 'kv', 'mtp', 'resource_group', 'weight_edit_sha256', 'build', 'quantization'}:
+    if set(value['engine']) - {'label', 'reasoning_effort', 'kv', 'mtp', 'resource_group', 'weight_edit_sha256', 'build', 'quantization', 'context_policy'}:
         raise BenchError('エンジン欄には公開可能な構成情報だけを指定してください。')
     for key, item in value['engine'].items():
         if key == 'mtp':
@@ -106,6 +106,10 @@ def validate_model(value: dict) -> dict:
                 raise BenchError('MTPは0以上の整数で指定してください。')
         elif not isinstance(item, str):
             raise BenchError('エンジンの識別情報は文字列で指定してください。')
+    if 'context_policy' in value['engine']:
+        from .context_budget import POLICIES
+        if value['adapter'] != 'vllm' or value['engine']['context_policy'] not in POLICIES:
+            raise BenchError('未受入のコンテキスト計数方針です。')
     result = copy.deepcopy(value)
     result['base_url'] = result['base_url'].rstrip('/')
     return result

@@ -75,6 +75,7 @@ Quickの20ケースをDetailedに含めます。セットは問題ID・配分・
 - [native接続と日本語の測定器](docs/14-native-instruments.md)
 - [BabelデータとCRM環境の取得状況](docs/15-data-and-crm-access.md)
 - [Quick20日本語版の受入範囲と実行](docs/16-quick20-acceptance.md)
+- [長い会話の出力枠と途中復旧](docs/17-context-budget-and-recovery.md)
 
 機械可読の[候補一覧](catalog/benchmarks.json)、[セット案](suites/quick.v0.draft.json)、[比較プロトコル案](protocols/common-ja.v0.draft.json)、[データ契約](schemas/README.md)も保存しています。
 

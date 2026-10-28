@@ -341,6 +341,15 @@ print(json.dumps({"protocol":initial["protocol"],"type":"result","case_id":initi
         self.assertEqual(self.endpoint.requests[0]['temperature'], 1)
         self.assertEqual(self.endpoint.requests[0]['seed'], 37)
         self.assertEqual(self.endpoint.requests[0]['tools'][0]['function']['name'], 'fixture_tool')
+        source = self.root / 'trial/calls/000000'
+        names = ('request.json', 'measurement.json', 'message.json', 'response.sse', 'chunks.jsonl')
+        replay = [{'folder': str(source), 'files': {name: file_sha(source / name) for name in names}}]
+        again = asyncio.run(execute(executor, {'case_id': 'x', 'generation': {}}, roles, self.root / 'resumed',
+                                    lambda: False, lambda fields: None, request_seed=37, replay_calls=replay))
+        self.assertEqual(len(self.endpoint.requests), 1)
+        self.assertEqual(again['answer'], '42')
+        self.assertIsNone(again['task_wall_seconds'])
+        self.assertEqual(again['recovery']['replayed_model_calls'], 1)
 
     def test_native_bridge_runs_one_pinned_cli_through_the_same_transport(self):
         script = self.root / 'cli_fixture.py'
