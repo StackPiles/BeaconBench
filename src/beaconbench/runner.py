@@ -362,8 +362,12 @@ def launch(store: Store, plan_id: str | None = None, resume_id: str | None = Non
             plan = read_json(folder / 'plan.json')
         else:
             plan = store.get_plan(plan_id)
+            if plan.get('read_only_composite'):
+                raise BenchError('統合結果は読み取り専用です。計測用の部分実行を確認してください。')
             identity = store.create_run(plan)
             folder = store.run_path(identity)
+        if plan.get('read_only_composite'):
+            raise BenchError('統合結果は読み取り専用です。計測用の部分実行を確認してください。')
         try:
             store.reserve(identity, plan)
         except BenchError:

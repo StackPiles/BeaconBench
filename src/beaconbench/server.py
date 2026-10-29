@@ -136,6 +136,15 @@ class Handler(BaseHTTPRequestHandler):
                         base_attempt = result_path.parent.parent if result_path.parent.name == 'evaluation-review' else result_path.parent
                         grades.append({'fingerprint': marker['grader_fingerprint'], 'result': read_json(result_path),
                                        'decisions': optional(base_attempt / 'decisions.json')})
+                        if marker.get('source_grade_marker'):
+                            origin = marker['source_grade_marker']
+                            origin_path = inside(store.root, origin['result_ref'])
+                            if file_sha(origin_path) != origin['result_sha256']:
+                                raise BenchError('再利用元の採点原本SHAが異なります。')
+                            origin_base = origin_path.parent.parent if origin_path.parent.name == 'evaluation-review' else origin_path.parent
+                            grades[-1]['decisions'] = optional(origin_base / 'decisions.json')
+                            if origin_base != base_attempt:
+                                grade_calls.extend(sorted((origin_base / 'calls').glob('*')))
                         grade_calls.extend(sorted((base_attempt / 'calls').glob('*')))
                         grade_calls.extend(sorted((base_attempt / 'evaluation-review/calls').glob('*')))
                     answer = answer_path.read_text(encoding='utf-8')

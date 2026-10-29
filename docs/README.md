@@ -55,3 +55,4 @@ flowchart LR
 - [Quick20日本語版の受入と実行](16-quick20-acceptance.md)
 - [長い会話の出力枠と途中復旧](17-context-budget-and-recovery.md)
 - [Vita・CRM・営業の評価条件と保存回答の点検](18-evaluation-contracts.md)
+- [一部の課題だけの再測定と結果の統合](19-subset-remeasurement.md)

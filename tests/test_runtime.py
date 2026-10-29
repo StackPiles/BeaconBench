@@ -327,6 +327,73 @@ class Runtime(unittest.TestCase):
         with self.assertRaises(BenchError):
             asyncio.run(run(self.store, identity, {'suite_id': 'connection-check-ja'}))
 
+    def subset_source(self):
+        pack = load_pack(self.store.root, self.store.registry.get('suites', 'connection-check-ja'))
+        pack['id'] = 'two-controls'
+        second = copy.deepcopy(pack['cases'][0]); second['id'] = 'second-control'
+        pack['cases'].append(second)
+        install_pack(self.store.root, pack)
+        identity = self.run_plan(self.plan(suite_id=pack['id']))
+        return identity, pack
+
+    def test_subset_rerun_measures_one_and_preserves_the_other_answer_and_grade(self):
+        from beaconbench.subset_rerun import prepare, refresh
+        from beaconbench.util import file_sha
+        identity, pack = self.subset_source()
+        source = self.store.run_path(identity)
+        before = {str(p): file_sha(p) for p in source.rglob('*') if p.is_file()}
+        pack['id'] = 'two-controls-v2'
+        pack['cases'][0]['generation']['messages'][0]['content'] = '40と2の和を数字だけで答えてください。'
+        install_pack(self.store.root, pack)
+        created = prepare(self.store, {'source_run_id': identity, 'suite_id': pack['id'],
+                                      'regenerate_case_ids': [pack['cases'][0]['id']]})
+        self.assertEqual((created['retained'], created['new_trials']), (1, 1))
+        with self.assertRaises(BenchError):
+            launch(self.store, resume_id=created['run_id'])
+        parent = self.store.run_path(created['run_id'])
+        plan = read_json(parent / 'plan.json')
+        with self.assertRaises(BenchError):
+            launch(self.store, plan_id=plan['plan_id'])
+        asyncio.run(Worker(self.store, created['measurement_run_id']).run())
+        state = refresh(self.store, created['run_id'])
+        self.assertEqual((state['phase'], state['completed'], state['scored'], state['reused']), ('completed', 2, 2, 1))
+        result = read_json(parent / 'summary.json')
+        self.assertEqual(len(self.endpoint.requests), 3)
+        self.assertEqual(result['observed_usage_in_this_run']['target']['requests'], 1)
+        retained = next(r for r in result['rows'] if r['case_id'] == 'second-control')
+        old = next(r for r in read_json(source / 'summary.json')['rows'] if r['case_id'] == 'second-control')
+        self.assertEqual(retained['generation_fingerprint'], old['generation_fingerprint'])
+        self.assertEqual(retained['grade_marker'], old['grade_marker'])
+        self.assertEqual(before, {str(p): file_sha(p) for p in source.rglob('*') if p.is_file()})
+
+    def test_subset_reuse_refuses_changed_generation_conditions(self):
+        from beaconbench.subset_rerun import prepare
+        identity, pack = self.subset_source()
+        pack['id'] = 'changed-retained'
+        pack['cases'][1]['generation']['messages'][0]['content'] = '違う問題'
+        install_pack(self.store.root, pack)
+        with self.assertRaises(BenchError):
+            prepare(self.store, {'source_run_id': identity, 'suite_id': pack['id'], 'regenerate_case_ids': [pack['cases'][0]['id']]})
+        self.assertEqual(len(self.store.runs()), 1)
+
+    def test_subset_reuse_refuses_changed_grader_without_matching_review(self):
+        from beaconbench.subset_rerun import prepare
+        identity, pack = self.subset_source()
+        pack['id'] = 'changed-grader'
+        pack['cases'][1]['grader']['expected'] = '999'
+        install_pack(self.store.root, pack)
+        with self.assertRaises(BenchError):
+            prepare(self.store, {'source_run_id': identity, 'suite_id': pack['id'], 'regenerate_case_ids': [pack['cases'][0]['id']]})
+        self.assertEqual(len(self.store.runs()), 1)
+
+    def test_subset_rerun_requires_an_explicit_proper_subset(self):
+        from beaconbench.subset_rerun import prepare
+        identity, pack = self.subset_source()
+        first = pack['cases'][0]['id']
+        for selected in ([], [first, first], ['missing'], [r['id'] for r in pack['cases']]):
+            with self.assertRaises(BenchError):
+                prepare(self.store, {'source_run_id': identity, 'suite_id': pack['id'], 'regenerate_case_ids': selected})
+
     def test_run_settings_reject_invalid_values_and_external_endpoints(self):
         for count in [0, -1, 1.5, True, None]:
             with self.assertRaises(BenchError):
