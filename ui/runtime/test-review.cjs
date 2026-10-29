@@ -55,3 +55,15 @@ test("Reference holds and target grounding violations remain visibly distinct", 
   assert.ok(text(dom).includes("商品・行動条件の検査：違反候補（自動判定）"));
   assert.ok(text(dom).includes("9.2 / 10"));
 });
+test("Collapsed condition checks preserve full source and dialogue evidence", () => {
+  const dom = review.render({ review: { question: { text: "問題" }, response: { kind: "answer", messages: [], artifacts: [] },
+    grading: [{ status: "scored", score: 0, unit: "native_reward_0_1", fingerprint: "goals-v1", sections: [
+      { kind: "checks", title: "顧客の固定条件ごとの点検", collapsible: true, items: [
+        { label: "条件1 · 変更・放棄", passed: false, detail: "元の条件：和室のみ。\n\n発言6：洋室で構いません。" },
+        { label: "条件2 · 適用外", status: "not_applicable", passed: null, detail: "条件分岐が成立しない。" }] }] }], source_note: "原本保全" } }, () => {});
+  assert.ok(text(dom).includes("元の条件：和室のみ。"));
+  assert.ok(text(dom).includes("発言6：洋室で構いません。"));
+  assert.ok(text(dom).includes("× 不適合"));
+  assert.ok(text(dom).includes("— 適用外"));
+  assert.ok(!text(dom).includes("記録なし"));
+});

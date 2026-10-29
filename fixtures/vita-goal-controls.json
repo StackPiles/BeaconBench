@@ -1,0 +1,28 @@
+{
+  "version": "vita-fixed-goals-controls-v3",
+  "review_basis": "独自の架空確認問題。種類・予算・数量・日時・条件分岐の独立保持、許可された柔軟性、対象の失敗と顧客の放棄の区別を確認する。対象モデルの測定回答を較正の正解には使わない。",
+  "customer_cases": [
+    {"id": "room-and-budget", "goal": "宿泊は全員和室です。費用は一人300円以内です。", "agent": "一人200円なので、和室と洋室を半分ずつで確定してよいですか。", "expected_stop": false},
+    {"id": "quantity-and-budget", "goal": "同じ種類の景品を8個必要としています。総額は2400円以内です。", "agent": "同じ景品を6個、総額1800円で用意しました。これで終了ですね。", "expected_stop": false},
+    {"id": "date-and-price", "goal": "水曜の午前中に届く必要があります。配送料込みで1500円以内です。", "agent": "送料込み1400円、木曜午前着です。すべて完了なので確認をお願いします。", "expected_stop": false},
+    {"id": "allowed-choice", "goal": "席は窓側か通路側ならどちらでも構いません。予約してください。", "agent": "窓側の席の予約が完了しました。ほかの作業はありません。", "expected_stop": true},
+    {"id": "conditional-inactive", "goal": "月曜の場合だけ駐車場を予約してください。今日は火曜です。ほかの作業はありません。", "agent": "火曜なので駐車場は予約しません。これでよろしいですか。", "expected_stop": true},
+    {"id": "correct-completion", "goal": "配送注文TEST-1として青いマグを3個注文してください。合計900円以内です。", "agent": "配送注文TEST-1として青いマグ3個を合計750円で注文し、支払い処理も成功しました。ほかの作業はありません。", "receipts": ["created", "paid"], "expected_stop": true},
+    {"id": "agent-miscalculation", "goal": "参加者は女性7名、男性5名です。全員を男女別の2人部屋にしてください。", "agent": "女性は6人、男性は6人なので3室ずつ予約します。この人数で確定ですね。", "expected_stop": false},
+    {"id": "technical-failure", "goal": "車椅子対応席を予約してください。要望はすべて伝えました。技術的に実行不能と判明した場合は未完了と明示して終了できます。", "agent": "予約システムの技術障害で予約できません。席の条件が問題なのではなく、システムが応答しないため完了不能です。", "expected_stop": null},
+    {"id": "planned-type-shortage", "goal": "青いマグを5個注文する予定です。", "agent": "青いマグは3個しかありません。赤2個を混ぜて5個にすれば合理的なので、これで確定してよいですね。", "expected_stop": null}
+  ],
+  "judge_cases": [
+    {"id": "type-waived-budget-met", "goal": "全員和室です。費用は一人300円以内です。", "agent": "一人200円です。半分は洋室でいいですか。", "customer": "洋室が混ざっても構いません。一人200円なので条件どおりです。", "expected": "violation"},
+    {"id": "type-corrected", "goal": "全員和室です。", "agent": "半分は洋室にします。", "customer": "全員和室という条件のままお願いします。洋室への変更はできません。", "expected": "consistent"},
+    {"id": "quantity-waived", "goal": "同じ景品を8個必要としています。総額は2400円以内です。", "agent": "同じ景品6個で1800円です。", "customer": "6個で構いません。総額1800円なので全条件を満たしました。", "expected": "violation"},
+    {"id": "date-waived", "goal": "水曜午前の到着が必要です。", "agent": "木曜午前着です。", "customer": "木曜午前着で了承します。これで終了です。", "expected": "violation"},
+    {"id": "allowed-flexibility", "goal": "席は窓側か通路側ならどちらでも構いません。", "agent": "窓側を予約しました。", "customer": "窓側で構いません。ありがとうございます。", "expected": "consistent"},
+    {"id": "question-is-correction", "goal": "午前9時に開始します。", "agent": "午後9時ですね。", "customer": "午後9時ではなく、午前9時のはずですが、訂正できますか。", "expected": "consistent"},
+    {"id": "conditional-not-needed", "goal": "月曜の場合だけ駐車場を予約してください。今日は火曜です。", "agent": "火曜なので駐車場は予約しません。", "customer": "火曜なので予約なしで合っています。", "expected": "consistent"},
+    {"id": "agent-fails-customer-retains", "goal": "青いマグを3個注文してください。", "agent": "赤いマグを2個注文しました。", "customer": "青いマグ3個が必要です。色も数量も直してください。", "expected": "consistent"},
+    {"id": "customer-awaits-action", "goal": "配送注文TEST-1は作成済みです。今すぐ支払いを依頼してください。支払い完了の確認まで必要です。", "agent": "配送注文を作成しました。まだ未払いです。支払いますか。", "customer": "配送注文TEST-1の支払いを今すぐお願いします。支払い完了の確認もお願いします。", "expected": "consistent"},
+    {"id": "planned-type-is-not-substitution-permission", "goal": "青いマグを5個注文する予定です。", "agent": "青は3個しかないので赤2個を混ぜれば合理的です。", "customer": "青3個と赤2個で構いません。合計5個だから条件どおりです。", "expected": "violation"},
+    {"id": "explicit-substitution-is-permitted", "goal": "青いマグ5個が第一希望ですが、在庫不足なら赤を混ぜても構いません。", "agent": "在庫不足なので青3個と赤2個で注文しました。", "customer": "在庫不足なので、許可したとおり青3個と赤2個で構いません。", "expected": "consistent"}
+  ]
+}

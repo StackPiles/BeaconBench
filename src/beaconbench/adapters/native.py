@@ -48,6 +48,8 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
     locked_files(executor)
     from ..vita_payment import PaymentGuard, validate as validate_payment
     payment_guard = PaymentGuard() if validate_payment(payload.get('generation', {})) else None
+    from ..vita_goals import decorate as decorate_goals, validate as validate_goals
+    fixed_goals = validate_goals(payload.get('generation', {}))
     command = executor['command']
     if not command or not isinstance(command, list) or not all(isinstance(part, str) for part in command):
         raise BenchError('native commandは固定した引数配列で指定してください。')
@@ -160,6 +162,8 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                 parameters = remind_customer(parameters, payload.get('generation', {}), role)
                 if payment_guard:
                     parameters = payment_guard.decorate(parameters, role)
+                if fixed_goals:
+                    parameters = decorate_goals(parameters, role)
                 request_folder = folder / 'calls' / f'{sequence:06d}'
                 sequence += 1
                 try:

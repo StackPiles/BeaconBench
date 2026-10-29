@@ -57,3 +57,4 @@ flowchart LR
 - [Vita・CRM・営業の評価条件と保存回答の点検](18-evaluation-contracts.md)
 - [一部の課題だけの再測定と結果の統合](19-subset-remeasurement.md)
 - [Vita crossの支払い確認と顧客の終了](20-vita-payment-termination.md)
+- [Vitaの固定条件保持と項目別点検](21-vita-fixed-goals.md)

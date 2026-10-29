@@ -58,6 +58,8 @@ def install_pack(root: Path, pack: dict) -> dict:
         validate_case(case)
         from .vita_payment import validate as validate_payment
         validate_payment(case['generation'])
+        from .vita_goals import validate as validate_goals
+        validate_goals(case['generation'])
         # Retrieval timestamps, other cases' receipts, suite size and grader
         # policy are not generation inputs. Each case may pin extra environment
         # identity explicitly; its actual messages are always hashed in full.

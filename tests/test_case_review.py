@@ -100,6 +100,18 @@ class CaseReview(unittest.TestCase):
         self.assertTrue(view['sections'][0]['rubric_partial'])
         self.assertEqual(view['sections'][0]['text'], 'Full original explanation')
 
+    def test_customer_condition_checks_show_source_evidence_and_keep_score(self):
+        view = grade_view({'score': 0, 'comparison_eligible': False, 'evaluation_review': {
+            'explanation': '顧客が条件を放棄。', 'conditions': [{'index': 0, 'quote': '和室のみ。'}],
+            'checks': [{'condition_index': 0, 'verdict': 'waived', 'explanation': '洋室を了承した。',
+                        'evidence': [{'message_index': 5, 'message_quote': '洋室で構いません。'}]}]}})
+        section = next(row for row in view['sections'] if row['title'] == '顧客の固定条件ごとの点検')
+        self.assertEqual(view['score'], 0)
+        self.assertFalse(view['comparison_eligible'])
+        self.assertTrue(section['collapsible'])
+        self.assertIn('和室のみ。', section['items'][0]['detail'])
+        self.assertIn('発言 6：洋室で構いません。', section['items'][0]['detail'])
+
 
 if __name__ == '__main__':
     unittest.main()

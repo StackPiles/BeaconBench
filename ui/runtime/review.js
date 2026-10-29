@@ -77,16 +77,16 @@
   function factList(items) { return node("dl", { class: "review-facts" }, ...items.map(item => node("div", {}, node("dt", {}, item.label), node("dd", {}, plain(item.value))))); }
   function disclosure(title, body, className = "") { return node("details", { class: "review-disclosure " + className }, node("summary", {}, title), body); }
   function gradeSection(section) {
-    if (section.collapsible) return disclosure(section.title, factList(section.items));
+    if (section.collapsible) return disclosure(section.title, section.kind === "checks" ? gradeSection({ ...section, collapsible: false }) : factList(section.items));
     const content = node("section", { class: "grade-section" }, node("h4", {}, section.title));
     if (section.kind === "facts") content.append(factList(section.items));
     else if (section.kind === "checks") {
       const list = items => node("ul", { class: "review-checks" }, ...items.map(item => node("li", {},
-        node("div", { class: "check-title" }, node("span", {}, item.label), badge(item.passed)), item.detail ? markdown(item.detail) : null)));
+        node("div", { class: "check-title" }, node("span", {}, item.label), item.status === "not_applicable" ? node("span", { class: "review-check" }, "— 適用外") : badge(item.passed)), item.detail ? markdown(item.detail) : null)));
       if (section.items.length > 8) {
         const passed = section.items.filter(item => item.passed === true);
         const others = section.items.filter(item => item.passed !== true);
-        content.append(node("p", { class: "review-caption" }, "全" + section.items.length + "項目 · 適合 " + passed.length + " · 不適合 " + section.items.filter(item => item.passed === false).length + " · 不明 " + section.items.filter(item => item.passed == null).length));
+        content.append(node("p", { class: "review-caption" }, "全" + section.items.length + "項目 · 適合 " + passed.length + " · 不適合 " + section.items.filter(item => item.passed === false).length + " · 不明 " + section.items.filter(item => item.passed == null && item.status !== "not_applicable").length + (section.items.some(item => item.status === "not_applicable") ? " · 適用外 " + section.items.filter(item => item.status === "not_applicable").length : "")));
         if (others.length) content.append(list(others));
         if (passed.length) content.append(disclosure("適合した " + passed.length + " 項目も見る", list(passed)));
       } else content.append(list(section.items));

@@ -8,6 +8,8 @@ from pathlib import Path
 
 from .transport import chat
 from .util import BenchError, digest, read_json, write_once
+from . import vita_goals
+from . import vita_goal_audit
 
 VERSION = 'source-contracts-ja-v2'
 ROLE = 'contract_judge'
@@ -37,21 +39,34 @@ VITA_REMINDER = '''固定指示の確認：<instructions>の各要望と条件�
 すべての要望を伝えたうえでシステムが技術的に完了不能と明示した場合は、公式規則どおり終了できます。'''
 
 
-def policy(kind):
+def audit_prompt(kind, version=VERSION):
+    if version == vita_goals.VERSION and kind == 'vita_customer':
+        return PROMPTS[kind] + '\n\n' + vita_goal_audit.PROMPT, OUTPUT_CONTRACT + '\n\n' + vita_goals.OUTPUT
+    if version != VERSION or kind not in PROMPTS:
+        raise BenchError('未対応の評価条件検査です。')
+    return PROMPTS[kind], OUTPUT_CONTRACT
+
+
+def policy(kind, version=VERSION):
     if kind not in PROMPTS:
         raise BenchError('未対応の評価条件検査です。')
-    return {'id': VERSION + '-' + kind, 'kind': kind,
-            'prompt_sha256': digest({'prompt': PROMPTS[kind], 'output_contract': OUTPUT_CONTRACT}),
+    prompt, output = audit_prompt(kind, version)
+    value = {'id': version + '-' + kind, 'kind': kind,
+            'prompt_sha256': digest({'prompt': prompt, 'output_contract': output}),
             'material_format': 'explicit-message-indices-v1',
             'input_scope': 'complete-reference-and-transcript; missing-input-is-deterministic-unknown',
             'reference_scope': 'actual-customer-or-target-system-instructions-only-v1',
             'control_acceptance': {'minimum_macro_f1': 1.0}}
+    if version == vita_goals.VERSION:
+        value['implementation_sha256'] = vita_goal_audit.fingerprint()
+        value['material_format'] = 'full-transcript-one-source-condition-per-call-v1'
+    return value
 
 
 def validate(spec, helpers):
     if not spec:
         return
-    if spec.get('version') != VERSION:
+    if spec.get('version') not in {VERSION, vita_goals.VERSION}:
         raise BenchError('評価条件検査の版が不明です。')
     kind = spec.get('kind')
     if kind == 'reference':
@@ -60,7 +75,7 @@ def validate(spec, helpers):
                 or len(spec.get('source_record_sha256', '')) != 64 or not spec.get('source_url', '').startswith('https://')):
             raise BenchError('参照答えの点検根拠・固定版が不足しています。')
         return
-    expected = policy(kind)
+    expected = policy(kind, spec['version'])
     if ROLE not in helpers or helpers[ROLE]['policy'] != expected:
         raise BenchError('固定した評価条件検査と較正済み判定役が一致しません。')
 
@@ -72,7 +87,8 @@ def validate_case(case):
     generation = case['generation']
     expected = {'vita_customer': ('native', 'babel-vitabench'), 'reference': ('native', 'crmarena-pro-sales-ja'),
                 'sales_target': ('dialogue', None)}
-    if spec.get('version') != VERSION or spec.get('kind') not in expected:
+    if (spec.get('version') not in {VERSION, vita_goals.VERSION} or spec.get('kind') not in expected
+            or spec.get('version') == vita_goals.VERSION and spec.get('kind') != 'vita_customer'):
         raise BenchError('評価条件検査の版・系列が不明です。')
     adapter, family = expected[spec['kind']]
     if generation.get('adapter') != adapter or family and generation.get('family') != family:
@@ -141,14 +157,16 @@ def indexed_material(material):
     return value
 
 
-def parse_decision(raw, material, kind):
+def parse_decision(raw, material, kind, version=VERSION):
+    audit_prompt(kind, version)
     if kind not in PROMPTS:
         raise BenchError('未対応の評価条件検査です。')
     try:
         value = json.loads(raw)
     except (TypeError, ValueError):
         raise BenchError('評価条件検査のJSONが成立していません。') from None
-    if (not isinstance(value, dict) or set(value) != {'verdict', 'explanation', 'findings'}
+    keys = {'verdict', 'explanation', 'findings'} | ({'checks'} if version == vita_goals.VERSION else set())
+    if (not isinstance(value, dict) or set(value) != keys
             or not isinstance(value['verdict'], str) or value['verdict'] not in {'consistent', 'violation', 'unknown'}
             or not isinstance(value['explanation'], str) or not value['explanation'].strip()
             or not isinstance(value['findings'], list)):
@@ -168,6 +186,11 @@ def parse_decision(raw, material, kind):
                 or not row['message_quote'].strip() or row['message_quote'] not in (message.get('content') or '')
                 or not isinstance(row['explanation'], str) or not row['explanation'].strip()):
             raise BenchError('引用が固定指示・対象の発言と一致しません。')
+    if version == vita_goals.VERSION:
+        if 'focus_condition' in material:
+            vita_goal_audit.validate_focus(value, material)
+        else:
+            vita_goals.validate_checks(value, material)
     return value
 
 
@@ -195,7 +218,7 @@ def material_from_saved(case, native, attempt: Path):
 def annotate(grade, spec, decision):
     """Never replace the native score with an invented penalty or a repaired gold."""
     result = copy.deepcopy(grade)
-    result['evaluation_review'] = {**decision, 'version': VERSION, 'kind': spec['kind']}
+    result['evaluation_review'] = {**decision, 'version': spec.get('version', VERSION), 'kind': spec['kind']}
     result['comparison_eligible'] = spec['kind'] == 'sales_target' or decision['verdict'] == 'consistent'
     return result
 
@@ -207,6 +230,12 @@ async def review(grade, spec, material, helpers, folder, stopped, progress, seed
     folder.mkdir(parents=True, exist_ok=False)
     if spec['kind'] != 'reference':
         material = indexed_material(material)
+    material_error = None
+    if spec['version'] == vita_goals.VERSION:
+        try:
+            material = vita_goals.audit_material(material)
+        except BenchError as error:
+            material_error = str(error)
     write_once(folder / 'input.json', material)
     started = time.monotonic()
     if spec['kind'] == 'reference':
@@ -214,19 +243,26 @@ async def review(grade, spec, material, helpers, folder, stopped, progress, seed
             raise BenchError('参照答えの点検対象の原本SHAが一致しません。')
         decision = {'verdict': 'consistent' if spec['state'] == 'confirmed' else 'unknown',
                     'explanation': spec['reason'], 'findings': [], 'reference_evidence': spec['evidence'], 'source_url': spec['source_url']}
-    elif not material.get('reference', '').strip() or not material.get('messages'):
-        decision = {'verdict': 'unknown', 'explanation': '固定指示または会話が不足しているため、モデルを呼ばず判定を保留しました。', 'findings': []}
+    elif material_error or not material.get('reference', '').strip() or not material.get('messages'):
+        decision = {'verdict': 'unknown', 'explanation': material_error or '固定指示または会話が不足しているため、モデルを呼ばず判定を保留しました。', 'findings': []}
     else:
         binding = helpers[ROLE]
-        body = {**binding['request_parameters'], 'seed': seed, 'response_format': {'type': 'json_object'}, 'messages': [
-            {'role': 'system', 'content': PROMPTS[spec['kind']] + '\n\n' + OUTPUT_CONTRACT},
-            {'role': 'user', 'content': json.dumps(material, ensure_ascii=False)}]}
-        response = await chat(binding['model'], body, folder / 'calls/000000', ROLE, stopped, progress)
-        try:
-            decision = parse_decision(response['message']['content'], material, spec['kind'])
-        except BenchError as error:
-            decision = {'verdict': 'unknown', 'explanation': str(error), 'findings': []}
+        prompt, output = audit_prompt(spec['kind'], spec['version'])
+        if spec['version'] == vita_goals.VERSION:
+            decision = await vita_goal_audit.audit(material, binding, folder, stopped, progress, seed, prompt + '\n\n' + output,
+                lambda raw, focused: parse_decision(raw, focused, spec['kind'], spec['version']))
+        else:
+            body = {**binding['request_parameters'], 'seed': seed, 'response_format': {'type': 'json_object'}, 'messages': [
+                {'role': 'system', 'content': prompt + '\n\n' + output},
+                {'role': 'user', 'content': json.dumps(material, ensure_ascii=False)}]}
+            response = await chat(binding['model'], body, folder / 'calls/000000', ROLE, stopped, progress)
+            try:
+                decision = parse_decision(response['message']['content'], material, spec['kind'], spec['version'])
+            except BenchError as error:
+                decision = {'verdict': 'unknown', 'explanation': str(error), 'findings': []}
     result = annotate(grade, spec, decision)
+    if spec['version'] == vita_goals.VERSION and 'conditions' in material:
+        result['evaluation_review']['conditions'] = material['conditions']
     result['grade_wall_seconds'] = grade.get('grade_wall_seconds', 0) + time.monotonic() - started
     write_once(folder / 'result.json', result)
     return result

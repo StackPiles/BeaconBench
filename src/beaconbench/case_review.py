@@ -130,6 +130,16 @@ def grade_view(grade, decisions=None):
         audit = [text('評価条件の点検', review['explanation'])]
         for finding in review.get('findings', []):
             audit.append(text('照合した指示と発言', '指示：' + finding['rule_quote'] + '\n\n発言：' + finding['message_quote'] + '\n\n' + finding['explanation']))
+        if review.get('checks'):
+            conditions = {r['index']: r['quote'] for r in review.get('conditions', [])}
+            labels = {'preserved': '保持', 'waived': '変更・放棄', 'unknown': '不明', 'not_applicable': '適用外・背景'}
+            audit.append({**checks('顧客の固定条件ごとの点検', [
+                {'label': f"条件 {row['condition_index'] + 1} · {labels.get(row['verdict'], row['verdict'])}",
+                 'status': row['verdict'],
+                 'passed': True if row['verdict'] == 'preserved' else False if row['verdict'] == 'waived' else None,
+                 'detail': conditions.get(row['condition_index'], '') + '\n\n' + row['explanation'] + '\n\n' + '\n\n'.join(
+                     f"発言 {e['message_index'] + 1}：{e['message_quote']}" for e in row['evidence'])}
+                for row in review['checks']]), 'collapsible': True})
         if review.get('reference_evidence'):
             audit.append(text('参照答えの点検根拠', '\n\n'.join(review['reference_evidence'])))
         sections = audit + sections
