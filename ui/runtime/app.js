@@ -1,5 +1,5 @@
 "use strict";
-const state = { boot: null, selectedModels: new Set(), selectedPresets: new Set(), presets: [], suiteId: null, editing: null, settings: null, activeRun: null, resultRun: null, result: null, resolvedPlan: null, detail: null, detailTab: "answer", view: "configure", pollBusy: false };
+const state = { boot: null, selectedModels: new Set(), selectedPresets: new Set(), presets: [], suiteId: null, editing: null, settings: null, activeRun: null, resultRun: null, result: null, resolvedPlan: null, detail: null, view: "configure", pollBusy: false };
 const $ = id => document.getElementById(id);
 const copy = value => JSON.parse(JSON.stringify(value));
 const activePhases = new Set(["queued", "preflight", "generating", "scoring"]);
@@ -176,18 +176,13 @@ function renderResults() {
 function region(child, label) { return el("div", { class: "panel table-scroll", role: "region", "aria-label": label + "。横スクロールできます", tabindex: "0" }, child); }
 async function openCase(row) {
   const query = new URLSearchParams({ combination: row.combination_id, case_id: row.case_id, trial: String(row.trial_index) });
-  state.detail = await api("/api/runs/" + state.resultRun + "/case?" + query);
-  state.detailTab = "answer"; $("case-title").textContent = row.title; $("case-subtitle").textContent = row.case_id + " · " + (row.trial_index + 1) + "回目";
-  renderDetail(); $("case-dialog").showModal();
-}
-function renderDetail() {
-  document.querySelectorAll("[data-detail]").forEach(button => { const selected = button.dataset.detail === state.detailTab; button.setAttribute("aria-pressed", String(selected)); button.classList.toggle("selected", selected); });
-  const data = state.detail; let blocks;
-  if (state.detailTab === "answer") blocks = [el("div", { class: "trace-block" }, el("pre", {}, data.answer || "最終回答は空です。"))];
-  else if (state.detailTab === "reasoning") blocks = data.calls.map((call, index) => el("div", { class: "trace-block" }, el("h3", {}, "要求 " + (index + 1)), el("pre", {}, call.message.reasoning_content || "APIから思考本文は返されていません。")));
-  else if (state.detailTab === "requests") blocks = data.calls.map((call, index) => el("div", { class: "trace-block" }, el("h3", {}, "要求 " + (index + 1) + " · " + call.request.role), el("pre", {}, JSON.stringify({ request: call.request.body, measurement: call.measurement }, null, 2))));
-  else blocks = data.grades.length ? data.grades.map(grade => el("div", { class: "trace-block" }, el("h3", {}, "採点版 " + grade.fingerprint.slice(0, 12)), el("pre", {}, JSON.stringify(grade.result, null, 2)))) : [el("p", { class: "inline-note" }, "採点はまだ完了していません。")];
-  $("case-detail-content").replaceChildren(...blocks);
+  const path = "/api/runs/" + state.resultRun + "/case?" + query;
+  state.detail = await api(path + "&view=review");
+  $("case-title").textContent = row.title;
+  const categories = { office_work: "事務・連携", shopping_planning: "購買計画", travel_planning: "旅程計画", tool_and_policy: "規則とツール", compound_work: "複合業務", crm_sales: "営業実務", optimization: "最適化", code_generation: "コード生成", sales_dialogue: "営業対話", scientific_code: "科学・数値実装" };
+  $("case-subtitle").textContent = (categories[row.category] || row.category) + " · " + (row.trial_index + 1) + "回目";
+  $("case-detail-content").replaceChildren(BeaconReview.render(state.detail, (kind, call) => api(path + "&view=trace&kind=" + kind + "&call=" + call)));
+  $("case-dialog").showModal(); $("case-dialog").scrollTop = 0;
 }
 async function preparePlan() {
   const button = $("prepare-plan"); button.disabled = true;
@@ -211,7 +206,6 @@ if (typeof document !== "undefined") {
   document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
   document.querySelectorAll("[data-go]").forEach(button => button.addEventListener("click", () => showView(button.dataset.go)));
   document.querySelectorAll("[data-close]").forEach(button => button.addEventListener("click", () => $(button.dataset.close).close()));
-  document.querySelectorAll("[data-detail]").forEach(button => button.addEventListener("click", () => { state.detailTab = button.dataset.detail; renderDetail(); }));
   document.querySelector(".brand").addEventListener("click", event => { event.preventDefault(); showView("configure"); });
   $("refresh").addEventListener("click", action(poll)); $("poll-seconds").addEventListener("change", schedulePoll);
   $("trials-per-case").addEventListener("input", event => { state.settings.trials_per_case = event.target.valueAsNumber; renderSummary(); });

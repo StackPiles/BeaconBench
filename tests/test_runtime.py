@@ -233,6 +233,42 @@ class Runtime(unittest.TestCase):
             server.server_close()
             thread.join(timeout=2)
 
+    def test_reading_view_and_original_case_endpoint_preserve_completed_files(self):
+        from beaconbench.util import file_sha
+        identity = self.run_plan(self.plan())
+        run = self.store.run_path(identity)
+        row = read_json(run / 'summary.json')['rows'][0]
+        before = {str(p): file_sha(p) for p in run.rglob('*') if p.is_file()}
+        server = LocalServer('127.0.0.1', 0, self.store)
+        thread = threading.Thread(target=server.serve_forever, daemon=True)
+        thread.start()
+        try:
+            with httpx.Client(trust_env=False) as browser:
+                base = 'http://127.0.0.1:' + str(server.server_port)
+                path = base + '/api/runs/' + identity + '/case'
+                query = {'combination': row['combination_id'], 'case_id': row['case_id'], 'trial': 0}
+                view = browser.get(path, params={**query, 'view': 'review'})
+                self.assertEqual(view.status_code, 200, view.text)
+                self.assertEqual(view.json()['review']['response']['messages'][0]['content'], '42')
+                self.assertTrue(view.json()['review']['question']['text'])
+                self.assertNotIn('calls', view.json())
+                self.assertNotIn('考えます。', view.text)
+                self.assertEqual(view.json()['review']['calls'][0]['role'], 'target')
+                trace = browser.get(path, params={**query, 'view': 'trace', 'kind': 'reasoning', 'call': 0}).json()
+                self.assertEqual(trace, {'reasoning': '考えます。'})
+                self.assertEqual(browser.get(path, params={**query, 'view': 'trace', 'kind': 'requests', 'call': -1}).status_code, 400)
+                self.assertEqual(browser.get(path, params={**query, 'view': 'trace', 'kind': 'requests', 'call': '../../etc'}).status_code, 400)
+                original = browser.get(path, params=query).json()
+                self.assertEqual(original['answer'], '42')
+                self.assertEqual(original['calls'][0]['message']['reasoning_content'], '考えます。')
+                self.assertEqual(browser.get(base + '/review.js').status_code, 200)
+                self.assertEqual(len(self.endpoint.requests), 1)
+        finally:
+            server.shutdown()
+            server.server_close()
+            thread.join(timeout=2)
+        self.assertEqual(before, {str(p): file_sha(p) for p in run.rglob('*') if p.is_file()})
+
     def test_run_settings_reject_invalid_values_and_external_endpoints(self):
         for count in [0, -1, 1.5, True, None]:
             with self.assertRaises(BenchError):

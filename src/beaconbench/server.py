@@ -11,6 +11,7 @@ from urllib.parse import parse_qs, urlsplit
 
 from . import __version__
 from .assets import draft_suites
+from .case_review import build_review, optional
 from .runner import launch, stop
 from .store import Store
 from .transport import probe
@@ -113,21 +114,49 @@ class Handler(BaseHTTPRequestHandler):
                         return self.send(200, {'case': {key: case[key] for key in ('id', 'title', 'category')}, 'state': 'pending'})
                     answer_path = inside(store.root, complete['answer_ref'])
                     attempt = answer_path.parent
+                    grades = []
+                    grade_calls = []
+                    for marker_path in sorted(folder.glob('grades/*/complete.json')):
+                        marker = read_json(marker_path)
+                        result_path = inside(store.root, marker['result_ref'])
+                        if file_sha(result_path) != marker['result_sha256']:
+                            raise BenchError('保存済み採点のSHAが異なります。')
+                        grades.append({'fingerprint': marker['grader_fingerprint'], 'result': read_json(result_path),
+                                       'decisions': optional(result_path.parent / 'decisions.json')})
+                        grade_calls.extend(sorted((result_path.parent / 'calls').glob('*')))
+                    answer = answer_path.read_text(encoding='utf-8')
+                    trial = read_json(inside(store.root, complete['trial_ref']))
+                    call_paths = sorted((attempt / 'calls').glob('*')) + grade_calls
+                    if query.get('view') == ['trace']:
+                        kind = query.get('kind', [''])[0]
+                        if kind == 'answer':
+                            return self.send(200, {'answer': answer})
+                        if kind == 'grade':
+                            return self.send(200, {'grades': grades})
+                        call_index = int(query.get('call', ['0'])[0])
+                        if kind not in {'reasoning', 'requests'} or not 0 <= call_index < len(call_paths):
+                            raise BenchError('詳細情報の指定が不正です。')
+                        item = call_paths[call_index]
+                        if kind == 'reasoning':
+                            return self.send(200, {'reasoning': optional(item / 'message.json').get('reasoning_content', '')})
+                        return self.send(200, {'request': optional(item / 'request.json'), 'message': optional(item / 'message.json'),
+                                               'measurement': optional(item / 'measurement.json')})
+                    if query.get('view') == ['review']:
+                        review = build_review(case, attempt, answer, grades, trial)
+                        review['calls'] = [{'index': number, 'role': optional(item / 'measurement.json').get('role', '不明')}
+                                           for number, item in enumerate(call_paths)]
+                        return self.send(200, {'case': {key: case[key] for key in ('id', 'title', 'category')},
+                                               'review': review,
+                                               'reused_from': complete.get('reused_from'), 'state': 'generated'})
                     calls = []
                     for item in sorted((attempt / 'calls').iterdir()):
                         calls.append({'request': read_json(item / 'request.json'), 'message': read_json(item / 'message.json'),
                                       'measurement': read_json(item / 'measurement.json')})
-                    grades = []
-                    for marker_path in folder.glob('grades/*/complete.json'):
-                        marker = read_json(marker_path)
-                        if file_sha(inside(store.root, marker['result_ref'])) != marker['result_sha256']:
-                            raise BenchError('保存済み採点のSHAが異なります。')
-                        grades.append({'fingerprint': marker['grader_fingerprint'], 'result': read_json(inside(store.root, marker['result_ref']))})
                     return self.send(200, {'case': {key: case[key] for key in ('id', 'title', 'category')},
-                                           'answer': answer_path.read_text(encoding='utf-8'), 'calls': calls,
-                                           'grades': grades, 'trial': read_json(inside(store.root, complete['trial_ref'])),
+                                           'answer': answer, 'calls': calls,
+                                           'grades': grades, 'trial': trial,
                                            'reused_from': complete.get('reused_from'), 'state': 'generated'})
-            static = {'/': 'index.html', '/index.html': 'index.html', '/app.js': 'app.js', '/styles.css': 'styles.css', '/favicon.svg': 'favicon.svg'}
+            static = {'/': 'index.html', '/index.html': 'index.html', '/app.js': 'app.js', '/review.js': 'review.js', '/styles.css': 'styles.css', '/favicon.svg': 'favicon.svg'}
             if path in static:
                 file = web_root() / static[path]
                 mime = mimetypes.guess_type(file.name)[0] or 'application/octet-stream'
