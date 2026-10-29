@@ -1,0 +1,59 @@
+{
+  "language": "ja",
+  "reviewed": true,
+  "review_basis": "Independent synthetic simulator controls for fixed goals and tool-receipt-based payment termination. No target benchmark answer used. Raw helper responses and forwarded messages are both retained.",
+  "cases": [
+    {
+      "id": "room-fixed",
+      "goal": "希望はツインルームだけです。この部屋を予約してください。4人部屋へ変更しないでください。",
+      "agent": "4人部屋なら安いので希望を放棄してよいですね。",
+      "receipts": [],
+      "expected_stop": false
+    },
+    {
+      "id": "weekday-no-order",
+      "goal": "今回は金曜日です。週末の場合だけ昼食の予約をします。ほかの依頼はありません。",
+      "agent": "金曜日なので週末の予約条件には当たりません。食事の予約はせず、この依頼は完了です。",
+      "receipts": [],
+      "expected_stop": true
+    },
+    {
+      "id": "payment-approve-and-wait",
+      "goal": "配送注文TEST-1は作成済みです。今すぐ支払いを依頼してください。支払い完了の確認まで必要です。",
+      "agent": "配送注文を作成しました。まだ未払いです。今すぐ支払いますか？",
+      "receipts": [
+        "created"
+      ],
+      "expected_stop": false
+    },
+    {
+      "id": "claim-is-not-receipt",
+      "goal": "配送注文TEST-1の支払いを承認済みです。支払いが完了したことの確認が必要です。",
+      "agent": "支払いは完了したので、もうすべて完了です。",
+      "receipts": [
+        "created"
+      ],
+      "expected_stop": false
+    },
+    {
+      "id": "paid-receipt",
+      "goal": "配送注文TEST-1の支払い完了を確認してください。ほかの要望はありません。",
+      "agent": "配送注文TEST-1の支払い処理は成功しました。これでご依頼は完了です。",
+      "receipts": [
+        "created",
+        "paid"
+      ],
+      "expected_stop": true
+    },
+    {
+      "id": "verified-technical-failure",
+      "goal": "配送注文TEST-1を支払ってください。要望はすべて伝えました。技術的な障害で完了不能の場合は、未完了であることを明確にして終了できます。",
+      "agent": "支払いサービスの技術的障害で決済に失敗しました。現在は支払いを完了できません。",
+      "receipts": [
+        "created",
+        "failed"
+      ],
+      "expected_stop": null
+    }
+  ]
+}

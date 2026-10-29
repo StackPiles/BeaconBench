@@ -375,6 +375,31 @@ class Runtime(unittest.TestCase):
             prepare(self.store, {'source_run_id': identity, 'suite_id': pack['id'], 'regenerate_case_ids': [pack['cases'][0]['id']]})
         self.assertEqual(len(self.store.runs()), 1)
 
+    def test_subset_of_composed_results_preserves_original_grade_provenance(self):
+        from beaconbench.subset_rerun import prepare, refresh
+        from beaconbench.util import digest, file_sha, inside
+        identity, pack = self.subset_source()
+        source = self.store.run_path(identity)
+        row = next(r for r in read_json(source / 'summary.json')['rows'] if r['case_id'] == 'second-control')
+        reviewed_path = self.store.root / 'reviewed/result.json'
+        reviewed_grade = {**row['grade'], 'reviewed': True}
+        write_once(reviewed_path, reviewed_grade)
+        review = {'proposed_pack_sha256': digest(load_pack(self.store.root, self.store.registry.get('suites', pack['id']))),
+                  'rows': [{'case_id': row['case_id'], 'combination_id': row['combination_id'], 'trial_index': 0,
+                            'result_ref': reviewed_path.relative_to(self.store.root).as_posix(), 'result_sha256': file_sha(reviewed_path)}]}
+        config = {'source_run_id': identity, 'suite_id': pack['id'], 'regenerate_case_ids': [pack['cases'][0]['id']], 'evaluation_revision': 'fixture-review'}
+        with patch('beaconbench.subset_rerun.load_review', return_value=review):
+            first = prepare(self.store, config)
+        asyncio.run(Worker(self.store, first['measurement_run_id']).run())
+        refresh(self.store, first['run_id'])
+        second = prepare(self.store, {k: v for k, v in {**config, 'source_run_id': first['run_id']}.items() if k != 'evaluation_revision'})
+        parent = self.store.run_path(second['run_id'])
+        markers = [read_json(p) for p in parent.glob('trials/*/*/*/grades/*/complete.json')]
+        self.assertEqual(len(markers), 1)
+        self.assertEqual(markers[0]['result_ref'], reviewed_path.relative_to(self.store.root).as_posix())
+        self.assertEqual(markers[0]['source_grade_marker']['result_ref'], row['grade_marker']['result_ref'])
+        self.assertEqual(read_json(inside(self.store.root, markers[0]['result_ref'])), reviewed_grade)
+
     def test_subset_reuse_refuses_changed_grader_without_matching_review(self):
         from beaconbench.subset_rerun import prepare
         identity, pack = self.subset_source()

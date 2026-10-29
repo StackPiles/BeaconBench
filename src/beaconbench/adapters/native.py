@@ -46,6 +46,8 @@ def require_locked(executor, paths):
 async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stopped, progress,
                   *, request_seed: int, stage='generate', replay_calls=None) -> dict:
     locked_files(executor)
+    from ..vita_payment import PaymentGuard, validate as validate_payment
+    payment_guard = PaymentGuard() if validate_payment(payload.get('generation', {})) else None
     command = executor['command']
     if not command or not isinstance(command, list) or not all(isinstance(part, str) for part in command):
         raise BenchError('native commandは固定した引数配列で指定してください。')
@@ -156,6 +158,8 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                               'seed': request_seed}
                 from ..evaluation_contracts import remind_customer
                 parameters = remind_customer(parameters, payload.get('generation', {}), role)
+                if payment_guard:
+                    parameters = payment_guard.decorate(parameters, role)
                 request_folder = folder / 'calls' / f'{sequence:06d}'
                 sequence += 1
                 try:
@@ -170,9 +174,12 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                         raise BenchError('native実行器が要求の途中で終了しました。途中の原本を保全しました。') from None
                     raise
                 measurement = response['measurement']
+                forwarded = payment_guard.forward(response['message'], role, request_folder.relative_to(folder).as_posix()) if payment_guard else response['message']
+                if payment_guard and role == 'customer':
+                    write_once(request_folder / 'payment-termination.json', {**payment_guard.decisions[-1], 'forwarded_message': forwarded})
                 reply = {'type': 'model_response', 'id': identity,
                          'response': {'id': identity, 'created': int(time.time()), 'object': 'chat.completion', 'model': binding['model']['api_model'],
-                                      'choices': [{'index': 0, 'message': response['message'], 'finish_reason': measurement['finish_reason']}],
+                                      'choices': [{'index': 0, 'message': forwarded, 'finish_reason': measurement['finish_reason']}],
                                       'usage': measurement['raw_usage']}}
                 write_once(request_folder / 'native-request.json', {'rpc_id': identity, 'role': role, 'body': body,
                     'controlled_fields_overridden': sorted(set(body) & CONTROLLED_FIELDS)})
@@ -212,9 +219,13 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                                                 'exit_code': process.returncode, 'failure': failure})
             for stream in streams.values(): stream['handle'].close()
             write_once(work / 'artifact-manifest.json', artifacts)
+            if payment_guard:
+                write_once(folder / 'payment-guard.json', payment_guard.report())
     if replay_calls:
         result['recovery'] = {'replayed_model_calls': len(replay_calls), 'current_native_task_wall_seconds': result.get('task_wall_seconds'),
                               'task_wall_seconds_unavailable': 'original task boundary was not persisted before infrastructure failure'}
         result['task_wall_seconds'] = None
+    if payment_guard:
+        result['customer_payment_guard'] = payment_guard.report()
     write_once(folder / 'native-result.json', result)
     return result

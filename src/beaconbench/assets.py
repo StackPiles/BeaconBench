@@ -56,6 +56,8 @@ def install_pack(root: Path, pack: dict) -> dict:
                 raise BenchError('営業採点には日本語対話と固定した品質・意向・言語の判定文が必要です。')
         from .evaluation_contracts import validate_case
         validate_case(case)
+        from .vita_payment import validate as validate_payment
+        validate_payment(case['generation'])
         # Retrieval timestamps, other cases' receipts, suite size and grader
         # policy are not generation inputs. Each case may pin extra environment
         # identity explicitly; its actual messages are always hashed in full.

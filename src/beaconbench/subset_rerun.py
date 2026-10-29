@@ -74,6 +74,11 @@ def prepare(store, config):
             checked = reviewed.get((case['id'], row['combination_id'], row['trial_index']))
             marker = copy.deepcopy(row['grade_marker'])
             origin_marker = copy.deepcopy(marker)
+            for path in source_trial.glob('grades/*/complete.json'):
+                saved_marker = read_json(path)
+                if (saved_marker['result_ref'], saved_marker['result_sha256']) == (marker['result_ref'], marker['result_sha256']):
+                    origin_marker = copy.deepcopy(saved_marker.get('source_grade_marker', origin_marker))
+                    break
             if checked:
                 marker.update(result_ref=checked['result_ref'], result_sha256=checked['result_sha256'])
             elif case['grader'] != old['grader']:
@@ -164,7 +169,7 @@ def refresh(store, parent_id):
     state = {**read_json(parent / 'status.json'), 'phase': phase, 'updated_at': utc(),
              'completed': len(rows), 'scored': sum(r['grade'].get('status') == 'scored' for r in rows),
              'reused': len(config['retained']), 'attempted': child.get('attempted', 0), 'active_case': child.get('active_case'),
-             'message': '保存済みの回答・採点を保持し、指定した課題だけを測定しています。', 'measurement_run_id': config['child_run_id']}
+             'message': '生成・採点・統合結果の保存が完了しました。' if phase == 'completed' else '保存済みの回答・採点を保持し、指定した課題だけを測定しています。', 'measurement_run_id': config['child_run_id']}
     for key in ('active_model', 'received_characters', 'received_reasoning_characters', 'active_role', 'finished_at'):
         if key in child: state[key] = child[key]
     atomic_json(parent / 'status.json', state)
