@@ -154,6 +154,8 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                 binding = roles[role]
                 parameters = {**binding['request_parameters'], **{key: copy.deepcopy(value) for key, value in body.items() if key in TASK_FIELDS},
                               'seed': request_seed}
+                from ..evaluation_contracts import remind_customer
+                parameters = remind_customer(parameters, payload.get('generation', {}), role)
                 request_folder = folder / 'calls' / f'{sequence:06d}'
                 sequence += 1
                 try:

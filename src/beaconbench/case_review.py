@@ -125,8 +125,21 @@ def grade_view(grade, decisions=None):
         sections.append(text('根拠の保存範囲', 'この採点形式の詳細は「詳細情報」の採点原本でも確認できます。記録のない理由は補っていません。'))
     if grade.get('message'):
         sections.insert(0, text('採点器からのメッセージ', grade['message']))
+    review = grade.get('evaluation_review')
+    if review:
+        audit = [text('評価条件の点検', review['explanation'])]
+        for finding in review.get('findings', []):
+            audit.append(text('照合した指示と発言', '指示：' + finding['rule_quote'] + '\n\n発言：' + finding['message_quote'] + '\n\n' + finding['explanation']))
+        if review.get('reference_evidence'):
+            audit.append(text('参照答えの点検根拠', '\n\n'.join(review['reference_evidence'])))
+        sections = audit + sections
+    if grade.get('source_score'):
+        sections.insert(0, facts('採点版の違い', [('元の主得点', grade['source_score']['score']),
+                                            ('元の購入意向の重み', grade['source_score']['proportion']),
+                                            ('今回の購入意向の重み', grade.get('components', {}).get('proportion'))]))
     return {'status': grade.get('status'), 'passed': grade.get('passed'), 'score': grade.get('score'),
-            'metric': metric, 'unit': grade.get('metric_unit'), 'sections': [row for row in sections if row.get('items', True)]}
+            'metric': metric, 'unit': grade.get('metric_unit'), 'evaluation_review': review,
+            'comparison_eligible': grade.get('comparison_eligible', True), 'sections': [row for row in sections if row.get('items', True)]}
 
 
 def build_review(case, attempt: Path, answer: str, grades: list, trial: dict):

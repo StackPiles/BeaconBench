@@ -22,7 +22,7 @@ def resolve_case(store, case, track):
             raise BenchError('生成と採点で同じ補助役の設定が異なります。')
         configs[role] = config
     for role, config in configs.items():
-        if role not in {'customer', 'converter', 'judge', 'intent_judge', 'language_judge'}:
+        if role not in {'customer', 'converter', 'judge', 'intent_judge', 'language_judge', 'contract_judge'}:
             raise BenchError('未対応の補助モデルの役割です。')
         model = store.registry.get('models', config['model_id'])
         preset = validate_preset(config['preset'])
@@ -37,6 +37,9 @@ def resolve_case(store, case, track):
     if case['grader']['kind'] == 'salesllm_ja':
         from .sales import validate_policy
         validate_policy(case['grader'], helpers)
+    if case['grader'].get('evaluation_review'):
+        from ..evaluation_contracts import validate
+        validate(case['grader']['evaluation_review'], helpers)
     executor = None
     if adapter == 'native':
         executor = store.registry.get('executors', generation['executor_id'])

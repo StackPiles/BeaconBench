@@ -45,3 +45,13 @@ test("Unclosed code fences keep the tail of saved output", () => {
   const dom = review.markdown("```cpp\nline1\nlast-line");
   assert.ok(text(dom).includes("last-line"));
 });
+test("Reference holds and target grounding violations remain visibly distinct", () => {
+  const grading = [
+    { status: "scored", score: 0, unit: "native_reward_0_1", fingerprint: "vita-revision", comparison_eligible: false, sections: [{ kind: "text", title: "評価条件の点検", text: "顧客役が固定条件を放棄" }] },
+    { status: "scored", score: 9.2, unit: "salesllm_score_0_10", fingerprint: "sales-revision", comparison_eligible: true, evaluation_review: { kind: "sales_target", verdict: "violation" }, sections: [] }
+  ];
+  const dom = review.render({ review: { question: { text: "問題" }, response: { kind: "answer", messages: [], artifacts: [] }, grading, source_note: "原本保全" } }, () => {});
+  assert.ok(text(dom).includes("比較の集計から除外"));
+  assert.ok(text(dom).includes("商品・行動条件の検査：違反候補（自動判定）"));
+  assert.ok(text(dom).includes("9.2 / 10"));
+});

@@ -259,8 +259,17 @@ class Worker:
                                      lambda fields: self.status(**fields), payload['seed'])
             else:
                 result = await command_grade(executor, payload, attempt, self.stopped)
-        marker = {'grader_fingerprint': grade_key, 'result_ref': (attempt / 'result.json').relative_to(self.store.root).as_posix(),
-                  'result_sha256': file_sha(attempt / 'result.json')}
+        result_path = attempt / 'result.json'
+        if case['grader'].get('evaluation_review'):
+            from .evaluation_contracts import material_from_saved, review
+            native = payload.get('native_result', {})
+            material = material_from_saved(case, native, inside(self.store.root, complete['answer_ref']).parent)
+            result = await review(result, case['grader']['evaluation_review'], material, helpers,
+                                  attempt / 'evaluation-review', self.stopped, lambda fields: self.status(**fields), payload['seed'])
+            if (attempt / 'evaluation-review/result.json').is_file():
+                result_path = attempt / 'evaluation-review/result.json'
+        marker = {'grader_fingerprint': grade_key, 'result_ref': result_path.relative_to(self.store.root).as_posix(),
+                  'result_sha256': file_sha(result_path)}
         if result['status'] == 'scored':
             write_once(grades / 'complete.json', marker)
         self.event('trial_graded', case_id=case['id'], trial_index=index, status=result['status'])
@@ -305,7 +314,7 @@ class Worker:
                 grade, marker = await self.grade(combination, case, index, folder, complete)
                 trial = read_json(inside(self.store.root, complete['trial_ref']))
                 rows[row_index]['grade'] = {key: grade[key] for key in ('status', 'passed', 'score', 'metric', 'metric_unit', 'grade_wall_seconds',
-                    'components', 'language_consistency', 'adaptation') if key in grade}
+                    'components', 'language_consistency', 'adaptation', 'evaluation_review', 'comparison_eligible') if key in grade}
                 rows[row_index]['grade_marker'] = marker
                 self.state['scored'] += int(grade['status'] == 'scored')
                 atomic_json(self.root / 'summary.json', self.summary(rows))
@@ -330,6 +339,7 @@ class Worker:
         observed = []
         requests = list(self.root.glob('trials/*/*/*/attempts/*/calls/*/request.json'))
         requests += list(self.root.glob('trials/*/*/*/grades/*/attempt-*/calls/*/request.json'))
+        requests += list(self.root.glob('trials/*/*/*/grades/*/attempt-*/evaluation-review/calls/*/request.json'))
         for request in sorted(requests):
             path = request.parent / 'measurement.json'
             measurement = read_json(path) if path.exists() else unclosed_measurement(request.parent)

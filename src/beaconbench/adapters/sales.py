@@ -71,6 +71,8 @@ async def grade(spec, native, helpers, folder, stopped, progress, seed):
         result['language_consistency'] = {'customer_japanese': decisions['language_judge']['valid'],
                                           'target_japanese': decisions['language_judge']['target_japanese']}
         result['adaptation'] = 'JA-derived quality and intent judges; not the upstream EN/ZH classifier'
+        if spec.get('score_profile'):
+            result['score_profile'] = spec['score_profile']
     except BenchError as error:
         result = {'status': 'invalid_instrument', 'message': str(error)}
     write_once(folder / 'decisions.json', decisions)

@@ -133,6 +133,8 @@
       node("div", { class: "review-section-heading" }, node("span", { class: "section-number" }, "03"), node("h3", { id: "review-grade-title" }, "採点根拠")));
     for (const grade of review.grading) grading.append(node("div", { class: "review-grade-version" },
       node("div", { class: "review-verdict " + (grade.unit === "binary" && grade.passed === false ? "negative" : "") }, node("strong", {}, verdict(grade)), node("span", {}, metricNames[grade.unit] || grade.metric || "保存された採点結果")),
+      grade.comparison_eligible === false ? node("p", { class: "review-contract-note" }, "評価条件を要確認 · この得点は比較の集計から除外しています。") : null,
+      grade.evaluation_review?.kind === "sales_target" ? node("p", { class: "review-contract-note" }, "商品・行動条件の検査：" + ({consistent:"整合（自動判定）",violation:"違反候補（自動判定）",unknown:"判定保留"}[grade.evaluation_review.verdict]) + "。引用と会話を確認してください。取引前進の主得点とは別に評価しています。") : null,
       ...grade.sections.map(gradeSection), node("p", { class: "review-caption grade-fingerprint" }, "採点版 " + grade.fingerprint.slice(0, 12))));
     if (!review.grading.length) grading.append(node("p", { class: "review-empty" }, "採点はまだ完了していません。"));
     const advancedBody = node("div", { class: "review-advanced-body" });

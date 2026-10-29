@@ -36,6 +36,9 @@ def parser():
     instrument.add_argument('--fixture', action='store_true')
     check = commands.add_parser('probe')
     check.add_argument('model_id')
+    review = commands.add_parser('evaluation-review')
+    review.add_argument('run_id')
+    review.add_argument('config', type=Path)
     for name, argument in [('run', 'plan_id'), ('status', 'run_id'), ('resume', 'run_id'), ('stop', 'run_id'), ('worker', 'run_id'), ('results', 'run_id')]:
         command = commands.add_parser(name)
         command.add_argument(argument)
@@ -87,6 +90,9 @@ def main(argv=None):
             result = store.runs()
         elif args.command == 'results':
             result = read_json(store.run_path(args.run_id) / 'summary.json')
+        elif args.command == 'evaluation-review':
+            from .saved_reviews import run
+            result = asyncio.run(run(store, args.run_id, read_json(args.config)))
         elif args.command == 'worker':
             asyncio.run(Worker(store, args.run_id).run())
             return

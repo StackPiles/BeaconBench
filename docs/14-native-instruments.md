@@ -46,7 +46,7 @@ uv run python tools/export_native_recipe.py --family babel-tau3 --domain retail 
 
 顧客の応答は `reply / conversation_ended / end_reason` のJSON。日本語の「ありがとうございます」のような語だけで終了と決めず、検証済み顧客役の終了判定を保存する。対話回数の追加既定値はない。公式ルールとして回数を採用するときは `native_end_conditions.generated_turn_limit` と出典を明示し、生成した話者ターン数で数える。原版の `round_num=20` は営業・顧客20往復を意味しない。
 
-後段の `grader.kind=salesllm_ja` は、日本語で成立するか、会話品質、購買意向の順に別の役を呼ぶ。品質は整数0〜10、意向はA/B/C/X/F。原版の式に合わせ、既定では品質と意向を各0.5で合成する。意向の点数は10/8/6/4/2。**合格閾値を新設しない。** 分類器をLLMに置き換える日本語派生なので、原版のCustomerLM/SaleIntent-BERTと同等とは呼ばない。
+後段の `grader.kind=salesllm_ja` は、日本語で成立するか、会話品質、購買意向の順に別の役を呼ぶ。品質は整数0〜10、意向はA/B/C/X/F。原版の式に合わせ、CLI既定と旧版では品質と意向を各0.5で合成する。評価条件v2はREADMEの報告条件に合わせ意向0.6・品質0.4を明示する（[差分と保持範囲](18-evaluation-contracts.md)）。意向の点数は10/8/6/4/2。**合格閾値を新設しない。** 分類器をLLMに置き換える日本語派生なので、原版のCustomerLM/SaleIntent-BERTと同等とは呼ばない。
 
 `quality_prompt / intent_prompt / language_prompt`は翻訳・review済みのprivate language packで固定し、helperのpolicyに判定文と出力契約のdigestを保持する。コード内で今回の回答に合わせた基準を作らない。不正なJSON、範囲外の得点、顧客役の言語不成立は `invalid_instrument` で、0点ではない。営業役だけの言語違反は `language_consistency.target_japanese=false` を残し、顧客役が成立していれば得点も保存する。
 

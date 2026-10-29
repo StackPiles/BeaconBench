@@ -8,6 +8,7 @@ import tempfile
 import threading
 import time
 import unittest
+from unittest.mock import patch
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
@@ -268,6 +269,63 @@ class Runtime(unittest.TestCase):
             server.server_close()
             thread.join(timeout=2)
         self.assertEqual(before, {str(p): file_sha(p) for p in run.rglob('*') if p.is_file()})
+
+    def test_saved_review_has_no_generation_and_api_keeps_both_versions(self):
+        from beaconbench import saved_reviews
+        from beaconbench.util import digest, file_sha, inside
+        identity = self.run_plan(self.plan())
+        root = self.store.run_path(identity)
+        pack = read_json(root / 'pack.json')
+        proposed = copy.deepcopy(pack)
+        proposed['id'] = 'review-fixture'
+        case = proposed['cases'][0]
+        case['source'] = pack['cases'][0].get('source')
+        case['grader']['evaluation_review'] = {'version': 'source-contracts-ja-v2', 'kind': 'reference',
+            'source_record_sha256': 'a' * 64, 'state': 'questioned', 'reason': '固定参照の疑義',
+            'evidence': ['規則と参照の不整合'], 'source_url': 'https://example.org/fixture'}
+        summary = read_json(root / 'summary.json')
+        row = summary['rows'][0]
+        trial = root / 'trials' / row['combination_id'] / digest(row['case_id'])[:20] / '0'
+        complete = self.store.verify_completion(trial)
+        write_once(inside(self.store.root, complete['answer_ref']).parent / 'native-result.json', {})
+        before = {str(p): file_sha(p) for p in root.rglob('*') if p.is_file()}
+        with patch('beaconbench.saved_reviews.load_pack', return_value=proposed), \
+                patch('beaconbench.saved_reviews.resolve_case', return_value=({}, None)), \
+                patch('beaconbench.saved_reviews.material_from_saved', return_value={'source_record_sha256': 'a' * 64}), \
+                patch.object(Worker, 'generate', side_effect=AssertionError('No target generation')):
+            result = asyncio.run(saved_reviews.run(self.store, identity, {'suite_id': 'connection-check-ja'}))
+        self.assertEqual(result['generation_calls'], 0)
+        self.assertEqual(result['comparison_withheld'], 1)
+        self.assertEqual(before, {str(p): file_sha(p) for p in root.rglob('*') if p.is_file()})
+        server = LocalServer('127.0.0.1', 0, self.store)
+        thread = threading.Thread(target=server.serve_forever, daemon=True); thread.start()
+        try:
+            with httpx.Client(trust_env=False) as browser:
+                base = 'http://127.0.0.1:' + str(server.server_port) + '/api/runs/' + identity
+                native = browser.get(base + '/results').json()
+                checked = browser.get(base + '/results', params={'evaluation_revision': result['id']}).json()
+                self.assertNotIn('comparison_eligible', native['rows'][0]['grade'])
+                self.assertFalse(checked['rows'][0]['grade']['comparison_eligible'])
+                self.assertEqual(native['rows'][0]['grade']['passed'], checked['rows'][0]['grade']['passed'])
+                self.assertEqual(len(native['evaluation_versions']), 1)
+                detail = browser.get(base + '/case', params={'combination': row['combination_id'], 'case_id': row['case_id'],
+                    'trial': 0, 'view': 'review', 'evaluation_revision': result['id']})
+                self.assertEqual(detail.status_code, 200, detail.text)
+                self.assertFalse(detail.json()['review']['grading'][0]['comparison_eligible'])
+        finally:
+            server.shutdown(); server.server_close(); thread.join(timeout=2)
+        self.assertEqual(len(self.endpoint.requests), 1)
+        record = saved_reviews.load(self.store, identity, result['id'])
+        changed = inside(self.store.root, record['rows'][0]['result_ref'])
+        changed.write_text('{}', encoding='utf-8')
+        with self.assertRaises(BenchError):
+            saved_reviews.load(self.store, identity, result['id'])
+
+    def test_saved_review_requires_a_completed_source_run(self):
+        from beaconbench.saved_reviews import run
+        identity = self.store.create_run(self.plan())
+        with self.assertRaises(BenchError):
+            asyncio.run(run(self.store, identity, {'suite_id': 'connection-check-ja'}))
 
     def test_run_settings_reject_invalid_values_and_external_endpoints(self):
         for count in [0, -1, 1.5, True, None]:

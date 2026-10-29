@@ -1,5 +1,5 @@
 "use strict";
-const state = { boot: null, selectedModels: new Set(), selectedPresets: new Set(), presets: [], suiteId: null, editing: null, settings: null, activeRun: null, resultRun: null, result: null, resolvedPlan: null, detail: null, view: "configure", pollBusy: false };
+const state = { boot: null, selectedModels: new Set(), selectedPresets: new Set(), presets: [], suiteId: null, editing: null, settings: null, activeRun: null, resultRun: null, evaluationRevision: "native", result: null, resolvedPlan: null, detail: null, view: "configure", pollBusy: false };
 const $ = id => document.getElementById(id);
 const copy = value => JSON.parse(JSON.stringify(value));
 const activePhases = new Set(["queued", "preflight", "generating", "scoring"]);
@@ -124,24 +124,24 @@ async function refreshProgress() {
     current.active_case ? el("div", { class: "active-case" }, el("strong", {}, current.active_model?.name || ""), el("p", {}, current.active_case.title + " · " + (current.active_case.trial_index + 1) + "回目"), el("p", {}, "今回の要求 " + seconds(current.request_elapsed_seconds) + " · 受信 " + fmt(current.received_characters) + "文字（トークン数の推定ではありません）")) : null,
     el("p", {}, ({ generating: "回答を生成しています。途中の原本も保存しています。", scoring: "保存済みの回答を採点しています。" }[current.phase]) || current.message || "保存と進捗を更新しています。"), el("div", { class: "progress-actions" },
       activePhases.has(current.phase) ? el("button", { class: "button", onclick: action(async () => { await api("/api/runs/" + state.activeRun + "/stop", {}); toast("停止を要求しました。保存が終わるまで状態を確認します。"); }) }, "一時停止") : current.phase !== "completed" ? el("button", { class: "button", onclick: action(async () => { await api("/api/runs/" + state.activeRun + "/resume", {}); await refreshBootstrap(); await refreshProgress(); }) }, "保存回答を使って再開") : null,
-      el("button", { class: "button primary", onclick: () => { state.resultRun = state.activeRun; renderRunPickers(); showView("overview"); } }, "回答と結果を見る")));
+      el("button", { class: "button primary", onclick: () => { if (state.resultRun !== state.activeRun) state.evaluationRevision = "native"; state.resultRun = state.activeRun; renderRunPickers(); showView("overview"); } }, "回答と結果を見る")));
   $("progress-content").replaceChildren(panel, el("div", { class: "run-list" }, ...state.boot.runs.map(row => el("article", { class: "panel run-card" }, el("div", {}, el("strong", {}, row.suite.name), el("p", {}, date(row.created_at) + " · " + row.models.join(" / ")), el("p", {}, (labels[row.phase] || row.phase) + " · 生成 " + row.completed + "/" + row.planned + " · 採点 " + row.scored + "/" + row.planned)), el("button", { class: "button small", onclick: () => { state.activeRun = row.run_id; renderRunPickers(); refreshProgress().catch(error => showError(error.message)); } }, "表示する")))));
 }
 function emptyState(title, description) { return el("div", { class: "panel empty-state" }, el("h2", {}, title), el("p", {}, description), el("button", { class: "button primary", onclick: () => showView("configure") }, "比較を作成")); }
 function nullableSum(values) { return values.length && values.every(value => value != null) ? values.reduce((sum, value) => sum + value, 0) : null; }
 function aggregate(rows) {
-  const binary = rows.filter(row => row.grade?.status === "scored" && row.grade.metric_unit === "binary");
+  const binary = rows.filter(row => row.grade?.status === "scored" && row.grade.comparison_eligible !== false && row.grade.metric_unit === "binary");
   const target = rows.map(row => row.trial.role_totals.target);
   const secondsTotal = nullableSum(rows.map(row => row.trial.task_wall_seconds));
   const output = nullableSum(target.map(row => row.completion_tokens)), requestWall = nullableSum(target.map(row => row.request_wall_seconds));
   return { correct: binary.filter(row => row.grade.passed).length, binary: binary.length, total: nullableSum(target.map(row => row.total_tokens)), prompt: nullableSum(target.map(row => row.prompt_tokens)), output,
     seconds: secondsTotal, requestThroughput: output != null && requestWall > 0 ? output / requestWall : null,
     gradeSeconds: nullableSum(rows.filter(row => row.grade?.status === "scored").map(row => row.grade.grade_wall_seconds)),
-    scores: rows.filter(row => row.grade?.status === "scored" && row.grade.metric_unit !== "binary" && row.grade.score != null), reused: rows.filter(row => row.reused).length };
+    scores: rows.filter(row => row.grade?.status === "scored" && row.grade.comparison_eligible !== false && row.grade.metric_unit !== "binary" && row.grade.score != null), reused: rows.filter(row => row.reused).length };
 }
 async function refreshResults() {
   if (!state.resultRun) { $("results-content").replaceChildren(emptyState("評価結果はまだありません", "実モデルの評価が進むと、保存した回答と採点結果が表示されます。")); return; }
-  state.result = await api("/api/runs/" + encodeURIComponent(state.resultRun) + "/results"); renderResults();
+  state.result = await api("/api/runs/" + encodeURIComponent(state.resultRun) + "/results?evaluation_revision=" + encodeURIComponent(state.evaluationRevision)); renderResults();
 }
 function renderResults() {
   const result = state.result, rows = result.rows || [];
@@ -158,13 +158,16 @@ function renderResults() {
   const caseTable = el("table", {}, el("thead", {}, el("tr", {}, ...["課題", "モデル / 設定", "試行", "判定", "完了時間", "明細"].map(value => el("th", { scope: "col" }, value)))), el("tbody", {}, ...rows.map(row => {
     const combination = combinations.find(item => item.id === row.combination_id), grade = row.grade;
     const judged = grade?.status === "scored";
-    const status = !judged ? ({ infrastructure_error: "採点器エラー", invalid_instrument: "採点条件の不備" }[grade?.status] || "採点待ち") : grade.metric_unit === "binary" ? grade.passed ? "✓ 成功" : "− 不成功" : fmt(grade.score) + " " + grade.metric_unit;
+    const status = !judged ? ({ infrastructure_error: "採点器エラー", invalid_instrument: "採点条件の不備" }[grade?.status] || "採点待ち") : grade.comparison_eligible === false ? "参考値 · 評価条件を要確認" : grade.metric_unit === "binary" ? grade.passed ? "✓ 成功" : "− 不成功" : fmt(grade.score) + " " + grade.metric_unit;
     return el("tr", {}, el("td", {}, row.title, el("span", { class: "cell-foot" }, row.category)), el("td", {}, combination.model.name, el("span", { class: "cell-foot" }, combination.preset.name)), el("td", {}, row.trial_index + 1 + "回目"), el("td", {}, el("span", { class: "status-badge " + (!judged ? "score" : grade.passed ? "pass" : grade.metric_unit === "binary" ? "fail" : "score") }, status)), el("td", {}, seconds(row.trial.task_wall_seconds)), el("td", {}, el("button", { class: "detail-button", "aria-label": row.title + "の回答と根拠を開く", onclick: action(() => openCase(row)) }, "回答と根拠 →")));
   })));
-  const contents = [head,
+  const revisionPicker = el("select", { "aria-label": "採点版", onchange: action(async event => { state.evaluationRevision = event.target.value; await refreshResults(); }) }, el("option", { value: "native" }, "元の採点"), ...(result.evaluation_versions || []).map(row => el("option", { value: row.id }, row.name)));
+  revisionPicker.value = state.evaluationRevision;
+  const contents = [el("label", { class: "run-picker" }, "採点版", revisionPicker), result.evaluation_notice ? el("p", { class: "result-note" }, result.evaluation_notice) : null, head,
     result.status?.phase !== "completed" ? el("p", { class: "result-note" }, "途中結果です。未生成・未採点を0点として集計していません。") : null,
     result.suite.track === "diagnostic" ? el("p", { class: "result-note" }, "接続・計測・採点器の動作確認です。通常能力のベンチマーク得点ではありません。") : null,
     result.suite.track === "development" ? el("p", { class: "result-note" }, "接続・実行の検証用に抽出した問題です。Quick / Detailedや公式ベンチマーク全体の得点とは分けて表示しています。") : null,
+    result.rows.some(row => row.grade?.comparison_eligible === false) ? el("p", { class: "result-note" }, "評価条件に留保がある " + result.rows.filter(row => row.grade?.comparison_eligible === false).length + " 試行は比較の得点から除外しています。元の得点と根拠は明細に保持しています。") : null,
     el("p", { class: "subtle" }, "上部の指標：" + first.model.name + " / " + first.preset.name), cards,
     el("div", { class: "section-title" }, el("h2", {}, "モデル別の結果")), region(table, "モデル別の結果表"),
     el("p", { class: "inline-note" }, "保存済み回答の計測値を集計しています。異なるトークナイザーのtoken/sは同じ作業量を意味しません。純粋なdecode速度は、エンジンが報告した場合のみ明細に表示します。"),
@@ -176,6 +179,7 @@ function renderResults() {
 function region(child, label) { return el("div", { class: "panel table-scroll", role: "region", "aria-label": label + "。横スクロールできます", tabindex: "0" }, child); }
 async function openCase(row) {
   const query = new URLSearchParams({ combination: row.combination_id, case_id: row.case_id, trial: String(row.trial_index) });
+  query.set("evaluation_revision", state.evaluationRevision);
   const path = "/api/runs/" + state.resultRun + "/case?" + query;
   state.detail = await api(path + "&view=review");
   $("case-title").textContent = row.title;
@@ -216,9 +220,9 @@ if (typeof document !== "undefined") {
   $("duplicate-preset").addEventListener("click", () => { const preset = copy(state.presets.find(row => row.id === state.editing)); if (!preset) return; preset.id = "custom-" + crypto.randomUUID().slice(0, 12); preset.name += "のコピー"; state.presets.push(preset); state.editing = preset.id; state.selectedPresets.add(preset.id); renderPresets(); renderEditor(); renderSummary(); });
   $("save-preset").addEventListener("click", action(async () => { const preset = state.presets.find(row => row.id === state.editing); await api("/api/presets", preset); $("preset-message").textContent = "プリセットを保存しました。過去の実行条件は変わりません。"; }));
   $("prepare-plan").addEventListener("click", action(preparePlan));
-  $("start-run").addEventListener("click", action(async () => { $("start-run").disabled = true; try { const run = await api("/api/runs", { plan_id: state.resolvedPlan.plan_id }); $("plan-dialog").close(); state.activeRun = state.resultRun = run.run_id; await refreshBootstrap(); showView("runs"); } finally { $("start-run").disabled = false; } }));
+  $("start-run").addEventListener("click", action(async () => { $("start-run").disabled = true; try { const run = await api("/api/runs", { plan_id: state.resolvedPlan.plan_id }); $("plan-dialog").close(); state.activeRun = state.resultRun = run.run_id; state.evaluationRevision = "native"; await refreshBootstrap(); showView("runs"); } finally { $("start-run").disabled = false; } }));
   $("active-run").addEventListener("change", action(async event => { state.activeRun = event.target.value; await refreshProgress(); }));
-  $("result-run").addEventListener("change", action(async event => { state.resultRun = event.target.value; await refreshResults(); }));
+  $("result-run").addEventListener("change", action(async event => { state.resultRun = event.target.value; state.evaluationRevision = "native"; await refreshResults(); }));
   $("add-model").addEventListener("click", () => { $("model-error").hidden = true; $("model-dialog").showModal(); });
   $("model-form").addEventListener("submit", async event => { event.preventDefault(); const values = Object.fromEntries(new FormData(event.target)); const model = { id: values.id, name: values.name, base_url: values.base_url, api_model: values.api_model, api_key_env: values.api_key_env, context_tokens: Number(values.context_tokens), output_tokens: Number(values.output_tokens), adapter: values.adapter, revision: values.revision, engine: { label: values.engine_label, reasoning_effort: values.reasoning_effort, resource_group: values.resource_group }, cache_policy: "shared-service-uncontrolled" }; try { await api("/api/models", model); state.selectedModels.add(model.id); $("model-dialog").close(); await refreshBootstrap(); toast("モデル接続を登録しました。接続確認を実行できます。"); } catch (error) { $("model-error").hidden = false; $("model-error").textContent = error.message; } });
   window.addEventListener("hashchange", () => showView(location.hash.slice(1)));

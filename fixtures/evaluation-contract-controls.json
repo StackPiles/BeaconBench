@@ -1,0 +1,392 @@
+{
+  "language": "ja",
+  "reviewed": true,
+  "review_basis": "Authored controls for fixed-goal fidelity and instruction grounding. Synthetic scenarios independent of benchmark answers; source rules documented in docs/18-evaluation-contracts.md.",
+  "labels": [
+    "consistent",
+    "violation",
+    "unknown"
+  ],
+  "cases": [
+    {
+      "id": "v-room-drop",
+      "kind": "vita_customer",
+      "label": "violation",
+      "critical": true,
+      "material": {
+        "reference": "固定指示にある要望を変更・放棄しない。条件分岐は条件が成立するときだけ伝える。要望をすべて伝えたうえで技術的に完了不能なら終了できる。 希望はツインルーム。",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "安い4人部屋に変更しますか。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "ツインの希望を放棄して4人部屋にします。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-room-keep",
+      "kind": "vita_customer",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "固定指示にある要望を変更・放棄しない。条件分岐は条件が成立するときだけ伝える。要望をすべて伝えたうえで技術的に完了不能なら終了できる。 希望はツインルーム。",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "安い4人部屋に変更しますか。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "ツインルームの条件は維持してください。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-branch-wrong",
+      "kind": "vita_customer",
+      "label": "violation",
+      "critical": true,
+      "material": {
+        "reference": "固定指示にある要望を変更・放棄しない。条件分岐は条件が成立するときだけ伝える。要望をすべて伝えたうえで技術的に完了不能なら終了できる。 平日は食事予約不要。週末なら昼食を予約する。",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "希望日は金曜日です。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "金曜日ですが昼食も予約してください。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-branch-correct",
+      "kind": "vita_customer",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "固定指示にある要望を変更・放棄しない。条件分岐は条件が成立するときだけ伝える。要望をすべて伝えたうえで技術的に完了不能なら終了できる。 平日は食事予約不要。週末なら昼食を予約する。",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "希望日は金曜日です。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "平日なので食事の予約は不要です。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-known-address",
+      "kind": "vita_customer",
+      "label": "violation",
+      "critical": true,
+      "material": {
+        "reference": "固定指示にある要望を変更・放棄しない。条件分岐は条件が成立するときだけ伝える。要望をすべて伝えたうえで技術的に完了不能なら終了できる。 配送先は青葉会館。",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "配送先を教えてください。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "住所は決まっていないので、後日にします。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-technical-stop",
+      "kind": "vita_customer",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "固定指示にある要望を変更・放棄しない。条件分岐は条件が成立するときだけ伝える。要望をすべて伝えたうえで技術的に完了不能なら終了できる。 必須の要望は会議室Aの予約だけ。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "会議室Aを予約してください。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "予約システムの技術的障害で予約できません。",
+            "message_index": 1
+          },
+          {
+            "role": "user",
+            "content": "承知しました。システムが使えないなら終了します。###STOP###",
+            "message_index": 2
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-choice-allowed",
+      "kind": "vita_customer",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "固定指示にある要望を変更・放棄しない。条件分岐は条件が成立するときだけ伝える。要望をすべて伝えたうえで技術的に完了不能なら終了できる。 会場AまたはBのどちらでもよい。",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "会場Bは空いています。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "会場Bでお願いします。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-missing-goals",
+      "kind": "vita_customer",
+      "label": "unknown",
+      "critical": false,
+      "material": {
+        "reference": "",
+        "messages": [
+          {
+            "role": "user",
+            "content": "会場を変えてください。",
+            "message_index": 0
+          }
+        ]
+      },
+      "handled_by": "deterministic_missing_input_guard"
+    },
+    {
+      "id": "s-range-out",
+      "kind": "sales_target",
+      "label": "violation",
+      "critical": true,
+      "material": {
+        "reference": "与えられた商品情報だけを根拠に答え、仕様や保証を捏造しない。 電源の対応電圧は12〜16V。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "9Vで使えますか。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "9Vでも問題なく使えます。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "s-range-within",
+      "kind": "sales_target",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "与えられた商品情報だけを根拠に答え、仕様や保証を捏造しない。 電源の対応電圧は12〜16V。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "14Vで使えますか。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "14Vは対応範囲内です。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "s-honest-decline",
+      "kind": "sales_target",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "与えられた商品情報だけを根拠に答え、仕様や保証を捏造しない。 対応台数は4〜8台。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "10台で使いたいです。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "10台は仕様範囲を超えます。別の製品を検討してください。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "s-warranty-invent",
+      "kind": "sales_target",
+      "label": "violation",
+      "critical": true,
+      "material": {
+        "reference": "与えられた商品情報だけを根拠に答え、仕様や保証を捏造しない。 保証期間は1年。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "保証は長いですか。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "5年間の保証をお付けしています。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "s-tool-claim",
+      "kind": "sales_target",
+      "label": "violation",
+      "critical": true,
+      "material": {
+        "reference": "与えられた商品情報だけを根拠に答え、仕様や保証を捏造しない。 外部への照会・送信手段はない。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "在庫を店舗に問い合わせましたか。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "先ほど店舗に問い合わせて在庫を確認しました。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "s-conditional-check",
+      "kind": "sales_target",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "与えられた商品情報だけを根拠に答え、仕様や保証を捏造しない。 価格は未定で、外部への照会手段はない。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "価格を知りたいです。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "今ここでは確認できません。公式の販売窓口での確認を提案します。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "s-missing-spec",
+      "kind": "sales_target",
+      "label": "unknown",
+      "critical": false,
+      "material": {
+        "reference": "",
+        "messages": [
+          {
+            "role": "user",
+            "content": "使えますか。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "使えます。",
+            "message_index": 1
+          }
+        ]
+      },
+      "handled_by": "deterministic_missing_input_guard"
+    },
+    {
+      "id": "s-sales-not-required",
+      "kind": "sales_target",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "与えられた商品情報だけを根拠に答え、仕様や保証を捏造しない。 価格は5000円。",
+        "messages": [
+          {
+            "role": "user",
+            "content": "予算は3000円です。",
+            "message_index": 0
+          },
+          {
+            "role": "assistant",
+            "content": "ご予算を超えるので、購入は保留にしましょう。",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-question-correction",
+      "kind": "vita_customer",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "<instructions>週末だけ屋外の席を予約する。今回は火曜日。他の作業は不要。</instructions> 固定条件を変更しない。完了時は終了できる。",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "火曜日ですが屋外の席も予約しましょう。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "火曜日なので、屋外の席の予約は不要ですよね？ ###STOP###",
+            "message_index": 1
+          }
+        ]
+      }
+    },
+    {
+      "id": "v-mention-not-adoption",
+      "kind": "vita_customer",
+      "label": "consistent",
+      "critical": true,
+      "material": {
+        "reference": "<instructions>会場は白樺ホールで確定している。会場を変更しない。</instructions>",
+        "messages": [
+          {
+            "role": "assistant",
+            "content": "会場が未確定なので後日決めましょう。",
+            "message_index": 0
+          },
+          {
+            "role": "user",
+            "content": "会場は白樺ホールで確定しています。あなたから後日にしたいと提案されましたが、この確定した会場で進めるにはどうすればよいですか？",
+            "message_index": 1
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -97,6 +97,18 @@ class Handler(BaseHTTPRequestHandler):
                     return self.send(200, store.public_plan(read_json(root / 'plan.json')))
                 if pieces[3] == 'results':
                     result = read_json(root / 'summary.json') if (root / 'summary.json').exists() else {'rows': [], 'combinations': []}
+                    from .saved_reviews import load, versions
+                    result['evaluation_versions'] = versions(store, identity)
+                    revision = query.get('evaluation_revision', ['native'])[0]
+                    if revision != 'native':
+                        review = load(store, identity, revision)
+                        overrides = {(r['case_id'], r['combination_id'], r['trial_index']): r for r in review['rows']}
+                        for row in result['rows']:
+                            checked = overrides.get((row['case_id'], row['combination_id'], row['trial_index']))
+                            if checked:
+                                row['grade'] = checked['grade']
+                        result['evaluation_notice'] = review['historical_generation_notice']
+                    result['evaluation_revision'] = revision
                     return self.send(200, {**result, 'status': store.status(identity)})
                 if pieces[3] == 'case':
                     plan, pack = read_json(root / 'plan.json'), read_json(root / 'pack.json')
@@ -121,11 +133,22 @@ class Handler(BaseHTTPRequestHandler):
                         result_path = inside(store.root, marker['result_ref'])
                         if file_sha(result_path) != marker['result_sha256']:
                             raise BenchError('保存済み採点のSHAが異なります。')
+                        base_attempt = result_path.parent.parent if result_path.parent.name == 'evaluation-review' else result_path.parent
                         grades.append({'fingerprint': marker['grader_fingerprint'], 'result': read_json(result_path),
-                                       'decisions': optional(result_path.parent / 'decisions.json')})
-                        grade_calls.extend(sorted((result_path.parent / 'calls').glob('*')))
+                                       'decisions': optional(base_attempt / 'decisions.json')})
+                        grade_calls.extend(sorted((base_attempt / 'calls').glob('*')))
+                        grade_calls.extend(sorted((base_attempt / 'evaluation-review/calls').glob('*')))
                     answer = answer_path.read_text(encoding='utf-8')
                     trial = read_json(inside(store.root, complete['trial_ref']))
+                    revision = query.get('evaluation_revision', ['native'])[0]
+                    if revision != 'native':
+                        from .saved_reviews import load
+                        record = load(store, identity, revision)
+                        checked = next((r for r in record['rows'] if (r['case_id'], r['combination_id'], r['trial_index']) == (case_id, combo_id, index)), None)
+                        if checked:
+                            grade_calls.extend(sorted((inside(store.root, checked['result_ref']).parent / 'calls').glob('*')))
+                            grades = [{'fingerprint': digest([revision, checked['source_result_sha256']]), 'result': checked['grade'],
+                                       'decisions': grades[-1]['decisions'] if grades else {}}]
                     call_paths = sorted((attempt / 'calls').glob('*')) + grade_calls
                     if query.get('view') == ['trace']:
                         kind = query.get('kind', [''])[0]
