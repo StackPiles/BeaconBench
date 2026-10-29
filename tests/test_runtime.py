@@ -343,7 +343,6 @@ class Runtime(unittest.TestCase):
         source = self.store.run_path(identity)
         before = {str(p): file_sha(p) for p in source.rglob('*') if p.is_file()}
         pack['id'] = 'two-controls-v2'
-        pack['cases'][0]['generation']['messages'][0]['content'] = '40と2の和を数字だけで答えてください。'
         install_pack(self.store.root, pack)
         created = prepare(self.store, {'source_run_id': identity, 'suite_id': pack['id'],
                                       'regenerate_case_ids': [pack['cases'][0]['id']]})

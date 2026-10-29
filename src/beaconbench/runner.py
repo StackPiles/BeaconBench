@@ -152,7 +152,8 @@ class Worker:
         if previous:
             return previous, bool(previous.get('reused_from'))
         reuse_path = self.store.root / 'reuse' / (fingerprint + '.json')
-        if reuse_path.exists():
+        fresh = case['id'] in self.plan.get('fresh_generation_case_ids', [])
+        if reuse_path.exists() and not fresh:
             reference = read_json(reuse_path)
             previous_folder = inside(self.store.root, reference['trial_folder'])
             previous = self.verified(previous_folder, fingerprint)
@@ -222,7 +223,8 @@ class Worker:
                   'trial_ref': (attempt / 'trial.json').relative_to(self.store.root).as_posix(),
                   'answer_ref': answer_path.relative_to(self.store.root).as_posix(), 'files': files}
         write_once(folder / 'complete.json', record)
-        write_once(reuse_path, {'trial_folder': folder.relative_to(self.store.root).as_posix(), 'source_run': self.identity})
+        if not fresh:
+            write_once(reuse_path, {'trial_folder': folder.relative_to(self.store.root).as_posix(), 'source_run': self.identity})
         self.event('trial_generated', case_id=case['id'], trial_index=index, generation_fingerprint=fingerprint)
         return record, False
 

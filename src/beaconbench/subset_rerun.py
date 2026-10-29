@@ -101,6 +101,10 @@ def prepare(store, config):
     suite = install_pack(store.root, subset)
     child_plan = store.plan({'model_ids': [combo['model']['id']], 'presets': [combo['preset']],
                              'suite_id': suite['id'], 'run_settings': old_plan['run_settings']})
+    child_plan = copy.deepcopy(child_plan)
+    child_plan.update(plan_id='p-' + uuid.uuid4().hex, created_at=utc(), fresh_generation_case_ids=selected)
+    child_plan['fingerprint'] = digest({k: v for k, v in child_plan.items() if k not in {'plan_id', 'created_at'}})
+    write_once(store.root / 'plans' / (child_plan['plan_id'] + '.json'), child_plan)
     child_id = store.create_run(child_plan)
     child_state = store.status(child_id)
     atomic_json(store.run_path(child_id) / 'status.json', {**child_state, 'phase': 'prepared', 'message': '部分再測定の起動待ちです。'})
