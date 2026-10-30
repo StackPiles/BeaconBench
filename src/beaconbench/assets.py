@@ -60,8 +60,10 @@ def install_pack(root: Path, pack: dict) -> dict:
         validate_payment(case['generation'])
         from .vita_goals import validate as validate_goals
         validate_goals(case['generation'])
-        from .vita_termination import validate as validate_termination
-        validate_termination(case['generation'])
+        from . import vita_termination
+        if case['generation'].get('policy', {}).get('vita_termination') == 'vita-source-termination-v2':
+            from . import vita_termination_v2 as vita_termination
+        vita_termination.validate(case['generation'])
         # Retrieval timestamps, other cases' receipts, suite size and grader
         # policy are not generation inputs. Each case may pin extra environment
         # identity explicitly; its actual messages are always hashed in full.

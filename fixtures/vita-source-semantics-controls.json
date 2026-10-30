@@ -1,0 +1,533 @@
+{
+  "basis": "Own-authored source-semantic and arithmetic controls; no third-party task content.",
+  "cases": [
+    {
+      "id": "reference-complete",
+      "asset": {
+        "budget_scopes": [
+          {
+            "condition_quote": "宿泊込みで1人100元前後です。",
+            "order_types": [
+              "instore",
+              "hotel"
+            ],
+            "people": 4,
+            "rubric_quote": "セットと宿泊の合計は1人100元前後。"
+          }
+        ],
+        "source": {
+          "file_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "path": "own.json",
+          "repository": "authored-controls",
+          "revision": "v1"
+        },
+        "task": {
+          "environment": {
+            "shops": {
+              "s": {
+                "products": [
+                  {
+                    "name": "食事付きセット",
+                    "product_id": "PACKAGE",
+                    "product_type": "target",
+                    "tags": [
+                      "食事付き",
+                      "活動"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "evaluation_criteria": {
+            "expected_states": [
+              {
+                "required_orders": [
+                  {
+                    "order_type": "instore",
+                    "products": [
+                      {
+                        "product_id": "PACKAGE",
+                        "quantity": 1
+                      }
+                    ],
+                    "total_price": 240
+                  },
+                  {
+                    "order_type": "hotel",
+                    "products": [],
+                    "total_price": 160
+                  }
+                ],
+                "state_rubrics": [
+                  "セットは夕食と活動を含む。",
+                  "セットと宿泊の合計は1人100元前後。"
+                ]
+              }
+            ],
+            "overall_rubrics": []
+          },
+          "id": "authored-1",
+          "instructions": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。"
+        }
+      },
+      "reference": "<instructions>夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。</instructions>",
+      "messages": [
+        {
+          "role": "user",
+          "content": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。",
+          "message_index": 0
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "P",
+              "function": {
+                "name": "create_instore_product_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 1
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:P, order_type:instore, total_price:240, products:[PACKAGE])",
+          "tool_call_id": "P",
+          "name": "create_instore_product_order",
+          "message_index": 2
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "H",
+              "function": {
+                "name": "create_hotel_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 3
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:H, order_type:hotel, total_price:160, products:[PACKAGE])",
+          "tool_call_id": "H",
+          "name": "create_hotel_order",
+          "message_index": 4
+        },
+        {
+          "role": "assistant",
+          "content": "手配しました。",
+          "message_index": 5
+        },
+        {
+          "role": "user",
+          "content": "ありがとうございます。###STOP###",
+          "message_index": 6
+        }
+      ],
+      "expected": "completed"
+    },
+    {
+      "id": "combined-over-budget",
+      "asset": {
+        "budget_scopes": [
+          {
+            "condition_quote": "宿泊込みで1人100元前後です。",
+            "order_types": [
+              "instore",
+              "hotel"
+            ],
+            "people": 4,
+            "rubric_quote": "セットと宿泊の合計は1人100元前後。"
+          }
+        ],
+        "source": {
+          "file_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "path": "own.json",
+          "repository": "authored-controls",
+          "revision": "v1"
+        },
+        "task": {
+          "environment": {
+            "shops": {
+              "s": {
+                "products": [
+                  {
+                    "name": "食事付きセット",
+                    "product_id": "PACKAGE",
+                    "product_type": "target",
+                    "tags": [
+                      "食事付き",
+                      "活動"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "evaluation_criteria": {
+            "expected_states": [
+              {
+                "required_orders": [
+                  {
+                    "order_type": "instore",
+                    "products": [
+                      {
+                        "product_id": "PACKAGE",
+                        "quantity": 1
+                      }
+                    ],
+                    "total_price": 240
+                  },
+                  {
+                    "order_type": "hotel",
+                    "products": [],
+                    "total_price": 160
+                  }
+                ],
+                "state_rubrics": [
+                  "セットは夕食と活動を含む。",
+                  "セットと宿泊の合計は1人100元前後。"
+                ]
+              }
+            ],
+            "overall_rubrics": []
+          },
+          "id": "authored-1",
+          "instructions": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。"
+        }
+      },
+      "reference": "<instructions>夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。</instructions>",
+      "messages": [
+        {
+          "role": "user",
+          "content": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。",
+          "message_index": 0
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "P",
+              "function": {
+                "name": "create_instore_product_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 1
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:P, order_type:instore, total_price:240, products:[PACKAGE])",
+          "tool_call_id": "P",
+          "name": "create_instore_product_order",
+          "message_index": 2
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "H",
+              "function": {
+                "name": "create_hotel_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 3
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:H, order_type:hotel, total_price:160, products:[PACKAGE])",
+          "tool_call_id": "H",
+          "name": "create_hotel_order",
+          "message_index": 4
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "X",
+              "function": {
+                "name": "create_instore_product_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 5
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:X, order_type:instore, total_price:120, products:[PACKAGE])",
+          "tool_call_id": "X",
+          "name": "create_instore_product_order",
+          "message_index": 6
+        },
+        {
+          "role": "assistant",
+          "content": "手配しました。",
+          "message_index": 7
+        },
+        {
+          "role": "user",
+          "content": "ありがとうございます。###STOP###",
+          "message_index": 8
+        }
+      ],
+      "expected": "premature"
+    },
+    {
+      "id": "alternate-identifiers",
+      "asset": {
+        "budget_scopes": [
+          {
+            "condition_quote": "宿泊込みで1人100元前後です。",
+            "order_types": [
+              "instore",
+              "hotel"
+            ],
+            "people": 4,
+            "rubric_quote": "セットと宿泊の合計は1人100元前後。"
+          }
+        ],
+        "source": {
+          "file_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "path": "own.json",
+          "repository": "authored-controls",
+          "revision": "v1"
+        },
+        "task": {
+          "environment": {
+            "shops": {
+              "s": {
+                "products": [
+                  {
+                    "name": "食事付きセット",
+                    "product_id": "PACKAGE-OTHER",
+                    "product_type": "target",
+                    "tags": [
+                      "食事付き",
+                      "活動"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "evaluation_criteria": {
+            "expected_states": [
+              {
+                "required_orders": [
+                  {
+                    "order_type": "instore",
+                    "products": [
+                      {
+                        "product_id": "PACKAGE-OTHER",
+                        "quantity": 1
+                      }
+                    ],
+                    "total_price": 240
+                  },
+                  {
+                    "order_type": "hotel",
+                    "products": [],
+                    "total_price": 160
+                  }
+                ],
+                "state_rubrics": [
+                  "セットは夕食と活動を含む。",
+                  "セットと宿泊の合計は1人100元前後。"
+                ]
+              }
+            ],
+            "overall_rubrics": []
+          },
+          "id": "authored-2",
+          "instructions": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。"
+        }
+      },
+      "reference": "<instructions>夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。</instructions>",
+      "messages": [
+        {
+          "role": "user",
+          "content": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。",
+          "message_index": 0
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "P",
+              "function": {
+                "name": "create_instore_product_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 1
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:P, order_type:instore, total_price:240, products:[PACKAGE-OTHER])",
+          "tool_call_id": "P",
+          "name": "create_instore_product_order",
+          "message_index": 2
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "H",
+              "function": {
+                "name": "create_hotel_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 3
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:H, order_type:hotel, total_price:160, products:[PACKAGE-OTHER])",
+          "tool_call_id": "H",
+          "name": "create_hotel_order",
+          "message_index": 4
+        },
+        {
+          "role": "assistant",
+          "content": "手配しました。",
+          "message_index": 5
+        },
+        {
+          "role": "user",
+          "content": "ありがとうございます。###STOP###",
+          "message_index": 6
+        }
+      ],
+      "expected": "completed"
+    },
+    {
+      "id": "missing-package",
+      "asset": {
+        "budget_scopes": [
+          {
+            "condition_quote": "宿泊込みで1人100元前後です。",
+            "order_types": [
+              "instore",
+              "hotel"
+            ],
+            "people": 4,
+            "rubric_quote": "セットと宿泊の合計は1人100元前後。"
+          }
+        ],
+        "source": {
+          "file_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "path": "own.json",
+          "repository": "authored-controls",
+          "revision": "v1"
+        },
+        "task": {
+          "environment": {
+            "shops": {
+              "s": {
+                "products": [
+                  {
+                    "name": "食事付きセット",
+                    "product_id": "PACKAGE",
+                    "product_type": "target",
+                    "tags": [
+                      "食事付き",
+                      "活動"
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "evaluation_criteria": {
+            "expected_states": [
+              {
+                "required_orders": [
+                  {
+                    "order_type": "instore",
+                    "products": [
+                      {
+                        "product_id": "PACKAGE",
+                        "quantity": 1
+                      }
+                    ],
+                    "total_price": 240
+                  },
+                  {
+                    "order_type": "hotel",
+                    "products": [],
+                    "total_price": 160
+                  }
+                ],
+                "state_rubrics": [
+                  "セットは夕食と活動を含む。",
+                  "セットと宿泊の合計は1人100元前後。"
+                ]
+              }
+            ],
+            "overall_rubrics": []
+          },
+          "id": "authored-1",
+          "instructions": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。"
+        }
+      },
+      "reference": "<instructions>夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。</instructions>",
+      "messages": [
+        {
+          "role": "user",
+          "content": "夕食と活動を含むセットを4人分注文してください。宿泊込みで1人100元前後です。",
+          "message_index": 0
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "tool_calls": [
+            {
+              "id": "H",
+              "function": {
+                "name": "create_hotel_order",
+                "arguments": "{}"
+              }
+            }
+          ],
+          "message_index": 3
+        },
+        {
+          "role": "tool",
+          "content": "Order(order_id:H, order_type:hotel, total_price:160, products:[ROOM])",
+          "tool_call_id": "H",
+          "name": "create_hotel_order",
+          "message_index": 4
+        },
+        {
+          "role": "assistant",
+          "content": "手配しました。",
+          "message_index": 5
+        },
+        {
+          "role": "user",
+          "content": "ありがとうございます。###STOP###",
+          "message_index": 6
+        }
+      ],
+      "expected": "premature"
+    }
+  ]
+}

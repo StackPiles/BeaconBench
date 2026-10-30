@@ -50,8 +50,16 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
     payment_guard = PaymentGuard() if validate_payment(payload.get('generation', {})) else None
     from ..vita_goals import decorate as decorate_goals, validate as validate_goals
     fixed_goals = validate_goals(payload.get('generation', {}))
-    from ..vita_termination import Guard, ROLE as TERMINATION_ROLE, decorate as decorate_termination, validate as validate_termination
-    termination_guard = Guard() if validate_termination(payload.get('generation', {})) else None
+    from .. import vita_termination
+    generation = payload.get('generation', {})
+    if generation.get('policy', {}).get('vita_termination') == 'vita-source-termination-v2':
+        from .. import vita_termination_v2 as vita_termination
+    TERMINATION_ROLE = vita_termination.ROLE
+    decorate_termination = vita_termination.decorate
+    valid_termination = vita_termination.validate(generation)
+    termination_guard = (vita_termination.Guard(generation['policy']['vita_source_context'])
+        if generation.get('policy', {}).get('vita_termination') == 'vita-source-termination-v2'
+        else vita_termination.Guard()) if valid_termination else None
     command = executor['command']
     if not command or not isinstance(command, list) or not all(isinstance(part, str) for part in command):
         raise BenchError('native commandは固定した引数配列で指定してください。')

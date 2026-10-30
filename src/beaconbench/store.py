@@ -115,7 +115,8 @@ class Store:
             pid = read_json(pid_file).get('pid', 0)
             if not process_alive(pid):
                 result = {**result, 'phase': 'interrupted', 'message': '実行プロセスが終了しています。保存済み回答を確認して再開できます。'}
-        return result
+        from .run_stops import presentation
+        return presentation(self, identity, result)
 
     def runs(self) -> list[dict]:
         rows = []

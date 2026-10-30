@@ -16,6 +16,7 @@ from .config import request_parameters
 from .store import Store, runtime_revision
 from .transport import TransportFailure, UserStop, chat, probe
 from .util import BenchError, append_json, atomic_json, canonical, digest, file_lock, file_sha, inside, process_alive, read_json, trial_seed, utc, write_once
+from .vita_termination import InvalidCustomerTermination
 
 ACTIVE_PHASES = {'queued', 'preflight', 'generating', 'scoring'}
 
@@ -330,6 +331,9 @@ class Worker:
             atomic_json(self.root / 'summary.json', self.summary(rows))
         except UserStop:
             self.status('interrupted', message='停止しました。途中の原本を保持し、完成済み回答を再利用して再開できます。', finished_at=utc())
+        except InvalidCustomerTermination as error:
+            self.event('run_error', error_type=type(error).__name__)
+            self.status('instrument_review_required', message=str(error), finished_at=utc())
         except Exception as error:
             if not isinstance(error, (BenchError, TransportFailure, OSError, ValueError)):
                 import traceback
@@ -361,6 +365,8 @@ def launch(store: Store, plan_id: str | None = None, resume_id: str | None = Non
         if resume_id:
             identity = resume_id
             state = store.status(identity)
+            if state.get('stop_reason', {}).get('can_resume') is False:
+                raise BenchError('終了判定の確認が必要です。保存原本を点検し、同じ試行の自動再生成は行いません。')
             if state['phase'] in ACTIVE_PHASES or state['phase'] == 'completed':
                 raise BenchError('この実行は稼働中、または完了済みです。')
             folder = store.run_path(identity)

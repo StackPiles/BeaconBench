@@ -39,6 +39,9 @@ def parser():
     review = commands.add_parser('evaluation-review')
     review.add_argument('run_id')
     review.add_argument('config', type=Path)
+    termination_review = commands.add_parser('termination-review')
+    termination_review.add_argument('run_id')
+    termination_review.add_argument('config', type=Path)
     subset = commands.add_parser('subset-prepare')
     subset.add_argument('config', type=Path)
     subset_worker = commands.add_parser('subset-worker')
@@ -96,6 +99,9 @@ def main(argv=None):
             result = read_json(store.run_path(args.run_id) / 'summary.json')
         elif args.command == 'evaluation-review':
             from .saved_reviews import run
+            result = asyncio.run(run(store, args.run_id, read_json(args.config)))
+        elif args.command == 'termination-review':
+            from .termination_reviews import run
             result = asyncio.run(run(store, args.run_id, read_json(args.config)))
         elif args.command == 'subset-prepare':
             from .subset_rerun import prepare

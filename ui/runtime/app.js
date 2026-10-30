@@ -3,7 +3,8 @@ const state = { boot: null, selectedModels: new Set(), selectedPresets: new Set(
 const $ = id => document.getElementById(id);
 const copy = value => JSON.parse(JSON.stringify(value));
 const activePhases = new Set(["queued", "preflight", "generating", "scoring"]);
-const labels = { queued: "開始準備", preflight: "接続・資産確認", generating: "生成中", scoring: "採点中", completed: "完了", interrupted: "停止", infrastructure_error: "実行環境のエラー", evaluation_incomplete: "採点未完了" };
+const labels = { queued: "開始準備", preflight: "接続・資産確認", generating: "生成中", scoring: "採点中", completed: "完了", interrupted: "停止", infrastructure_error: "実行環境のエラー", evaluation_incomplete: "採点未完了", instrument_review_required: "終了判定の確認が必要" };
+const phaseLabel = row => labels[row.display_phase || row.phase] || row.phase;
 const presetInputs = { "preset-name": "name", temperature: "temperature", "top-p": "top_p", "top-k": "top_k", "min-p": "min_p", "presence-penalty": "presence_penalty", "frequency-penalty": "frequency_penalty", "repetition-penalty": "repetition_penalty", "context-tokens": "context_tokens", "output-tokens": "output_tokens", thinking: "thinking" };
 let pollTimer, toastTimer;
 function el(tag, attrs = {}, ...children) {
@@ -111,21 +112,35 @@ function renderSummary() {
 function renderRunPickers() {
   const runs = state.boot.runs;
   for (const [id, selected] of [["active-run", state.activeRun], ["result-run", state.resultRun]]) {
-    $(id).replaceChildren(...(runs.length ? runs.map(row => el("option", { value: row.run_id }, date(row.created_at) + " · " + row.suite.name + " · " + (labels[row.phase] || row.phase))) : [el("option", { value: "" }, "実行はまだありません")]));
+    $(id).replaceChildren(...(runs.length ? runs.map(row => el("option", { value: row.run_id }, date(row.created_at) + " · " + row.suite.name + " · " + phaseLabel(row))) : [el("option", { value: "" }, "実行はまだありません")]));
     if (selected && runs.some(row => row.run_id === selected)) $(id).value = selected;
   }
 }
 async function refreshProgress() {
   if (!state.activeRun) { $("progress-content").replaceChildren(emptyState("実行はまだありません", "比較条件を選んで開始すると、進捗をここで確認できます。")); return; }
   const current = await api("/api/runs/" + encodeURIComponent(state.activeRun));
-  const panel = el("section", { class: "panel progress-panel" }, el("div", { class: "progress-header" }, el("h2", {}, "現在の実行"), el("span", { class: "phase-badge" + (["infrastructure_error", "evaluation_incomplete"].includes(current.phase) ? " error" : "") }, labels[current.phase] || current.phase)),
+  const panel = el("section", { class: "panel progress-panel" }, el("div", { class: "progress-header" }, el("h2", {}, "現在の実行"), el("span", { class: "phase-badge" + (["infrastructure_error", "evaluation_incomplete", "instrument_review_required"].includes(current.display_phase || current.phase) ? " error" : "") }, phaseLabel(current))),
     el("p", { class: "inline-note" }, "開始 " + date(current.created_at) + " · 更新 " + date(current.updated_at)),
     el("div", { class: "progress-counts" }, ...[["生成済み", current.completed], ["採点済み", current.scored], ["別の実行から再利用", current.reused]].map(([title, count]) => el("div", { class: "progress-count" }, el("span", {}, title), el("strong", {}, count + " / " + current.planned)))),
     current.active_case ? el("div", { class: "active-case" }, el("strong", {}, current.active_model?.name || ""), el("p", {}, current.active_case.title + " · " + (current.active_case.trial_index + 1) + "回目"), el("p", {}, "今回の要求 " + seconds(current.request_elapsed_seconds) + " · 受信 " + fmt(current.received_characters) + "文字（トークン数の推定ではありません）")) : null,
-    el("p", {}, ({ generating: "回答を生成しています。途中の原本も保存しています。", scoring: "保存済みの回答を採点しています。" }[current.phase]) || current.message || "保存と進捗を更新しています。"), el("div", { class: "progress-actions" },
-      activePhases.has(current.phase) ? el("button", { class: "button", onclick: action(async () => { await api("/api/runs/" + state.activeRun + "/stop", {}); toast("停止を要求しました。保存が終わるまで状態を確認します。"); }) }, "一時停止") : current.phase !== "completed" ? el("button", { class: "button", onclick: action(async () => { await api("/api/runs/" + state.activeRun + "/resume", {}); await refreshBootstrap(); await refreshProgress(); }) }, "保存回答を使って再開") : null,
+    el("p", {}, current.stop_reason ? "保存した回答と終了判定の確認が必要なため停止しています。" : ({ generating: "回答を生成しています。途中の原本も保存しています。", scoring: "保存済みの回答を採点しています。" }[current.phase]) || current.message || "保存と進捗を更新しています。"), el("div", { class: "progress-actions" },
+      activePhases.has(current.phase) ? el("button", { class: "button", onclick: action(async () => { await api("/api/runs/" + state.activeRun + "/stop", {}); toast("停止を要求しました。保存が終わるまで状態を確認します。"); }) }, "一時停止") : current.phase !== "completed" && current.stop_reason?.can_resume !== false ? el("button", { class: "button", onclick: action(async () => { await api("/api/runs/" + state.activeRun + "/resume", {}); await refreshBootstrap(); await refreshProgress(); }) }, "保存回答を使って再開") : null,
       el("button", { class: "button primary", onclick: () => { if (state.resultRun !== state.activeRun) state.evaluationRevision = "native"; state.resultRun = state.activeRun; renderRunPickers(); showView("overview"); } }, "回答と結果を見る")));
-  $("progress-content").replaceChildren(panel, el("div", { class: "run-list" }, ...state.boot.runs.map(row => el("article", { class: "panel run-card" }, el("div", {}, el("strong", {}, row.suite.name), el("p", {}, date(row.created_at) + " · " + row.models.join(" / ")), el("p", {}, (labels[row.phase] || row.phase) + " · 生成 " + row.completed + "/" + row.planned + " · 採点 " + row.scored + "/" + row.planned)), el("button", { class: "button small", onclick: () => { state.activeRun = row.run_id; renderRunPickers(); refreshProgress().catch(error => showError(error.message)); } }, "表示する")))));
+  if (current.stop_reason) panel.append(el("div", { class: "result-note stop-reason" }, el("strong", {}, "停止理由"), el("p", {}, current.stop_reason.message), el("p", { class: "inline-note" }, "原回答・原判定を保持しています。対象モデルへの追加生成は行っていません。")));
+  if (current.termination_review) {
+    const review = current.termination_review;
+    const verdict = review.confirmed ? ({ completed: "終了条件を確認", technical_failure: "技術的完了不能を確認", premature: "終了条件に未達あり", unknown: "判定を確定できず" }[review.verdict] || "要確認") : "判定を確定できず";
+    const previousDetails = $("progress-content").querySelector(".saved-stop-review details");
+    const reviewDetails = el("details", { "data-review-id": review.id }, el("summary", {}, "条件別の判定と根拠"), ...(review.condition_checks || []).map(check => el("section", { class: "stop-condition" },
+      el("strong", {}, ({ completed: "確認済み", unmet: "未達", unknown: "不明", not_applicable: "対象外" }[check.state] || "要確認") + " · " + check.condition_quote), el("p", {}, check.explanation))));
+    reviewDetails.open = previousDetails?.dataset.reviewId === review.id && previousDetails.open;
+    panel.append(el("section", { class: "saved-stop-review" }, el("h3", {}, review.name), el("strong", {}, verdict),
+      el("p", { class: "inline-note" }, "原判定：" + ({ unknown: "不明", completed: "終了可能", premature: "未達あり", technical_failure: "技術的完了不能" }[review.original_verdict] || "要確認")), el("p", {}, review.explanation),
+      ...review.budget_totals.map(row => el("p", {}, "対象費用 " + Number(row.total).toLocaleString("ja-JP", { maximumFractionDigits: 2 }) + "元 ÷ " + row.people + "人 = " + Number(row.per_person).toLocaleString("ja-JP", { maximumFractionDigits: 2 }) + "元／人")),
+      reviewDetails,
+      el("p", { class: "inline-note" }, "保存済み回答を別の版で点検した結果です。原判定・公式得点は変更していません。")));
+  }
+  $("progress-content").replaceChildren(panel, el("div", { class: "run-list" }, ...state.boot.runs.map(row => el("article", { class: "panel run-card" }, el("div", {}, el("strong", {}, row.suite.name), el("p", {}, date(row.created_at) + " · " + row.models.join(" / ")), el("p", {}, phaseLabel(row) + " · 生成 " + row.completed + "/" + row.planned + " · 採点 " + row.scored + "/" + row.planned)), el("button", { class: "button small", onclick: () => { state.activeRun = row.run_id; renderRunPickers(); refreshProgress().catch(error => showError(error.message)); } }, "表示する")))));
 }
 function emptyState(title, description) { return el("div", { class: "panel empty-state" }, el("h2", {}, title), el("p", {}, description), el("button", { class: "button primary", onclick: () => showView("configure") }, "比較を作成")); }
 function nullableSum(values) { return values.length && values.every(value => value != null) ? values.reduce((sum, value) => sum + value, 0) : null; }

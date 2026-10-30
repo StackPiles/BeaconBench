@@ -59,3 +59,4 @@ flowchart LR
 - [Vita crossの支払い確認と顧客の終了](20-vita-payment-termination.md)
 - [Vitaの固定条件保持と項目別点検](21-vita-fixed-goals.md)
 - [Vitaの公式終了条件と全文による根拠検証](22-vita-source-termination.md)
+- [Vitaの公式商品意味・合算予算・停止理由](23-vita-source-semantics.md)

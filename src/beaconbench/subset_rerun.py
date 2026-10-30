@@ -169,7 +169,7 @@ def refresh(store, parent_id):
     state = {**read_json(parent / 'status.json'), 'phase': phase, 'updated_at': utc(),
              'completed': len(rows), 'scored': sum(r['grade'].get('status') == 'scored' for r in rows),
              'reused': len(config['retained']), 'attempted': child.get('attempted', 0), 'active_case': child.get('active_case'),
-             'message': '生成・採点・統合結果の保存が完了しました。' if phase == 'completed' else '保存済みの回答・採点を保持し、指定した課題だけを測定しています。', 'measurement_run_id': config['child_run_id']}
+             'message': '生成・採点・統合結果の保存が完了しました。' if phase == 'completed' else child.get('message', '保存済みの回答・採点を保持し、指定した課題だけを測定しています。'), 'measurement_run_id': config['child_run_id']}
     for key in ('active_model', 'received_characters', 'received_reasoning_characters', 'active_role', 'finished_at'):
         if key in child: state[key] = child[key]
     atomic_json(parent / 'status.json', state)
