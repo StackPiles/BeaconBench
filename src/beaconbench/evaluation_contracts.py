@@ -10,6 +10,7 @@ from .transport import chat
 from .util import BenchError, digest, read_json, write_once
 from . import vita_goals
 from . import vita_goal_audit
+from . import vita_goal_audit_v2
 
 VERSION = 'source-contracts-ja-v2'
 ROLE = 'contract_judge'
@@ -40,6 +41,8 @@ VITA_REMINDER = '''固定指示の確認：<instructions>の各要望と条件�
 
 
 def audit_prompt(kind, version=VERSION):
+    if version == vita_goal_audit_v2.VERSION and kind == 'vita_customer':
+        return vita_goal_audit_v2.PROMPT, vita_goal_audit_v2.OUTPUT
     if version == vita_goals.VERSION and kind == 'vita_customer':
         return PROMPTS[kind] + '\n\n' + vita_goal_audit.PROMPT, OUTPUT_CONTRACT + '\n\n' + vita_goals.OUTPUT
     if version != VERSION or kind not in PROMPTS:
@@ -60,13 +63,16 @@ def policy(kind, version=VERSION):
     if version == vita_goals.VERSION:
         value['implementation_sha256'] = vita_goal_audit.fingerprint()
         value['material_format'] = 'full-transcript-one-source-condition-per-call-v1'
+    if version == vita_goal_audit_v2.VERSION:
+        value['implementation_sha256'] = vita_goal_audit_v2.fingerprint()
+        value['material_format'] = 'full-transcript-candidate-and-confirmation-v2'
     return value
 
 
 def validate(spec, helpers):
     if not spec:
         return
-    if spec.get('version') not in {VERSION, vita_goals.VERSION}:
+    if spec.get('version') not in {VERSION, vita_goals.VERSION, vita_goal_audit_v2.VERSION}:
         raise BenchError('評価条件検査の版が不明です。')
     kind = spec.get('kind')
     if kind == 'reference':
@@ -87,8 +93,8 @@ def validate_case(case):
     generation = case['generation']
     expected = {'vita_customer': ('native', 'babel-vitabench'), 'reference': ('native', 'crmarena-pro-sales-ja'),
                 'sales_target': ('dialogue', None)}
-    if (spec.get('version') not in {VERSION, vita_goals.VERSION} or spec.get('kind') not in expected
-            or spec.get('version') == vita_goals.VERSION and spec.get('kind') != 'vita_customer'):
+    if (spec.get('version') not in {VERSION, vita_goals.VERSION, vita_goal_audit_v2.VERSION} or spec.get('kind') not in expected
+            or spec.get('version') in {vita_goals.VERSION, vita_goal_audit_v2.VERSION} and spec.get('kind') != 'vita_customer'):
         raise BenchError('評価条件検査の版・系列が不明です。')
     adapter, family = expected[spec['kind']]
     if generation.get('adapter') != adapter or family and generation.get('family') != family:
@@ -161,11 +167,13 @@ def parse_decision(raw, material, kind, version=VERSION):
     audit_prompt(kind, version)
     if kind not in PROMPTS:
         raise BenchError('未対応の評価条件検査です。')
+    if version == vita_goal_audit_v2.VERSION:
+        raw = vita_goal_audit_v2.canonical_decision(raw, material)
     try:
         value = json.loads(raw)
     except (TypeError, ValueError):
         raise BenchError('評価条件検査のJSONが成立していません。') from None
-    keys = {'verdict', 'explanation', 'findings'} | ({'checks'} if version == vita_goals.VERSION else set())
+    keys = {'verdict', 'explanation', 'findings'} | ({'checks'} if version in {vita_goals.VERSION, vita_goal_audit_v2.VERSION} else set())
     if (not isinstance(value, dict) or set(value) != keys
             or not isinstance(value['verdict'], str) or value['verdict'] not in {'consistent', 'violation', 'unknown'}
             or not isinstance(value['explanation'], str) or not value['explanation'].strip()
@@ -186,7 +194,7 @@ def parse_decision(raw, material, kind, version=VERSION):
                 or not row['message_quote'].strip() or row['message_quote'] not in (message.get('content') or '')
                 or not isinstance(row['explanation'], str) or not row['explanation'].strip()):
             raise BenchError('引用が固定指示・対象の発言と一致しません。')
-    if version == vita_goals.VERSION:
+    if version in {vita_goals.VERSION, vita_goal_audit_v2.VERSION}:
         if 'focus_condition' in material:
             vita_goal_audit.validate_focus(value, material)
         else:
@@ -212,7 +220,8 @@ def material_from_saved(case, native, attempt: Path):
         messages = native.get('grade_record', {}).get('messages', [])
     if not reference or not messages:
         raise BenchError('条件検査に必要な元の指示・会話が保存されていません。')
-    return {'reference': reference, 'messages': [{key: row[key] for key in ('role', 'content', 'tool_calls') if key in row} for row in messages]}
+    fields = ('role', 'content', 'tool_calls', 'tool_call_id', 'name') if case['grader']['evaluation_review'].get('version') == vita_goal_audit_v2.VERSION else ('role', 'content', 'tool_calls')
+    return {'reference': reference, 'messages': [{key: row[key] for key in fields if key in row} for row in messages]}
 
 
 def annotate(grade, spec, decision):
@@ -231,7 +240,7 @@ async def review(grade, spec, material, helpers, folder, stopped, progress, seed
     if spec['kind'] != 'reference':
         material = indexed_material(material)
     material_error = None
-    if spec['version'] == vita_goals.VERSION:
+    if spec['version'] in {vita_goals.VERSION, vita_goal_audit_v2.VERSION}:
         try:
             material = vita_goals.audit_material(material)
         except BenchError as error:
@@ -248,8 +257,9 @@ async def review(grade, spec, material, helpers, folder, stopped, progress, seed
     else:
         binding = helpers[ROLE]
         prompt, output = audit_prompt(spec['kind'], spec['version'])
-        if spec['version'] == vita_goals.VERSION:
-            decision = await vita_goal_audit.audit(material, binding, folder, stopped, progress, seed, prompt + '\n\n' + output,
+        if spec['version'] in {vita_goals.VERSION, vita_goal_audit_v2.VERSION}:
+            implementation = vita_goal_audit if spec['version'] == vita_goals.VERSION else vita_goal_audit_v2
+            decision = await implementation.audit(material, binding, folder, stopped, progress, seed, prompt + '\n\n' + output,
                 lambda raw, focused: parse_decision(raw, focused, spec['kind'], spec['version']))
         else:
             body = {**binding['request_parameters'], 'seed': seed, 'response_format': {'type': 'json_object'}, 'messages': [
@@ -261,7 +271,7 @@ async def review(grade, spec, material, helpers, folder, stopped, progress, seed
             except BenchError as error:
                 decision = {'verdict': 'unknown', 'explanation': str(error), 'findings': []}
     result = annotate(grade, spec, decision)
-    if spec['version'] == vita_goals.VERSION and 'conditions' in material:
+    if spec['version'] in {vita_goals.VERSION, vita_goal_audit_v2.VERSION} and 'conditions' in material:
         result['evaluation_review']['conditions'] = material['conditions']
     result['grade_wall_seconds'] = grade.get('grade_wall_seconds', 0) + time.monotonic() - started
     write_once(folder / 'result.json', result)

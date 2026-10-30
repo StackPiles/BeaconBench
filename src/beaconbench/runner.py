@@ -148,6 +148,10 @@ class Worker:
 
     async def generate(self, combination, case, index, folder):
         fingerprint, seed = self.generation_fingerprint(combination, case, index)
+        attempts = folder / 'attempts'
+        for saved in attempts.glob('*/native/execution.json'):
+            if read_json(saved).get('failure') == 'InvalidCustomerTermination':
+                raise BenchError('模擬顧客の不正な終了で停止した試行は同じ条件で再生成できません。測定器の修正・受入と別版の計画が必要です。')
         previous = self.verified(folder, fingerprint)
         if previous:
             return previous, bool(previous.get('reused_from'))
@@ -162,7 +166,6 @@ class Worker:
             record = {**previous, 'reused_from': reference, 'reused_at': utc()}
             write_once(folder / 'complete.json', record)
             return record, True
-        attempts = folder / 'attempts'
         number = len(list(attempts.iterdir())) if attempts.exists() else 0
         attempt = attempts / str(number)
         attempt.mkdir(parents=True, exist_ok=False)

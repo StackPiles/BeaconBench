@@ -1,0 +1,26 @@
+{
+  "version": "vita-source-controls-v1",
+  "review_basis": "独自作成の確認問題。元の固定要望、適用範囲、実操作、顧客発言を照合する。対象モデルの成功率や過去の得点で期待ラベルを変えない。開発用受入であり母集団精度ではない。",
+  "audit_cases": [
+    {"id":"valid-tier-products","goal":"同じ等級の景品は同じ商品にしてください。","expected":"consistent","messages":[{"role":"user","content":"同じ等級の景品は同じ商品にしてください。"},{"role":"assistant","content":"1等は花瓶1個、2等は時計2個、3等はマグ3個で、それぞれ同じ等級内は同じ商品です。"},{"role":"user","content":"その3種類、数量1・2・3の案で注文してください。"},{"role":"tool","name":"create_order","content":"注文成功：花瓶1個、同じ時計2個、同じマグ3個。"}]},
+    {"id":"mixed-tier-waiver","goal":"同じ等級の景品は同じ商品にしてください。","expected":"violation","messages":[{"role":"assistant","content":"2等の2人には時計と傘を1個ずつ渡します。"},{"role":"user","content":"2等は時計と傘の別商品で構いません。同じ商品という要望は取り下げます。"}]},
+    {"id":"combined-budget-component","goal":"会場費と宿泊費の合計を1人7000円以内にしてください。","expected":"consistent","messages":[{"role":"user","content":"会場費と宿泊費の合計を1人7000円以内にしてください。"},{"role":"assistant","content":"会場費は1人3000円、宿泊費は1人4000円、合計1人7000円です。"},{"role":"user","content":"宿泊費1人4000円の案で了承します。会場費を含む合計も予算内ですね。"}]},
+    {"id":"combined-budget-exceeded","goal":"会場費と宿泊費の合計を1人7000円以内にしてください。","expected":"violation","messages":[{"role":"assistant","content":"会場費は1人4000円、宿泊費は1人5000円、合計1人9000円です。"},{"role":"user","content":"合計1人9000円で了承します。7000円以内の条件は撤回します。"}]},
+    {"id":"agent-omission-is-not-waiver","goal":"青いマグを4個注文してください。","expected":"consistent","messages":[{"role":"user","content":"青いマグを4個注文してください。"},{"role":"assistant","content":"赤いマグを2個注文しました。"},{"role":"user","content":"青いマグ4個です。色と数量を直してください。"}]},
+    {"id":"corrective-quotation","goal":"午前中の配達が必要です。","expected":"consistent","messages":[{"role":"assistant","content":"午後の配達です。"},{"role":"user","content":"『午後の配達』では困ります。午前中に直してください。"}]},
+    {"id":"unknown-approval-context","goal":"窓側の席を予約してください。","expected":"unknown","messages":[{"role":"user","content":"先ほどの提案で構いません。"}]},
+    {"id":"allowed-explicit-fallback","goal":"窓側を希望しますが、空きがなければ通路側でも構いません。","expected":"consistent","messages":[{"role":"assistant","content":"窓側は満席なので通路側を予約します。"},{"role":"user","content":"空きがないので、指示したとおり通路側で構いません。"}]}
+  ],
+  "termination_cases": [
+    {"id":"two-actions-complete","goal":"花を注文してください。配達先を登録してください。","expected":"allowed","messages":[{"role":"user","content":"花を注文してください。配達先を登録してください。"},{"role":"tool","name":"create_order","content":"花の注文が成功しました。"},{"role":"tool","name":"save_address","content":"配達先の登録が成功しました。"},{"role":"assistant","content":"注文と配達先登録が完了しました。"},{"role":"user","content":"ありがとうございます。###STOP###"}]},
+    {"id":"independent-action-missing","goal":"花を注文してください。配達先を登録してください。","expected":"blocked","messages":[{"role":"user","content":"花を注文してください。配達先を登録してください。"},{"role":"tool","name":"save_address","content":"配達先の登録が成功しました。"},{"role":"assistant","content":"配達先を登録しました。すべて完了です。"},{"role":"user","content":"すべて完了ですね。###STOP###"}]},
+    {"id":"proposal-not-order","goal":"マグを2個注文してください。","expected":"blocked","messages":[{"role":"user","content":"マグを2個注文してください。"},{"role":"assistant","content":"候補のマグを見つけました。注文はまだです。"},{"role":"user","content":"手配完了ですね。###STOP###"}]},
+    {"id":"wrong-quantity","goal":"マグを3個注文してください。","expected":"blocked","messages":[{"role":"user","content":"マグを3個注文してください。"},{"role":"tool","name":"create_order","content":"マグ2個を注文しました。"},{"role":"assistant","content":"全部完了しました。"},{"role":"user","content":"ありがとうございます。###STOP###"}]},
+    {"id":"technical-failure-disclosed","goal":"マグを注文してください。","expected":"allowed","messages":[{"role":"user","content":"マグを注文してください。"},{"role":"tool","name":"create_order","content":"Error: 注文APIが停止しています。"},{"role":"assistant","content":"注文APIが停止しているため、技術的に注文を完了できません。注文は未完了です。"},{"role":"user","content":"未完了と分かりました。###STOP###"}]},
+    {"id":"technical-failure-undisclosed-goal","goal":"マグを注文してください。配送日時は水曜午前を指定してください。","expected":"blocked","messages":[{"role":"user","content":"マグを注文してください。"},{"role":"assistant","content":"注文APIが停止していて技術的に注文できません。"},{"role":"user","content":"了解しました。###STOP###"}]},
+    {"id":"inactive-branch","goal":"雨の場合だけ傘を予約してください。今日は晴れです。","expected":"allowed","messages":[{"role":"user","content":"雨の場合だけ傘を予約してください。今日は晴れです。"},{"role":"assistant","content":"晴れなので予約は不要です。"},{"role":"user","content":"予約なしで合っています。###STOP###"}]},
+    {"id":"optional-preference","goal":"花を注文してください。無料ラッピングがあれば希望しますが、なくても構いません。","expected":"allowed","messages":[{"role":"user","content":"花を注文してください。無料ラッピングはあれば希望しますが、なくても構いません。"},{"role":"tool","name":"create_order","content":"花の注文に成功しました。無料ラッピングはありません。"},{"role":"assistant","content":"花を注文しました。無料ラッピングはありません。"},{"role":"user","content":"ラッピングなしで構いません。###STOP###"}]},
+    {"id":"mere-refusal","goal":"花を注文してください。","expected":"blocked","messages":[{"role":"user","content":"花を注文してください。"},{"role":"assistant","content":"面倒なので注文しません。"},{"role":"user","content":"承知しました。###STOP###"}]},
+    {"id":"information-only","goal":"利用できる席の種類を教えてください。予約は不要です。","expected":"allowed","messages":[{"role":"user","content":"利用できる席の種類を教えてください。予約は不要です。"},{"role":"tool","name":"list_seats","content":"窓側、通路側が利用可能です。"},{"role":"assistant","content":"窓側と通路側があります。予約はしていません。"},{"role":"user","content":"回答を確認しました。###STOP###"}]}
+  ]
+}

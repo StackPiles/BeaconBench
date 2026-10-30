@@ -50,6 +50,8 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
     payment_guard = PaymentGuard() if validate_payment(payload.get('generation', {})) else None
     from ..vita_goals import decorate as decorate_goals, validate as validate_goals
     fixed_goals = validate_goals(payload.get('generation', {}))
+    from ..vita_termination import Guard, ROLE as TERMINATION_ROLE, decorate as decorate_termination, validate as validate_termination
+    termination_guard = Guard() if validate_termination(payload.get('generation', {})) else None
     command = executor['command']
     if not command or not isinstance(command, list) or not all(isinstance(part, str) for part in command):
         raise BenchError('native commandは固定した引数配列で指定してください。')
@@ -152,9 +154,13 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                 seen.add(identity)
                 if role not in roles or stage == 'grade' and role == 'target':
                     raise BenchError('nativeが未登録の役割、または採点中の対象モデルを要求しました。')
+                if role == TERMINATION_ROLE:
+                    raise BenchError('終了判定役をnativeから直接呼び出せません。')
                 body = frame.get('body')
                 if not isinstance(body, dict) or set(body) - TASK_FIELDS - CONTROLLED_FIELDS or not isinstance(body.get('messages'), list):
                     raise BenchError('nativeの生成引数に未対応の項目があります。')
+                if termination_guard:
+                    termination_guard.observe(body, role)
                 binding = roles[role]
                 parameters = {**binding['request_parameters'], **{key: copy.deepcopy(value) for key, value in body.items() if key in TASK_FIELDS},
                               'seed': request_seed}
@@ -164,6 +170,8 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                     parameters = payment_guard.decorate(parameters, role)
                 if fixed_goals:
                     parameters = decorate_goals(parameters, role)
+                if termination_guard:
+                    parameters = decorate_termination(parameters, role)
                 request_folder = folder / 'calls' / f'{sequence:06d}'
                 sequence += 1
                 try:
@@ -178,6 +186,11 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                         raise BenchError('native実行器が要求の途中で終了しました。途中の原本を保全しました。') from None
                     raise
                 measurement = response['measurement']
+                write_once(request_folder / 'native-request.json', {'rpc_id': identity, 'role': role, 'body': body,
+                    'controlled_fields_overridden': sorted(set(body) & CONTROLLED_FIELDS)})
+                if termination_guard:
+                    await termination_guard.check(response['message'], role, roles[TERMINATION_ROLE],
+                        request_folder / 'termination', stopped, progress, request_seed)
                 forwarded = payment_guard.forward(response['message'], role, request_folder.relative_to(folder).as_posix()) if payment_guard else response['message']
                 if payment_guard and role == 'customer':
                     write_once(request_folder / 'payment-termination.json', {**payment_guard.decisions[-1], 'forwarded_message': forwarded})
@@ -185,8 +198,6 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
                          'response': {'id': identity, 'created': int(time.time()), 'object': 'chat.completion', 'model': binding['model']['api_model'],
                                       'choices': [{'index': 0, 'message': forwarded, 'finish_reason': measurement['finish_reason']}],
                                       'usage': measurement['raw_usage']}}
-                write_once(request_folder / 'native-request.json', {'rpc_id': identity, 'role': role, 'body': body,
-                    'controlled_fields_overridden': sorted(set(body) & CONTROLLED_FIELDS)})
                 await send(reply)
             await process.wait()
             if process.returncode or result is None:
@@ -225,11 +236,16 @@ async def execute(executor: dict, payload: dict, roles: dict, folder: Path, stop
             write_once(work / 'artifact-manifest.json', artifacts)
             if payment_guard:
                 write_once(folder / 'payment-guard.json', payment_guard.report())
+            if termination_guard:
+                write_once(folder / 'termination-checks.json', {'version': payload['generation']['policy']['vita_termination'],
+                    'reports': termination_guard.reports, 'failure': failure})
     if replay_calls:
         result['recovery'] = {'replayed_model_calls': len(replay_calls), 'current_native_task_wall_seconds': result.get('task_wall_seconds'),
                               'task_wall_seconds_unavailable': 'original task boundary was not persisted before infrastructure failure'}
         result['task_wall_seconds'] = None
     if payment_guard:
         result['customer_payment_guard'] = payment_guard.report()
+    if termination_guard:
+        result['customer_termination_checks'] = termination_guard.reports
     write_once(folder / 'native-result.json', result)
     return result
