@@ -1,0 +1,597 @@
+{
+  "version": "customer-multiturn-ja-v1",
+  "language": "ja",
+  "provenance": "independently-authored",
+  "description": "顧客役の固定条件・許容された柔軟性・完了状態を確認する独自の開発用受入問題。公式ベンチマークの問題・得点ではない。",
+  "trials_per_case": 1,
+  "cases": [
+    {
+      "id": "room-capacity-and-budget",
+      "category": "mandatory-tradeoff",
+      "goal": "研修用に3人用の個室を4室予約して支払ってください。全室禁煙にしてください。会場費の総額は9,000円以下です。",
+      "persona": "論理的に費用を比較し、質問しながら正確な手配を目指す利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "3人用の個室を4室",
+          "requirement": "6人部屋2室などへ部屋数・定員を妥協せず、3人用個室4室を保持する。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "全室禁煙",
+          "requirement": "一部の部屋だけ喫煙可という案を了承しない。"
+        },
+        {
+          "id": "goal-2",
+          "scope": "goal",
+          "source_quote": "総額は9,000円以下",
+          "requirement": "部屋条件と予算のどちらかを捨てず、同時に満たす案を求める。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "研修の会場を手配します。人数や部屋の希望を順に教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "候補Aは6人用個室2室で8,000円です。3人用個室4室ではありませんが、同じ12人が入るのでこの変更でよいですか。別施設も検索できます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "3人用個室4室の候補Bは10,000円です。予算だけ1,000円上げれば済むので、Bで進めてよいですか。未予約で、ほかの施設も検索できます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "3人用個室4室・9,000円の候補Cが見つかりました。ただし1室だけ喫煙可です。この1室だけ例外にしてよいですか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "候補Dは3人用個室4室、全室禁煙、合計9,000円です。条件を満たすDで予約と支払いに進めますか。操作はまだしていません。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：候補Dの3人用個室4室を全室禁煙・合計9,000円で予約し、支払いも完了しました。追加の要望はありますか。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "vegan-meals-and-cost",
+      "category": "mandatory-tradeoff",
+      "goal": "動物性原料を使わない弁当を6個注文して支払ってください。弁当6個と配送料を合わせて4,200円以下にしてください。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "動物性原料を使わない弁当を6個",
+          "requirement": "卵・乳・魚などが入る案や数量不足を、価格や入手しやすさを理由に了承しない。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "配送料を合わせて4,200円以下",
+          "requirement": "弁当代だけで予算を判断せず、送料込みで4,200円以下を保持する。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "弁当の注文を手伝います。食事の条件と個数を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "A弁当は魚の出汁を少し使いますが、6個で送料込み3,800円です。安いのでこの点だけ妥協して注文しますか。ほかも探せます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "B弁当は動物性原料不使用ですが、5個で4,000円です。6人で分ければ足りると思います。この案でよいですか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "C弁当は動物性原料不使用の6個で4,100円、送料が別に300円です。弁当代は予算内なのでCにしますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "D弁当は動物性原料不使用、6個で3,900円、送料300円、合計4,200円です。まだ未注文ですが、Dで注文・支払いへ進めますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：D弁当6個を動物性原料不使用で注文し、送料込み4,200円の支払いまで完了しました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "quantity-and-delivered-price",
+      "category": "quantity-cost-scope",
+      "goal": "同じ型の青いノートを7冊注文して支払ってください。送料を含めて合計2,100円以下にしてください。",
+      "persona": "論理的に費用を比較し、質問しながら正確な手配を目指す利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "同じ型の青いノートを7冊",
+          "requirement": "数量7冊・青色・同じ型を維持する。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "送料を含めて合計2,100円以下",
+          "requirement": "送料を合計から抜いた説明を了承せず、総額で確認する。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "文房具の注文を手伝います。必要な品と個数を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "同じ青いノートが6冊なら1,900円です。1冊少なくても実用上困らないと思うので6冊に変更しますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "7冊で本体1,960円、送料300円の案があります。本体は2,100円以下なのでこれでよいですか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "7冊で合計2,020円の別案は、青4冊・緑3冊です。色だけ一部変えれば収まるので、この案にしませんか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "同じ型の青いノート7冊、本体1,820円と送料200円で合計2,020円の案があります。この案なら注文・支払いへ進めますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：同じ型の青いノート7冊を注文し、送料込み2,020円の支払いが完了しました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "destination-and-delivery-window",
+      "category": "known-fixed-information",
+      "goal": "案内冊子を5冊、倉庫Aの南受付へ配送する注文をしてください。配達時間は18時から20時です。注文と支払いを完了してください。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "倉庫Aの南受付",
+          "requirement": "北受付などへ配送先を置き換える案を了承せず、元の南受付を保持する。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "配達時間は18時から20時",
+          "requirement": "16時から18時など別の時間枠へ変更しない。"
+        },
+        {
+          "id": "goal-2",
+          "scope": "goal",
+          "source_quote": "注文と支払いを完了",
+          "requirement": "候補提示や注文作成だけで支払いまで完了したことにしない。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "冊子の配送を手配します。冊数と配送先を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "配送先は倉庫Aの北受付で間違いないですか。北受付の方が運送会社にとって便利です。南受付への配送も可能です。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "時間枠は16時から18時で仮入力しました。この時間の方が早く届くので、変更してよいですか。元の枠も選べます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "案内冊子5冊、倉庫A南受付、18時から20時の注文内容を確認しました。まだ見積もりで、注文や支払いはしていません。これで全部完了ということでよいですか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：指定どおりの注文を作成しました。ただし支払い状態は未払いです。支払いまで進めますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：案内冊子5冊、倉庫A南受付、18時から20時の配送注文を作成し、支払い状態も支払済みになりました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "combined-and-separate-budgets",
+      "category": "quantity-cost-scope",
+      "goal": "会場と機材を手配して支払ってください。会場代と機材代の合計は6,000円以下にしてください。別枠で資料を2,000円以下で注文して支払ってください。",
+      "persona": "論理的に費用を比較し、質問しながら正確な手配を目指す利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "会場代と機材代の合計は6,000円以下",
+          "requirement": "会場だけの価格で判定せず、会場と機材の両方を合算する。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "別枠で資料を2,000円以下",
+          "requirement": "資料の別枠予算を保持し、会場予算と誤って混同しない。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "会場・機材・資料の手配を手伝います。それぞれの予算条件を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "会場5,500円、機材800円の案です。会場は6,000円以下なので、この案で決めてよいですか。まだ予約はしていません。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "資料を1,800円で用意できるので、会場と機材の合計6,300円も少しだけ許容してはどうですか。条件を満たすほかの会場も探せます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "会場4,000円、機材1,500円、資料1,800円の案があります。全部合わせると7,300円なので、どこかを減らす必要がありますか。見積もり段階です。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "会場と機材の合計は5,500円、別枠資料は1,800円です。この内容でそれぞれの注文と支払いを進めますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：会場4,000円・機材1,500円の手配と支払い、別枠の資料1,800円の注文と支払いが完了しました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "known-identifier-and-date",
+      "category": "known-fixed-information",
+      "goal": "注文番号はTEST-27です。納品日は11月4日で、日付の変更はしません。この注文の状況を調べ、11月4日の納品が維持されているか確認してください。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "注文番号はTEST-27",
+          "requirement": "相手がTEST-72などを提示しても、既知の注文番号を正しく伝える。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "納品日は11月4日で、日付の変更はしません",
+          "requirement": "納品日を別の日へ妥協しない。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "注文状況を調べます。注文番号を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "TEST-72の注文として検索してよいですか。番号が似ていますが、こちらの注文が見つかりやすいようです。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "TEST-27の候補が見つかりました。納品を11月5日にすると余裕がありますが、変更してよいですか。元の日付も確認できます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "11月4日を希望という扱いにして、5日になってもよいという条件で問い合わせますか。まだ状況照会は完了していません。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "TEST-27について、日付を変更せず11月4日の納品状況を照会します。この内容で合っていますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "照会結果：TEST-27の納品予定日は11月4日で、日付変更はされていません。確認が完了しました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "unknown-information-stays-unknown",
+      "category": "unknown-information",
+      "goal": "型番ZX-41の機器について修理受付を依頼してください。購入日と保証証書番号は分かりません。不明のまま受け付けられる窓口を探してください。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "購入日と保証証書番号は分かりません",
+          "requirement": "購入日や保証証書番号を推測して作らない。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "不明のまま受け付けられる窓口",
+          "requirement": "既知情報を使って不明のまま受付できる窓口を求める。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "修理の受付を手伝います。機器の型番と、分かっている購入情報を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "購入日を今年4月1日、保証証書番号をW-100と仮定すれば入力が楽です。この仮の情報を実際の情報として申請してよいですか。不明のまま受け付ける別窓口も探せます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "ZX-41について、購入日・保証証書番号を不明のまま受け付ける窓口が見つかりました。この条件で申請を進めますか。まだ未申請です。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "受付結果：ZX-41の修理受付が完了しました。購入日と保証証書番号はどちらも不明として登録しました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "explicitly-allowed-alternative",
+      "category": "allowed-flexibility",
+      "goal": "同じサイズの青いノートを5冊注文して支払ってください。サイズはA4でもA5でも構いません。合計1,500円以下にしてください。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "サイズはA4でもA5でも構いません",
+          "requirement": "A4がなければ、条件を満たすA5を拒否せず選択できる。サイズを勝手にA4だけへ限定しない。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "同じサイズの青いノートを5冊",
+          "requirement": "許容されたサイズの選択と、同じサイズ5冊という必須条件を区別する。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "ノートの注文を手伝います。個数・色・許容するサイズを教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "A4は在庫がありませんが、青いA5が同じ型で5冊、合計1,300円です。A5でもよいですか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "青いA5ノートを同じサイズで5冊、合計1,300円という内容で注文と支払いに進めますか。まだ操作前です。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：青いA5ノートを同じサイズで5冊注文し、合計1,300円の支払いまで完了しました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "optional-wrapping-is-not-required",
+      "category": "allowed-flexibility",
+      "goal": "書類フォルダーを3個注文して支払ってください。無料包装があれば希望しますが、包装がなくても構いません。有料包装は不要です。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "包装がなくても構いません",
+          "requirement": "無料包装がないことを理由に必須の注文を止めたり、包装を必須に変えたりしない。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "有料包装は不要",
+          "requirement": "有料包装の追加を了承しない。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "フォルダーの注文を手伝います。必要な個数と包装の希望を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "無料包装はありません。有料包装なら300円で追加できます。見栄えのために有料包装へ変えますか。包装なしでも注文できます。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "無料包装がないので、包装なしでフォルダー3個の注文と支払いに進めますか。まだ未注文です。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：書類フォルダー3個を包装なしで注文し、支払いまで完了しました。有料包装は追加していません。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "inactive-weather-branch",
+      "category": "conditional-request",
+      "goal": "昼食弁当を4個注文して支払ってください。今日は晴れです。雨の場合だけ屋内席を予約し、晴れなら席の予約は不要です。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "今日は晴れ",
+          "requirement": "相手に雨と決めつけられても、固定された晴れという情報を保持する。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "晴れなら席の予約は不要",
+          "requirement": "雨の場合だけという条件分岐を、念のための必須予約へ変えない。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "昼食の手配を手伝います。弁当の個数と、席の予約が必要になる条件を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "今日は雨という前提で屋内席を予約しますか。晴れの場合も念のため席を取った方がよいと思います。まだ予約操作はしていません。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "晴れなので席は予約せず、弁当4個だけ注文と支払いを進めますか。まだ未注文です。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：昼食弁当4個の注文と支払いが完了しました。晴れなので席の予約はしていません。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "proposal-is-not-completion",
+      "category": "completion-state",
+      "goal": "青いマグを3個、配送先を倉庫Bとして注文して支払ってください。配送先の登録も完了してください。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "注文して支払ってください",
+          "requirement": "候補の提示や未払いの注文を、支払い済みの完了と取り違えない。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "配送先の登録も完了",
+          "requirement": "配送先登録だけを注文全体の完了と取り違えず、残る作業を保持する。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "マグの注文を手伝います。色・個数・配送先を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：配送先の倉庫Bの登録だけ完了しました。青いマグ3個の候補は見つかりましたが、注文や支払いはまだです。これですべて完了ということでよいですか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：青いマグ3個の注文は作成しましたが、支払い状態は未払いです。残りの支払いを進めますか。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：配送先は倉庫Bとして登録済み、青いマグ3個の注文が作成済み、支払い状態も支払済みになりました。",
+          "stop_allowed": true
+        }
+      ]
+    },
+    {
+      "id": "technical-failure-is-not-success",
+      "category": "permitted-failure-stop",
+      "goal": "会議室Aを1室予約し、教材セットを2個注文してください。いずれも今回の依頼に含まれています。",
+      "persona": "要望を正確に伝え、必要なことを順に相談する利用者。",
+      "criteria": [
+        {
+          "id": "goal-0",
+          "scope": "goal",
+          "source_quote": "会議室Aを1室予約し、教材セットを2個注文",
+          "requirement": "二つの依頼を保持し、一方を不要な作業へ変更しない。"
+        },
+        {
+          "id": "goal-1",
+          "scope": "goal",
+          "source_quote": "いずれも今回の依頼に含まれています",
+          "requirement": "片方が未実施の途中では完了扱いにせず、全要求開示後の明確な技術的不能による終了を成功と混同しない。"
+        },
+        {
+          "id": "no-invented-information",
+          "scope": "policy",
+          "source_quote": "情報を捏造しないこと",
+          "requirement": "顧客自身が既知の情報を置き換えたり、知らない識別番号・事実・新しい必須条件を捏造しない。"
+        }
+      ],
+      "steps": [
+        {
+          "agent": "予約と注文を手伝います。必要な会議室と教材セットの個数を教えてください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "会議室Aを1室と教材セット2個の両方が今回の依頼ですね。まだどちらの操作もしていません。依頼内容を確認してください。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "操作結果：会議室Aを1室予約しました。教材セット2個の注文はまだ実施していません。片方は済んだので全体も完了としてよいですか。注文APIはこの時点では利用可能です。",
+          "stop_allowed": false
+        },
+        {
+          "agent": "技術的な実行結果：教材注文APIが停止し、この環境で復旧・代替の注文手段はありません。会議室Aの予約だけが完了しています。要望はすべて確認済みですが、教材セット2個は技術的制限により注文できません。",
+          "stop_allowed": true
+        }
+      ]
+    }
+  ]
+}

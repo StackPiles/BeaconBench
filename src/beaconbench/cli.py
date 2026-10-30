@@ -36,6 +36,8 @@ def parser():
     instrument.add_argument('--fixture', action='store_true')
     check = commands.add_parser('probe')
     check.add_argument('model_id')
+    customer_controls = commands.add_parser('customer-controls-validate')
+    customer_controls.add_argument('config', type=Path)
     review = commands.add_parser('evaluation-review')
     review.add_argument('run_id')
     review.add_argument('config', type=Path)
@@ -85,6 +87,12 @@ def main(argv=None):
             result = store.public_plan(store.plan(read_json(args.config)))
         elif args.command == 'probe':
             result = asyncio.run(probe(store.registry.get('models', args.model_id)))
+        elif args.command == 'customer-controls-validate':
+            from .customer_acceptance import validate_controls
+            controls = validate_controls(read_json(args.config))
+            result = {'version': controls['version'], 'cases': len(controls['cases']),
+                      'scripted_turns_per_model': sum(len(c['steps']) for c in controls['cases']),
+                      'model_calls': 0, 'meaning': 'authored helper QA; not official benchmark scores'}
         elif args.command == 'run':
             result = {'run_id': launch(store, plan_id=args.plan_id)}
         elif args.command == 'resume':
